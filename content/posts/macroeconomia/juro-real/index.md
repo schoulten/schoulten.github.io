@@ -33,11 +33,11 @@ Explicados brevemente estes conceitos e dado uma prévia do resultado que querem
 Onde os termos significam:
 
 {{< math.inline >}}
-
+{{ if or .Page.Params.math .Site.Params.math }}
 <p>
 teste \(r_t = \text{taxa de juros real}\)
 </p>
-
+{{ end }}
 {{</ math.inline >}}
 
 (i_t = \text{taxa de juros nominal}
