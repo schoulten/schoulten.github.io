@@ -22,26 +22,13 @@ De forma mais visual, esses conceitos podem se traduzir em uma realidade da econ
 
 Explicados brevemente estes conceitos e dado uma prévia do resultado que queremos chegar, podemos partir para o cálculo das taxas. Para chegar ao resultado que determina o juros real da economia usamos a **equação de Fisher**, através da fórmula bem simples a seguir:
 
-{{< math.inline >}}
-
-<p>
-(r_t =\frac{(1+i_t)}{(1+\pi_t)}-1)
-</p>
-
-{{</ math.inline >}}
+r = [(1+i)/(1+π)]-1
 
 Onde os termos significam:
 
-{{< math.inline >}}
-{{ if or .Page.Params.math .Site.Params.math }}
-<p>
-teste \(r_t = \text{taxa de juros real}\)
-</p>
-{{ end }}
-{{</ math.inline >}}
-
-(i_t = \text{taxa de juros nominal}
-(\pi_t = \text{taxa de inflação}
+r = taxa de juros real \
+i = taxa de juros nominal \
+π = taxa de inflação
 
 
 
