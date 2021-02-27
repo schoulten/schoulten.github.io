@@ -25,7 +25,7 @@ Explicados brevemente estes conceitos e dado uma prévia do resultado que querem
 {{< math.inline >}}
 
 <p>
-r_t =\frac{(1+i_t)}{(1+\pi_t)}-1 
+(r_t =\frac{(1+i_t)}{(1+\pi_t)}-1)
 </p>
 
 {{</ math.inline >}}
@@ -33,12 +33,17 @@ r_t =\frac{(1+i_t)}{(1+\pi_t)}-1
 Onde os termos significam:
 
 {{< math.inline >}}
+
 <p>
-r_t = \text{taxa de juros real} 
-i_t = \text{taxa de juros nominal}
-\pi_t = \text{taxa de inflação}
+teste \(r_t = \text{taxa de juros real}\)
 </p>
+
 {{</ math.inline >}}
+
+(i_t = \text{taxa de juros nominal}
+(\pi_t = \text{taxa de inflação}
+
+
 
 No caso da **taxa de juros real ex-ante**, opto aqui por utilizar a taxa do Swap DI-Pré 360 dias e as expectativas de IPCA esperado também de 1 ano à frente, provenientes da B3 e do boletim Focus/BCB respectivamente. Há outras maneiras de obter essa taxa, para uma discussão sobre o assunto recomendo [esse texto](https://blogdoibre.fgv.br/posts/juro-real-ex-ante-caindo-ou-subindo) do Bráulio Borges e Gilberto Borça Jr. Já no caso da **taxa de juros real ex-post** usamos a taxa Selic acumulada no mês anualizada em base de 252 dias úteis e o IPCA acumulado em 12 meses, provenientes do BCB e do IBGE respectivamente.
 
