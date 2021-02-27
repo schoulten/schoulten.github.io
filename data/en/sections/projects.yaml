@@ -46,8 +46,8 @@ projects:
   repo: https://github.com/schoulten/ibov-heatmap-calendar
   #url: "https://github.com/schoulten/ibov-heatmap-calendar"
   summary: Um calendário de retornos diários do Ibovespa em forma de mapa de calor.
-  tags: ["hobby","data viz"]
-  
+  tags: ["hobby","data viz", "finance"]
+
 - name: Gestão Fiscal Municipal (IGFM)
   logo: /images/sections/projects/igfm.png
   role: Criador
@@ -56,7 +56,7 @@ projects:
   #url: "https://github.com/schoulten/indice-igfm"
   summary: Indicador da capacidade dos municípios brasileiros se sustentarem, adaptado da metodologia da Firjan.
   tags: ["professional", "R", "macro research"]
-  
+
 - name: Cálculo da Taxa de Juros Real
   logo: /images/sections/projects/juros.png
   role: Criador
