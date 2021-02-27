@@ -1,6 +1,6 @@
 baseURL: https://fortietwo.com/
-
 languageCode: en-us
+defaultContentLanguage: en
 title: "Fernando da Silva"
 theme: "toha"
 
