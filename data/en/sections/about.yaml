@@ -23,11 +23,11 @@ summary: 'Sou um economista apaixonado por macroeconomia com 3 anos de experiên
 # your social links
 # give as many as you want. use font-awesome for the icons.
 socialLinks:
-- name: Email
+- name: E-mail
   icon: "fas fa-envelope"
   url: "fernando@fortietwo.com"
 
-- name: Github
+- name: GitHub
   icon: "fab fa-github"
   url: "https://www.github.com/schoulten"
 

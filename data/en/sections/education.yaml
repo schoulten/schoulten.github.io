@@ -33,7 +33,7 @@ degrees:
   institution:
     name: Universidade Federal do Rio Grande (FURG)
     url: "https://www.furg.br/"
-  grade: #(optional)
+  grade:
     scale: CR
     achieved: 7.4
     outOf: 10
@@ -56,13 +56,13 @@ degrees:
 #  publications: #(optional)
 #  - title: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 #    url: "#"
-  extracurricularActivities: #(optional)
+  extracurricularActivities:
   - Fundação do Grupo de Estudos de Conjuntura Econômica (GECE/FURG).
   - Voluntariado na AIESEC em Pelotas/RS.
   - Voluntariado no Diretório Acadêmico de Economia.
   - Participação como Embaixador da Brasil Júnior.
   - Voluntariado da Fundação Estudar para o programa Liderança 16hs.
-  
+
 - name: Técnico em Informática
   icon: fa-school
   timeframe: 2010-2011
@@ -73,4 +73,4 @@ degrees:
 #    scale: GPA
 #    achieved: 5
 #    outOf: 5
- 
+
