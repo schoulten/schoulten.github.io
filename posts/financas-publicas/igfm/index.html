@@ -1,0 +1,165 @@
+<!doctype html><html><head><title>O que os cofres municipais revelam sobre a gestão fiscal das prefeituras?</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=/css/bootstrap.min.css><link rel=stylesheet href=/css/layouts/main.css><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/navigators/navbar.css><link href="https://fonts.googleapis.com/css2?family=Muli:wght@300;400;500;600" rel=stylesheet><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css><link rel=icon type=image/png href=/images/site/favicon_hu33f1ad454c240d0563b5321405042345_332953_42x0_resize_box_2.png><link rel=stylesheet href=/css/style.css><meta name=description content="Um índice para mensurar a gestão fiscal dos municípios, adaptado da metodologia da Firjan"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/atom-one-dark.min.css><link rel=stylesheet href=/css/layouts/single.css><link rel=stylesheet href=/css/navigators/sidebar.css></head><body data-spy=scroll data-target=#TableOfContents data-offset=80><div class="container-fluid bg-dimmed wrapper"><nav class="navbar navbar-expand-xl top-navbar final-navbar shadow"><div class=container><button class="navbar-toggler navbar-light" id=sidebar-toggler type=button onclick=toggleSidebar()>
+<span class=navbar-toggler-icon></span></button>
+<a class=navbar-brand href=/><img src=/images/site/logo-white_hu7c1eec36daead8e06ed69c9f95a4ded2_445085_42x0_resize_box_2.png>Fernando da Silva</a>
+<button class="navbar-toggler navbar-light" id=toc-toggler type=button onclick=toggleTOC()>
+<span class=navbar-toggler-icon></span></button><div class="collapse navbar-collapse lang-selector" id=top-nav-items><ul class="navbar-nav ml-auto"></ul></div></div><img src=/images/site/logo-white_hu7c1eec36daead8e06ed69c9f95a4ded2_445085_42x0_resize_box_2.png class=d-none id=main-logo>
+<img src=/images/site/logo-blue_hu7c1eec36daead8e06ed69c9f95a4ded2_364048_42x0_resize_box_2.png class=d-none id=inverted-logo></nav><section class=sidebar-section id=sidebar-section><div class=sidebar-holder><div class=sidebar id=sidebar><input type=text placeholder=Search data-search id=search-box><div class=sidebar-tree><ul class=tree id=tree><li id=list-heading><a href=/posts data-filter=all>Posts</a></li><div class=subtree><li><i class="fas fa-minus-circle"></i><a class=active href=/posts/economia/>Economia</a><ul class=active><li><i class="fas fa-minus-circle"></i><a class=active href=/posts/macroeconomia/>Macroeconomia</a><ul class=active><li><a href=/posts/conjuntura-economica/>Conjuntura Econômica</a></li><li><i class="fas fa-minus-circle"></i><a class=active href=/posts/financas-publicas/>Finanças Públicas</a><ul class=active><li><a class=active href=/posts/financas-publicas/igfm/>Índice de Gestão Fiscal Municipal - IGFM</a></li></ul></li><li><a href=/posts/macroeconomia/juro-real/>Taxa de juros real</a></li></ul></li><li><a href=/posts/microeconomia/>Microeconomia</a></li></ul></li><li><a href=/posts/sobre/>Sobre o Blog</a></li></div></ul></div></div></div></section><section class=content-section id=content-section><div class=content><div class="container p-0 read-area"><div class="hero-area col-sm-12" id=hero-area style=background-image:url(https://schoulten.github.io/posts/financas-publicas/igfm/hero.svg)></div><div class=page-content><div class="author-profile ml-auto align-self-lg-center"><img class=rounded-circle src=/images/author/fernando.png><h5 class=author-name>Fernando da Silva</h5><p>February 23, 2021</p></div><div class=title><h1>O que os cofres municipais revelam sobre a gestão fiscal das prefeituras?</h1></div><div class=post-content id=post-content><h3 id=introdução>Introdução</h3><p>5.570 novos prefeitos foram eleitos na última eleição municipal do Brasil, em um contexto e campanha ainda dominamos pela pandemia da Covid-19, e tomaram posse em 1º de janeiro de 2021 com muitos velhos desafios. Com o que se depararam nas prefeituras?</p><p>É bem sabido que nosso país passa por um momento crítico em suas contas públicas. Estamos há quase 6 anos registrando consecutivos déficits primários - quando as despesas primárias superam a receita primária líquida -, período no qual a trajetória da dívida pública federal cresceu explosivamente e estados e municípios declararam insolvência. No contexto municipal, observa-se que muitas prefeituras possuem pouca capacidade de gerar receita para financiar até mesmo sua estrutura administrativa, constituindo-se um desafio vital para a gestão fiscal dos municípios brasileiros.</p><p>Mas como identificar se um município possui uma situação fiscal boa ou crítica? Em outras palavras, como podemos mensurar e visualizar essa realidade brasileira?</p><h3 id=índice-de-gestão-fiscal-municipal--igfm>Índice de Gestão Fiscal Municipal – IGFM</h3><p>Para visualizar a gravidade desse problema, desenvolvi o <strong>Índice de Gestão Fiscal Municipal – IGFM</strong>, que mede a capacidade dos municípios brasileiros se sustentarem em um intervalo de 0 a 1. O índice é uma adaptação da metodologia da <a href=https://www.firjan.com.br/ifgf/>Firjan</a> e os dados são públicos e disponibilizados no sistema <a href=https://siconfi.tesouro.gov.br/>Siconfi/STN</a> referentes às Contas Anuais de 2018.</p><p>São consideradas no cálculo do índice as receitas provenientes da atividade econômica municipal e as despesas para manter a Câmara de Vereadores e a estrutura administrativa da Prefeitura, de forma que quanto mais próximo de zero estiver o IGFM do município menor é a capacidade do mesmo gerar receitas e arcar com os custos de sua própria existência.</p><h3 id=o-triste-mapa-da-gestão-fiscal-dos-municípios>O triste mapa da gestão fiscal dos municípios</h3><p>No mapa abaixo constam os resultados do IGFM categorizados em 4 níveis de situação: crítica, difícil, boa e excelente. Podemos observar que 2.415 prefeituras (44,4% do total) estão em situação crítica e difícil, ou seja, não conseguem gerar receita suficiente para custear a própria estrutura administrativa. A maior parcela desse número é composta por municípios pequenos, concentrados nas regiões Norte e Nordeste, nos quais a população média não passa de 14 mil pessoas.</p><img src=/posts/financas-publicas/igfm/img/igfm.jpg width=450 class=center><p>Esse resultado evidencia uma grande ineficiência na administração dos recursos públicos. Nesse contexto, propostas de reforma administrativa vêm sendo debatidas e indicadores como esses são importantes para entender o problema. É fundamental discutir e propor soluções para fatores como esse, caso contrário este mapa mostrará um Brasil cada vez mais crítico.</p><h3 id=dados-cálculos-e-código>Dados, cálculos e código</h3><p>Como chegar a esses resultados do índice? Como mencionado, a Firjan disponibiliza metodologia própria para o cálculo do índice, que é muito semelhante ao desenvolvido aqui. Abaixo irei detalhar os procedimentos adotados a partir de uma interpretação livre da metodologia da Firjan. Importante frisar que os resultados obtidos podem divergir daqueles que a Firjan disponibiliza em virtude de arredondamentos ou diferenças de cálculo (que não é explicitamente claro na documentação técnica disponibilizada).</p><p>Vamos usar a linguagem R com o auxílio de alguns pacotes para obter e tratar dados, assim como para a criação do mapa municipal.</p><div style=margin-top:2rem></div><h4 id=1-carregar-pacotes-necessários>1. Carregar pacotes necessários</h4><p>Para fins de reprodutibilidade, usaremos o {pacman} - que é um gerenciador de pacotes - para verificar se os pacotes estão instalados e instalar/carregar caso necessário; o {rsiconfi} é um pacote em desenvolvimento que utilizaremos para obter dados do Siconfi/STN via API; {brazilmaps} e {sf} são pacotes gráficos que serão utilizados para gerar o mapa; e, por último, o {tidyverse} é uma família de pacotes para manipulação de dados.</p><pre><code># Instalar/carregar pacotes
+if (!require(&quot;pacman&quot;)) install.packages(&quot;pacman&quot;)
+if (!require(&quot;rsiconfi&quot;)) devtools::install_github(&quot;tchiluanda/rsiconfi&quot;)
+pacman::p_load(&quot;rsiconfi&quot;, &quot;tidyverse&quot;, &quot;brazilmaps&quot;, &quot;sf&quot;)
+</code></pre><div style=margin-top:2rem></div><h4 id=2-definir-parâmetros-para-obtenção-dos-dados>2. Definir parâmetros para obtenção dos dados</h4><p>Agora vamos criar alguns objetos que servirão como parâmetros para extrair os dados do sistema Siconfi. Esses parâmetros seriam os mesmos que preencheríamos se fossemos baixar manualmente um CSV dos dados pelo site.</p><pre><code># Ano de referência das Contas Anuais
+ano &lt;- 2018
+
+# Anexo das Contas Anuais
+anexo_receita &lt;- &quot;I-C&quot;
+anexo_despesa &lt;- &quot;I-E&quot;
+
+# Vetor com código IBGE das UFs do Brasil
+uf_codigos &lt;- c(
+  11:17,
+  21:29,
+  31:35,
+  41:43,
+  50:53
+  )
+
+# Vetor com tipos de despesas que queremos filtrar
+contas_despesas &lt;- c(
+  &quot;01&quot;, # Legislativa
+  &quot;02&quot;, # Judiciária
+  &quot;03&quot;, # Essencial à Justiça
+  &quot;04&quot;  # Administração
+  )
+
+# Vetor com tipos de receitas que queremos filtrar
+contas_receitas &lt;- c(
+  &quot;1.0.0.0.00.0.0&quot;,     # Receitas Correntes,
+  &quot;1.7.0.0.00.0.0&quot;,     # Transferências Correntes,
+  &quot;1.1.1.0.00.0.0&quot;,     # Impostos
+  &quot;1.3.0.0.00.0.0&quot;,     # Receita Patrimonial
+  &quot;1.4.0.0.00.0.0&quot;,     # Receita Agropecuária
+  &quot;1.5.0.0.00.0.0&quot;,     # Receita Industrial
+  &quot;1.6.0.0.00.0.0&quot;,     # Receita de Serviços
+  &quot;1.7.1.8.01.5.0&quot;,     # Cota-Parte do Imposto Sobre a Propriedade Territorial Rural
+  &quot;1.7.1.8.06.0.0&quot;,     # Transferência Financeira do ICMS – Desoneração – L.C. Nº 87/96
+  &quot;1.7.2.8.01.1.0&quot;,     # Cota-Parte do ICMS
+  &quot;1.7.2.8.01.2.0&quot;,     # Cota-Parte do IPVA
+  &quot;1.7.2.8.01.3.0&quot;,     # Cota-Parte do IPI - Municípios
+  &quot;RO1.7.2.8.01.1.0&quot;,   # Cota-parte do ICMS,
+  &quot;RO1.7.2.8.01.2.0&quot;,   # Cota-parte do IPVA,
+  &quot;RO1.7.1.8.01.5.0&quot;,   # Cota-parte do ITR,
+  &quot;1.7.2.8.01.3.0 Cota-Parte do IPI&quot;
+  )
+
+</code></pre><div style=margin-top:2rem></div><h4 id=3-coletar-dados-usando-o-rsiconfi>3. Coletar dados usando o {rsiconfi}</h4><p>Definidos os parâmetros, podemos usar a função <code>get_dca_mun_state()</code> para baixar os dados (via API).</p><div class="alert alert-warning"><strong><strong>Importante:</strong> A extração de dados pode ser demorada, podendo levar horas! Caso deseje, disponibilizei os dados aqui utilizados referentes à 2018 no meu <a href=https://github.com/schoulten/indice-igfm/blob/main/data/fiscal_mun.Rdata>GitHub</a>.</strong></div><pre><code># Coletar receitas orçamentárias municipais
+tbl_receitas &lt;- get_dca_mun_state(
+  year          = ano,
+  annex         = anexo_receita,
+  state         = uf_codigos,
+  arg_cod_conta = contas_receitas
+  )
+
+# Coletar despesas por função municipais
+tbl_despesas &lt;- get_dca_mun_state(
+  year          = ano,
+  annex         = anexo_despesa,
+  state         = uf_codigos,
+  arg_cod_conta = contas_despesas
+  )
+
+</code></pre><div style=margin-top:2rem></div><h4 id=4-tratamento-de-dados>4. Tratamento de dados</h4><p>Prosseguimos com o tratamento dos dados obtidos para posterior cálculo do índice. Nesta etapa, consideraremos somente o estágio de despesas líquidas e das receitas são deduzidos os percentuais destinados à formação do Fundeb. Além disso, calculamos a receita econômica local</p><pre><code># Receitas: deduzir Fundeb, totalizar contas por municípios e calcular receita econômica
+receitas &lt;- tbl_receitas %&gt;%
+  mutate(
+    valor = ifelse(
+      coluna == &quot;Receitas Brutas Realizadas&quot;,
+      valor,
+      -valor # dedução de valores destinados ao Fundeb
+      )
+    ) %&gt;%
+  group_by(cod_ibge, cod_conta) %&gt;%
+  summarise(valor_liquido = sum(valor)) %&gt;%
+  pivot_wider(
+    id_cols     = cod_ibge, 
+    names_from  = cod_conta, 
+    values_from = valor_liquido
+    ) %&gt;%
+  ungroup() %&gt;%
+  mutate( # Receitas Correntes - Transferências Correntes + Receitas + Cotas e Transferências
+    rec_econ = RO1.0.0.0.00.0.0 - RO1.7.0.0.00.0.0 + rowSums(.[c(3:5,7:12)], na.rm = TRUE)
+    ) %&gt;%
+  select(1,2,13) %&gt;%
+  rename_with(
+    ~c(&quot;rec_corr_liq&quot;),
+    2
+    ) %&gt;%
+  mutate(
+    rec_corr_liq = ifelse(rec_corr_liq &lt; 1, 0, rec_corr_liq), # tratar receitas menores que 1 como sendo 0
+    rec_econ     = ifelse(rec_econ &lt; 1, 0, rec_econ) # tratar receitas menores que 1 como sendo 0
+    )
+
+# Despesas: filtrar e selecionar colunas relevantes, pivotar e renomear colunas
+despesas &lt;- tbl_despesas %&gt;%
+  filter(coluna == &quot;Despesas Liquidadas&quot;) %&gt;%
+  select(cod_ibge, conta, valor) %&gt;%
+  pivot_wider(
+    id_cols     = cod_ibge, 
+    names_from  = conta, 
+    values_from = valor
+    ) %&gt;%
+  rename_with(
+    ~c(&quot;legislativa&quot;,
+      &quot;administracao&quot;, 
+      &quot;essencial_a_justica&quot;,
+      &quot;judiciaria&quot;
+      ),
+    2:5
+    )
+</code></pre><div style=margin-top:2rem></div><h4 id=5-calcular-o-índice>5. Calcular o índice</h4><p>O próximo passo é efetivamente calcular o índice que avalia se as receitas são suficientes para cobrir as despesas com a estrutura administrativa municipal. Para tal, fazemos a união dos dois conjuntos de dados baixados e tratados, substituímos os valores ausentes por zero e criamos o índice seguindo a fórmula abaixo:</p><p><strong>IGFM</strong> = (Receitas de Atividade Econômica - Despesas com Estrutura Administrativa) / Receita Corrente Líquida</p><p>Adicionalmente, fazemos uma tratativa para casos em que a receita de atividade econômica é zero, transformamos os valores de acordo com a metodologia da Firjan de valores maiores que 0,25 = 1, entre 0 e 0,25 dividimos por 0,25 e demais casos (e.g.negativos) são transformados em 0. Criamos 4 categorias com fins de suavizar e padronizar os resultados na visualização dos mesmos:</p><ol><li><strong>Excelente</strong>: índice maior que 0,8</li><li><strong>Boa</strong>: índice entre 0,6 e 0,8</li><li><strong>Difícil</strong>: índice entre 0,4 e 0,6</li><li><strong>Crítica</strong>: índice menor que 0,4</li></ol><pre><code># Calcular o IGFM
+tbl_igfm &lt;- despesas %&gt;%
+  inner_join(receitas) %&gt;%
+  replace(is.na(.), 0) %&gt;%
+  mutate(
+    indicador      = (rec_econ - legislativa - administracao - essencial_a_justica - judiciaria) / rec_corr_liq,
+    indicador      = ifelse(rec_econ == 0, 0, indicador),
+    igfm_autonomia =  case_when(
+      indicador &gt; 0.25 ~ 1,
+      indicador &lt; 0.25 &amp; indicador &gt; 0 ~ indicador/0.25,
+      TRUE ~ 0
+      ),
+    categoria      = case_when(
+      igfm_autonomia &gt; 0.8 ~ &quot;Excelente&quot;,
+      igfm_autonomia &gt; 0.6 &amp; igfm_autonomia &lt; 0.8 ~ &quot;Boa&quot;,
+      igfm_autonomia &gt; 0.4 &amp; igfm_autonomia &lt; 0.6 ~ &quot;Difícil&quot;,
+      igfm_autonomia &lt; 0.4 ~ &quot;Crítica&quot;
+      ) %&gt;% factor(levels = c(&quot;Excelente&quot;, &quot;Boa&quot;, &quot;Difícil&quot;, &quot;Crítica&quot;))
+    )
+</code></pre><div style=margin-top:2rem></div><h4 id=6-criar-o-mapa>6. Criar o mapa</h4><p>A parte mais legal é essa, por isso ficou por último :D!</p><p>Para gerar a visualização desejada primeiro precisamos baixar os parâmetros (polígonos espaciais) que darão a cara pro nosso mapa, e isso é feito com a função <code>get_brmap()</code>. Após isso, juntos esses dados com os dados do índice que calculamos e usamos o pacote {ggplot2} para plotar todos esses dados.</p><pre><code># Gerar mapa
+get_brmap(&quot;City&quot;) %&gt;%
+  inner_join(tbl_igfm, c(&quot;City&quot; = &quot;cod_ibge&quot;)) %&gt;% 
+  ggplot() +
+  geom_sf(aes(fill = categoria), color = NA, size = 0.15)  +
+  geom_sf(data = get_brmap(&quot;State&quot;), fill = &quot;transparent&quot;, colour = &quot;black&quot;, size = 0.5) +
+  labs(
+    title    = &quot;Índice de Gestão Fiscal Municipal - IGFM&quot;,
+    subtitle = &quot;Dados de 2018, metodologia adaptada da Firjan&quot;,
+    caption  = &quot;Fonte: Fernando da Silva com dados de Siconfi/STN&quot;
+    ) +
+  scale_fill_brewer(palette = &quot;Spectral&quot;, name = &quot;Situação:&quot;, direction = -1) +
+  theme(
+    axis.text          = element_blank(),
+    axis.ticks         = element_blank(),
+    plot.title         = element_text(color = &quot;#233f91&quot;, size = 15, face = &quot;bold&quot;),
+    plot.subtitle      = element_text(face = &quot;bold&quot;, colour = &quot;gray20&quot;, size = 12),
+    plot.caption       = element_text(size = 10, face = &quot;bold&quot;, colour = &quot;gray20&quot;),
+    legend.position    = c(0.15,0.2),
+    legend.title       = element_text(face = &quot;bold&quot;, colour = &quot;gray20&quot;, size = 12),
+    legend.background  = element_blank(),
+    legend.text        = element_text(face = &quot;bold&quot;, colour = &quot;gray20&quot;, size = 12),
+    panel.grid         = element_line(colour = &quot;transparent&quot;),
+    panel.background   = element_rect(fill = &quot;#eef1f7&quot;, colour = &quot;#eef1f7&quot;),
+    plot.background    = element_rect(fill = &quot;#eef1f7&quot;, colour = &quot;#eef1f7&quot;)
+    )
+</code></pre><p><div style=margin-top:2rem></div>Voilà! Eis o mapa com os resultados do índice. Espero que esse conteúdo tenha sido útil ou interessante para você. Até mais!</p><p>Aviso: esse post é uma atualização do <a href=https://github.com/schoulten/indice-igfm>texto publicado</a> originalmente para o GECE/FURG.</p><div style=margin-top:2rem></div><script type=text/javascript src=https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js data-name=bmc-button data-slug=schoulten data-color=#40DCA5 data-emoji data-font=Cookie data-text="Buy me a coffee" data-outline-color=#000000 data-font-color=#ffffff data-coffee-color=#FFDD00></script></div><div class=btn-improve-page><a href=https://github.com/schoulten/schoulten.github.io/edit/master/content/posts/financas-publicas/igfm/index.md><i class="fas fa-code-branch"></i>Improve this page</a></div><hr><div class="row next-prev-navigator"><div class="col-md-6 previous-article"><a href=/posts/macroeconomia/juro-real/ class="btn btn-outline-info"><span><i class="fas fa-chevron-circle-left"></i>Prev</span><br><span>Como calcular a taxa de juros real da economia brasileira?</span></a></div><div class="col-md-6 next-article"><a href=/posts/sobre/ class="btn btn-outline-info"><span>Next <i class="fas fa-chevron-circle-right"></i></span><br><span>O que você encontrará neste blog</span></a></div></div><hr></div></div></div></section><section class=toc-section id=toc-section><div class=toc-holder><h5 class="text-center pl-3">Table of Contents</h5><hr><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=#introdução>Introdução</a></li><li><a href=#índice-de-gestão-fiscal-municipal--igfm>Índice de Gestão Fiscal Municipal – IGFM</a></li><li><a href=#o-triste-mapa-da-gestão-fiscal-dos-municípios>O triste mapa da gestão fiscal dos municípios</a></li><li><a href=#dados-cálculos-e-código>Dados, cálculos e código</a><ul><li><a href=#1-carregar-pacotes-necessários>1. Carregar pacotes necessários</a></li><li><a href=#2-definir-parâmetros-para-obtenção-dos-dados>2. Definir parâmetros para obtenção dos dados</a></li><li><a href=#3-coletar-dados-usando-o-rsiconfi>3. Coletar dados usando o {rsiconfi}</a></li><li><a href=#4-tratamento-de-dados>4. Tratamento de dados</a></li><li><a href=#5-calcular-o-índice>5. Calcular o índice</a></li><li><a href=#6-criar-o-mapa>6. Criar o mapa</a></li></ul></li></ul></li></ul></nav></div></div></section></div><footer class="container-fluid text-center align-content-center footer pb-2"><div class="container pt-5"><div class="row text-left"><div class="col-md-4 col-sm-12"><h5>Navigation</h5><ul><li class=nav-item><a class=smooth-scroll href=#about>Sobre</a></li><li class=nav-item><a class=smooth-scroll href=#skills>Habilidades</a></li><li class=nav-item><a class=smooth-scroll href=#experiences>Experiências</a></li><li class=nav-item><a class=smooth-scroll href=#education>Educação</a></li><li class=nav-item><a class=smooth-scroll href=#projects>Projetos</a></li><li class=nav-item><a class=smooth-scroll href=#achievements>Conquistas</a></li><li class=nav-item><a class=smooth-scroll href=#recent-posts>Posts recentes</a></li></ul></div><div class="col-md-4 col-sm-12"><h5>Contact me:</h5><ul><li><span>Email:</span> <span>fernando@gecefurg.com.br</span></li><li><span>Phone:</span> <span>+5548988600321</span></li></ul></div><div class="col-md-4 col-sm-12"><p>Stay up to date with email notification</p><form><div class=form-group><input type=email class=form-control id=exampleInputEmail1 aria-describedby=emailHelp placeholder="Enter email">
+<small id=emailHelp class="form-text text-muted">We'll never share your email with anyone else.</small></div><button type=submit class="btn btn-info">Submit</button></form></div></div></div><hr><div class=container><div class="row text-left"><div class=col-md-4><a id=theme href=https://github.com/hossainemruz/toha target=#><img src=/images/theme-logo_hu8376fd15465fef26ffe66b6bcf0ca686_13669_32x0_resize_box_2.png>
+Toha</a></div><div class="col-md-4 text-center">© 2021 Copyright.</div><div class="col-md-4 text-right"><a id=hugo href=https://gohugo.io/>Powered by
+<img src=/images/hugo-logo.svg alt="Hugo Logo" height=18></a></div></div></div></footer><script src=/js/jquery-3.4.1.min.js></script><script src=/js/popper.min.js></script><script src=/js/bootstrap.min.js></script><script src=/js/navbar.js></script><script src=/js/main.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js></script><script src=/js/single.js></script><script>hljs.initHighlightingOnLoad();</script></body></html>

@@ -1,0 +1,130 @@
+<!doctype html><html><head><title>Como calcular a taxa de juros real da economia brasileira?</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><link rel=stylesheet href=/css/bootstrap.min.css><link rel=stylesheet href=/css/layouts/main.css><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/navigators/navbar.css><link href="https://fonts.googleapis.com/css2?family=Muli:wght@300;400;500;600" rel=stylesheet><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css><link rel=icon type=image/png href=/images/site/favicon_hu33f1ad454c240d0563b5321405042345_332953_42x0_resize_box_2.png><link rel=stylesheet href=/css/style.css><meta name=description content="Cálculo da taxa de juros real pelos conceitos ex-ante e ex-post"><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/atom-one-dark.min.css><link rel=stylesheet href=/css/layouts/single.css><link rel=stylesheet href=/css/navigators/sidebar.css></head><body data-spy=scroll data-target=#TableOfContents data-offset=80><div class="container-fluid bg-dimmed wrapper"><nav class="navbar navbar-expand-xl top-navbar final-navbar shadow"><div class=container><button class="navbar-toggler navbar-light" id=sidebar-toggler type=button onclick=toggleSidebar()>
+<span class=navbar-toggler-icon></span></button>
+<a class=navbar-brand href=/><img src=/images/site/logo-white_hu7c1eec36daead8e06ed69c9f95a4ded2_445085_42x0_resize_box_2.png>Fernando da Silva</a>
+<button class="navbar-toggler navbar-light" id=toc-toggler type=button onclick=toggleTOC()>
+<span class=navbar-toggler-icon></span></button><div class="collapse navbar-collapse lang-selector" id=top-nav-items><ul class="navbar-nav ml-auto"></ul></div></div><img src=/images/site/logo-white_hu7c1eec36daead8e06ed69c9f95a4ded2_445085_42x0_resize_box_2.png class=d-none id=main-logo>
+<img src=/images/site/logo-blue_hu7c1eec36daead8e06ed69c9f95a4ded2_364048_42x0_resize_box_2.png class=d-none id=inverted-logo></nav><section class=sidebar-section id=sidebar-section><div class=sidebar-holder><div class=sidebar id=sidebar><input type=text placeholder=Search data-search id=search-box><div class=sidebar-tree><ul class=tree id=tree><li id=list-heading><a href=/posts data-filter=all>Posts</a></li><div class=subtree><li><i class="fas fa-minus-circle"></i><a class=active href=/posts/economia/>Economia</a><ul class=active><li><i class="fas fa-minus-circle"></i><a class=active href=/posts/macroeconomia/>Macroeconomia</a><ul class=active><li><a href=/posts/conjuntura-economica/>Conjuntura Econômica</a></li><li><i class="fas fa-plus-circle"></i><a href=/posts/financas-publicas/>Finanças Públicas</a><ul><li><a href=/posts/financas-publicas/igfm/>Índice de Gestão Fiscal Municipal - IGFM</a></li></ul></li><li><a class=active href=/posts/macroeconomia/juro-real/>Taxa de juros real</a></li></ul></li><li><a href=/posts/microeconomia/>Microeconomia</a></li></ul></li><li><a href=/posts/sobre/>Sobre o Blog</a></li></div></ul></div></div></div></section><section class=content-section id=content-section><div class=content><div class="container p-0 read-area"><div class="hero-area col-sm-12" id=hero-area style=background-image:url(https://schoulten.github.io/posts/macroeconomia/juro-real/hero.svg)></div><div class=page-content><div class="author-profile ml-auto align-self-lg-center"><img class=rounded-circle src=/images/author/fernando.png><h5 class=author-name>Fernando da Silva</h5><p>February 24, 2021</p></div><div class=title><h1>Como calcular a taxa de juros real da economia brasileira?</h1></div><div class=post-content id=post-content><p>O dinheiro existe há bastante tempo e, geralmente, pagamos para poder usar o dinheiro e/ou poupança de outra pessoa (afinal, não existe almoço grátis). O preço dessa troca, entre o credor e o devedor, é o que usualmente se chama de juros. Também é comum que essa taxa, chamada de juros nominal, seja positiva e definida como um referencial pelo Banco Central de cada país, constituindo um dos principais instrumentos de controle da inflação.</p><p>Sabendo que a taxa de juros nominal é um preço, logo, há motivos para deflacioná-lo por um índice de correção de preços como o IPCA, por exemplo, de forma semelhante ao que fazemos quando é necessário &ldquo;corrigir&rdquo; o valor de um imóvel que irá à venda. O resultado dessa operação é o que é chamado de taxa de juros real, ou seja, a taxa nominal deflacionada pela taxa de inflação.</p><p>Existem basicamente duas perspectivas sobre a taxa de juros real: pelo conceito ex-post e pelo conceito ex-ante. No primeiro caso olhamos o comportamento dos juros no período passado, geralmente usando valores acumulados em 12 meses, o que nos permite verificar a tendência de juros real da economia; enquanto que no segundo caso é o oposto, estamos interessados em verificar o comportamento do juros real à frente, tomando como base expectativas de agentes de mercado, assim é possível identificar como é esperado o comportamento dos juros no futuro.</p><p>De forma mais visual, esses conceitos podem se traduzir em uma realidade da economia do país bastante impressionante se olharmos um período de tempo suficientemente grande, conforme a imagem abaixo:</p><img src=/posts/macroeconomia/juro-real/img/juro_real.jpg width=750 class=center><p>Explicados brevemente estes conceitos e dado uma prévia do resultado que queremos chegar, podemos partir para o cálculo das taxas. Para chegar ao resultado que determina o juros real da economia usamos a <strong>equação de Fisher</strong>, através da fórmula bem simples a seguir:</p><p>$$ r_t =\frac{(1+i_t)}{(1+\pi_t)}-1 $$</p><p>Onde os termos significam:</p><p>$$ r_t = \text{taxa de juros real} $$
+$$ i_t = \text{taxa de juros nominal} $$
+$$ \pi_t = \text{taxa de inflação} $$</p><p>No caso da <strong>taxa de juros real ex-ante</strong>, opto aqui por utilizar a taxa do Swap DI-Pré 360 dias e as expectativas de IPCA esperado também de 1 ano à frente, provenientes da B3 e do boletim Focus/BCB respectivamente. Há outras maneiras de obter essa taxa, para uma discussão sobre o assunto recomendo <a href=https://blogdoibre.fgv.br/posts/juro-real-ex-ante-caindo-ou-subindo>esse texto</a> do Bráulio Borges e Gilberto Borça Jr. Já no caso da <strong>taxa de juros real ex-post</strong> usamos a taxa Selic acumulada no mês anualizada em base de 252 dias úteis e o IPCA acumulado em 12 meses, provenientes do BCB e do IBGE respectivamente.</p><p>O que é necessário agora é obter esses dados e aplicar a equação de Fisher. A obtenção dos dados é bastante simples e rápida usando a linguagem R. Vamos usar as API&rsquo;s de três fontes públicas de dados (IPEADATA, BCB e IBGE). Vamos ao passo a passo:</p><div style=margin-top:2rem></div><h3 id=1-pacotes>1. Pacotes</h3><p>Primeiro temos que carregar os pacotes necessários. Usando o {pacman} já pulamos uma etapa que é verificar se os pacotes estão instalados e depois carregá-los, esse gerenciador de pacotes faz isso automaticamente através da função <code>p_load()</code>.</p><pre><code># Carregar/instalar pacotes
+if(!require(pacman)) install.packages(&quot;pacman&quot;) # gerenciador de pacotes
+pacman::p_load(
+  &quot;ipeadatar&quot;,                                  # para obter dados do IPEADATA
+  &quot;GetBCBData&quot;,                                 # para obter dados do BCB
+  &quot;sidrar&quot;,                                     # para obter dados do IBGE
+  &quot;tidyverse&quot;,                                  # para tratar dados/criar gráfico
+  &quot;ggrepel&quot;,                                    # para colocar legendas legais no gráfico
+  &quot;scales&quot;                                      # para formatar valores
+  )
+</code></pre><div style=margin-top:2rem></div><h3 id=2-definir-parâmetros>2. Definir parâmetros</h3><p>O próximo passo é termos definido quais os dados que queremos obter, pois ao utilizar as API&rsquo;s precisamos apontar esses parâmetros para filtrar os dados que serão recebidos. A forma de definir isso varia conforme a API e/ou pacote utilizado, mas em geral é bastante simples, conforme a seguir.</p><pre><code># Parâmetros da API de dados do IPEADATA
+api_ipea = c(
+  swap          = &quot;BMF12_SWAPDI36012&quot;,    # Taxa do swap DI-Pré 360 dias (média)
+  ipca_prox_12m = &quot;BM12_IPCAEXP1212&quot;      # Expectativa média do IPCA, tx. acum. p/ os próx. 12 meses
+  )
+
+# Parâmetros da API de dados do BCB
+api_bcb = c(selic = 4189)            # SELIC acumulada dos últimos 12 meses
+
+# Parâmetros da API de dados do Sidra/IBGE
+api_ibge = &quot;/t/1737/n1/all/v/2265/p/all/d/v2265%202&quot; # IPCA acumulado em 12 meses
+</code></pre><div style=margin-top:2rem></div><h3 id=3-coletar-e-tratar-dados>3. Coletar e tratar dados</h3><p>Agora iremos utilizar os parâmetros para obter os dados das fontes indicadas. Além disso, fazemos pequenas tratativas dos dados para ficarem no formato desejado. São usadas três principais funções nessa etapa:</p><ol><li><code>ipeadatar::ipeadata()</code> para baixar dados do IPEADATA</li><li><code>GetBCBData::gbcbd_get_series()</code> para baixar dados do BCB</li><li><code>sidrar::get_sidra()</code> para baixar dados do IBGE</li></ol><p>Para entender detalhes destas funções recomendo fortemente consultar as respectivas documentações.</p><pre><code># Coletar dados do IPEADATA
+dados_ipea &lt;- ipeadata(code = api_ipea) %&gt;%
+  select(-c(uname, tcode)) %&gt;% 
+  pivot_wider(
+    id_cols     = &quot;date&quot;,
+    names_from  = &quot;code&quot;,
+    values_from = &quot;value&quot;
+    ) %&gt;%
+  rename(
+    &quot;swap&quot;          = 2,
+    &quot;ipca_prox_12m&quot; = 3,
+    data            = date
+    ) %&gt;% 
+  drop_na()
+
+# Coletar dados do BCB
+dados_bcb &lt;- gbcbd_get_series(
+    id         = api_bcb,
+    first.date = min(dados_ipea$data)
+    ) %&gt;%
+  select(
+    data  = ref.date,
+    selic = value
+    )
+
+# Coletar dados do Sidra/IBGE
+dados_ibge &lt;- get_sidra(api = api_ibge) %&gt;%
+  select(
+    data          = &quot;Mês (Código)&quot;,
+    ipca_acum_12m = &quot;Valor&quot;
+    ) %&gt;%
+  mutate(
+    data = paste0(data, &quot;01&quot;) %&gt;% as.Date(format = &quot;%Y%m%d&quot;)
+    ) %&gt;%
+  drop_na()
+</code></pre><div style=margin-top:2rem></div><h3 id=4-calcular-o-juros-real>4. Calcular o juros real</h3><p>Com os dados em mãos, podemos aplicar a equação de Fisher. O resultado final será um objeto &ldquo;tibble/data.frame&rdquo; com uma coluna de data, outra de valor da taxa de juros real e outra identificando se o valor é pelo conceito ex-ante ou ex-post.</p><pre><code># Cálculo
+juros_real &lt;- bind_rows(
+  
+  # Ex-ante
+  dados_ipea %&gt;%
+    mutate(
+      valor = (((1+(swap/100))/(1+(ipca_prox_12m/100)))-1)*100,  # Equação de Fisher
+      id    = &quot;Ex-ante&quot;
+      ) %&gt;% 
+    select(data, valor, id),
+  
+  # Ex-post
+  dados_ibge %&gt;%
+    inner_join(
+      dados_bcb, 
+      by = &quot;data&quot;
+      ) %&gt;%
+    mutate(
+      valor = (((1+(selic/100))/(1+(ipca_acum_12m/100)))-1)*100,  # Equação de Fisher
+      id    = &quot;Ex-post&quot;) %&gt;% 
+    select(data, valor, id)
+    
+  )
+</code></pre><div style=margin-top:2rem></div><h3 id=5-criar-um-gráfico>5. Criar um gráfico</h3><p>Por fim vamos gerar um gráfico que mostra a tendência das duas séries. Eu gosto muito do pacote {ggplot2}, dá pra criar gráficos muito bonitos e com muita flexibilidade. O código fica um pouco &ldquo;extensivo&rdquo;, mas o resultado vale a pena!</p><pre><code># Gerar gráfico
+juros_real %&gt;%
+  ggplot(aes(x = data, y = valor, colour = id)) +
+  geom_hline(yintercept = 0, size = .8, color = &quot;gray50&quot;) +
+  geom_line(size = 1.8) + 
+  geom_label_repel(
+    data        = subset(juros_real, data == max(data)),
+    aes(label   = paste(scales::comma(valor, decimal.mark = &quot;,&quot;, accuracy = 0.01))),
+    show.legend = FALSE,
+    nudge_x     = 50,
+    nudge_y     = 7,
+    force       = 10,
+    size        = 5,
+    fontface = &quot;bold&quot;
+    ) +
+  labs(
+    title    = &quot;Taxa de juros real - Brasil&quot;,
+    subtitle = paste0(&quot;Taxa mensal (em % a.a.), dados até &quot;, format(tail(juros_real$data, 1), &quot;%b/%Y&quot;)),
+    x        = &quot;&quot;,
+    y        = NULL,
+    caption  = &quot;Fonte: B3, BCB e IBGE&quot;
+    ) +
+  scale_color_manual(values = c(&quot;#233f91&quot;, &quot;red4&quot;)) +
+  scale_x_date(breaks = &quot;2 years&quot;, date_labels = &quot;%Y&quot;) +
+  scale_y_continuous(labels = scales::label_percent(scale = 1, accuracy = 1)) +
+  theme_minimal() +
+  theme(
+    plot.title         = element_text(color = &quot;#233f91&quot;, size = 26, face = &quot;bold&quot;),
+    plot.subtitle      = element_text(face = &quot;bold&quot;, colour = &quot;gray20&quot;, size = 16),
+    plot.background    = element_rect(fill = &quot;#eef1f7&quot;, colour = &quot;#eef1f7&quot;),
+    plot.caption       = element_text(size = 10, face = &quot;bold&quot;, colour = &quot;gray20&quot;),
+    legend.background  = element_blank(),
+    legend.position    = c(0.9, 0.72),
+    legend.title       = element_blank(),
+    legend.text        = element_text(face = &quot;bold&quot;, colour = &quot;gray20&quot;, size = 16),
+    panel.background   = element_rect(fill = &quot;#eef1f7&quot;, colour = &quot;#eef1f7&quot;),
+    panel.grid         = element_line(colour = &quot;gray85&quot;),
+    panel.grid.minor.x = element_blank(),
+    axis.text          = element_text(size = 13, face = &quot;bold&quot;)
+    )
+</code></pre><p><div style=margin-top:2rem></div>Voilà! Eis o gráfico mostrado acima com os resultados do cálculo de juros real pelos conceitos ex-ante e ex-post. Espero que esse conteúdo tenha sido útil ou interessante para você. Até mais!</p><div style=margin-top:2rem></div><script type=text/javascript src=https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js data-name=bmc-button data-slug=schoulten data-color=#40DCA5 data-emoji data-font=Cookie data-text="Buy me a coffee" data-outline-color=#000000 data-font-color=#ffffff data-coffee-color=#FFDD00></script></div><div class=btn-improve-page><a href=https://github.com/schoulten/schoulten.github.io/edit/master/content/posts/macroeconomia/juro-real/index.md><i class="fas fa-code-branch"></i>Improve this page</a></div><hr><div class="row next-prev-navigator"><div class="col-md-12 next-article"><a href=/posts/financas-publicas/igfm/ class="btn btn-outline-info"><span>Next <i class="fas fa-chevron-circle-right"></i></span><br><span>O que os cofres municipais revelam sobre a gestão fiscal das prefeituras?</span></a></div></div><hr></div></div></div></section><section class=toc-section id=toc-section><div class=toc-holder><h5 class="text-center pl-3">Table of Contents</h5><hr><div class=toc><nav id=TableOfContents><ul><li><ul><li><a href=#1-pacotes>1. Pacotes</a></li><li><a href=#2-definir-parâmetros>2. Definir parâmetros</a></li><li><a href=#3-coletar-e-tratar-dados>3. Coletar e tratar dados</a></li><li><a href=#4-calcular-o-juros-real>4. Calcular o juros real</a></li><li><a href=#5-criar-um-gráfico>5. Criar um gráfico</a></li></ul></li></ul></nav></div></div></section></div><footer class="container-fluid text-center align-content-center footer pb-2"><div class="container pt-5"><div class="row text-left"><div class="col-md-4 col-sm-12"><h5>Navigation</h5><ul><li class=nav-item><a class=smooth-scroll href=#about>Sobre</a></li><li class=nav-item><a class=smooth-scroll href=#skills>Habilidades</a></li><li class=nav-item><a class=smooth-scroll href=#experiences>Experiências</a></li><li class=nav-item><a class=smooth-scroll href=#education>Educação</a></li><li class=nav-item><a class=smooth-scroll href=#projects>Projetos</a></li><li class=nav-item><a class=smooth-scroll href=#achievements>Conquistas</a></li><li class=nav-item><a class=smooth-scroll href=#recent-posts>Posts recentes</a></li></ul></div><div class="col-md-4 col-sm-12"><h5>Contact me:</h5><ul><li><span>Email:</span> <span>fernando@gecefurg.com.br</span></li><li><span>Phone:</span> <span>+5548988600321</span></li></ul></div><div class="col-md-4 col-sm-12"><p>Stay up to date with email notification</p><form><div class=form-group><input type=email class=form-control id=exampleInputEmail1 aria-describedby=emailHelp placeholder="Enter email">
+<small id=emailHelp class="form-text text-muted">We'll never share your email with anyone else.</small></div><button type=submit class="btn btn-info">Submit</button></form></div></div></div><hr><div class=container><div class="row text-left"><div class=col-md-4><a id=theme href=https://github.com/hossainemruz/toha target=#><img src=/images/theme-logo_hu8376fd15465fef26ffe66b6bcf0ca686_13669_32x0_resize_box_2.png>
+Toha</a></div><div class="col-md-4 text-center">© 2021 Copyright.</div><div class="col-md-4 text-right"><a id=hugo href=https://gohugo.io/>Powered by
+<img src=/images/hugo-logo.svg alt="Hugo Logo" height=18></a></div></div></div></footer><script src=/js/jquery-3.4.1.min.js></script><script src=/js/popper.min.js></script><script src=/js/bootstrap.min.js></script><script src=/js/navbar.js></script><script src=/js/main.js></script><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js></script><script src=/js/single.js></script><script>hljs.initHighlightingOnLoad();</script></body></html>
