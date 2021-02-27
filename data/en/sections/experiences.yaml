@@ -1,6 +1,6 @@
 # section information
 section:
-  name: Experiences
+  name: Experiências
   id: experiences
   enable: true
   weight: 3
@@ -11,54 +11,49 @@ section:
 # Your experiences
 experiences:
 - company:
-    name: Example Co.
-    url: "https://www.example.com"
-    location: Dhaka Branch
-    # company overview
-    overview: Example Co. is a widely recognized company for cloud-native development. It builds tools for Kubernetes.
+    name: Grupo de Estudos de Conjuntura Econômica (GECE/FURG)
+    url: "https://gecefurg.com.br/"
+    location: Rio Grande/RS
+    overview: O GECE é um grupo de conjuntura focado do em produzir análises econômicas nas áreas de macroeconomia e economia ambiental.
   positions:
-  - designation: Senior Software Engineer
-    start: Nov 2019
+  - designation: Fundador / Analista Macroeconômico
+    start: Setembro de 2017
+    end: Dezembro de 2020
+    responsibilities:
+    - Liderança das atividades de gestão, análise de dados e geração de informação;
+    - Publicação e apresentação trimestral de boletins de conjuntura, cobrindo política monetária;
+    - Criação e automatização de relatórios e painéis de dados econômicos utilizando a linguagem R.
+
+
+- company:
+    name: Banco Banrisul
+    url: "http://banrisul.com.br/"
+    location: Rio Grande/RS
+    # company overview
+    overview: O Banco do Estado do Rio Grande do Sul S.A. é um banco gaúcho, com foco de negócios na Região Sul do Brasil.
+  positions:
+  - designation: Estagiário
+    start: Janeiro de 2018
+    end: Dezembro de 2019
     # don't provide end date if you are currently working there. It will be replaced by "Present"
     # end: Dec 2020
     # give some points about what was your responsibilities at the company.
     responsibilities:
-    - Design and develop XYZ tool for ABC task
-    - Design, develop and manage disaster recovery tool [Xtool](https://www.example.com) that backup Kubernetes volumes, databases, and cluster's resource definition.
-    - Lead backend team.
+    - Análise de risco e concessão de crédito para carteira PJ;
+    - Assessoria para investimentos e aplicações de renda fixa;
+    - Relacionamento com clientes e comercialização de produtos bancários.
 
-  - designation: Junior Software Engineer
-    start: Nov 2017
-    end: Oct 2019
-    responsibilities:
-    - Implement and test xyz feature for abc tool.
-    - Support client for abc tool.
-    - Learn k,d,w technology for xyz.
 
 - company:
-    name: PreExample Co.
-    url: "https://www.preexample.com"
-    location: Nowhere
-    overview: PreExample Co. is a gateway company to enter into Example co. So, nothing special here.
+    name: Fundação de Amparo à Pesquisa do Estado do Rio Grande do Sul (FAPERGS)
+    url: "https://fapergs.rs.gov.br/"
+    location: Rio Grande/RS
+    overview: A FAPERGS tem a finalidade de fomentar a pesquisa acadêmica em todas as áreas do conhecimento.
   positions:
-  - designation: Software Engineer
-    start: March 2016
-    end: May 2017
+  - designation: Bolsista PROBIC
+    start: Junho de 2018
+    end: Junho de 2019
     responsibilities:
-    - Write lots of example codes.
-    - Read lots of examples.
-    - See lots of example videos.
-
-- company:
-    name: Intern Counting Company (ICC).
-    url: "https://www.intern.com"
-    location: Intern Land
-    overview: Intern counting Company (ICC) is responsible for counting worldwide intern Engineers.
-  positions:
-  - designation: Intern
-    start: Jun 2015
-    end: Jan 2016
-    responsibilities:
-    - Count lost of interns.
-    - Count more interns.
-    - Count me as an intern.
+    - Pesquisa sobre a relação da balneabilidade com os investimentos em saneamento público;
+    - Criação de banco de dados em painel, análise estatística e econométrica utilizando STATA;
+    - Produção de relatório e apresentação em congresso científico, obtendo prêmio destaque.

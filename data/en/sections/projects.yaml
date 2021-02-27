@@ -1,6 +1,6 @@
 # section information
 section:
-  name: Projects
+  name: Projetos
   id: projects
   enable: true
   weight: 5
@@ -10,55 +10,59 @@ section:
 
 # filter buttons
 buttons:
-- name: All
+- name: Todos
   filter: "all"
-- name: Professional
+- name: Profissional
   filter: "professional"
-- name: Academic
+- name: Acadêmico
   filter: "academic"
 - name: Hobby
   filter: "hobby"
 
 # your projects
 projects:
-- name: Kubernetes
-  logo: /images/sections/projects/kubernetes.png
-  role: Contributor
-  timeline: "March 2018 - Present"
-  repo: https://github.com/kubernetes/kubernetes # If your project is a public repo on GitHub, then provide this link. it will show star count.
-  #url: ""  # If your project is not a public repo but it has a website or any external details url then provide it here. don't provide "repo" and "url" simultaneously.
-  summary: Production-Grade Container Scheduling and Management.
-  tags: ["professional", "kubernetes", "cloud"]
+- name: Painel Macro
+  logo: /images/sections/projects/painel-macro.png
+  role: Desenvolvedor
+  timeline: "Mar/2020 - Dez/2020"
+  #repo: https://github.com/kubernetes/kubernetes # If your project is a public repo on GitHub, then provide this link. it will show star count.
+  url: "https://painel.gecefurg.com.br/"  # If your project is not a public repo but it has a website or any external details url then provide it here. don't provide "repo" and "url" simultaneously.
+  summary: Dashboard de indicadores macroeconômicos desenvolvido em R.
+  tags: ["academic", "R", "dashboard"]
 
-- name: Tensorflow
-  logo: /images/sections/projects/tensorflow.png
-  role: Developer
-  timeline: "Jun 2018 - Present"
-  repo: https://github.com/tensorflow/tensorflow
-  #url: ""
-  summary: An Open Source Machine Learning Framework for Everyone.
-  tags: ["professional", "machine-learning","academic"]
+- name: Boletim de Conjuntura
+  logo: /images/sections/projects/boletim.png
+  role: Analista Macroeconômico
+  timeline: "Set/2017 - Dez/2020"
+  #repo: https://gecefurg.com.br/boletins/boletim-macro/
+  url: "https://gecefurg.com.br/boletins/boletim-macro/"
+  summary: Relatório trimestral de análise de conjuntura econômica.
+  tags: ["academic", "report","macro research"]
 
-- name: A sample academic paper
-  role: Team Lead
-  timeline: "Jan 2017 - Nov 2017"
-  url: "https://www.example.com"
-  summary: Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente eius reprehenderit animi suscipit autem eligendi esse amet aliquid error eum. Accusantium distinctio soluta aliquid quas placeat modi suscipit eligendi nisi.
-  tags: ["academic","iot"]
+- name: Ibovespa Calendar
+  logo: /images/sections/projects/ibov.png
+  role: Criador
+  timeline: "Jan/2021"
+  repo: https://github.com/schoulten/ibov-heatmap-calendar
+  #url: "https://github.com/schoulten/ibov-heatmap-calendar"
+  summary: Um calendário de retornos diários do Ibovespa em forma de mapa de calor.
+  tags: ["hobby","data viz"]
+  
+- name: Gestão Fiscal Municipal (IGFM)
+  logo: /images/sections/projects/igfm.png
+  role: Criador
+  timeline: "Dez/2020"
+  repo: https://github.com/schoulten/indice-igfm
+  #url: "https://github.com/schoulten/indice-igfm"
+  summary: Indicador da capacidade dos municípios brasileiros se sustentarem, adaptado da metodologia da Firjan.
+  tags: ["professional", "R", "macro research"]
+  
+- name: Cálculo da Taxa de Juros Real
+  logo: /images/sections/projects/juros.png
+  role: Criador
+  timeline: "Jan/2021"
+  repo: https://github.com/schoulten/juro-real
+  #url: "https://github.com/schoulten/juro-real"
+  summary: Um script em R para calcular a taxa de juros real da economia brasileira e gerar um gráfico.
+  tags: ["professional", "R", "macro research"]
 
-- name: Nocode
-  logo: /images/sections/projects/no-code.png
-  role: Nothing
-  timeline: "Oct 2019 - Dec 2019"
-  repo: https://github.com/kelseyhightower/nocode
-  #url: ""
-  summary: The best way to write secure and reliable applications. Write nothing; deploy nowhere.
-  tags: ["hobby", "fun"]
-
-- name: Toha
-  logo: /images/sections/projects/toha.png
-  role: Owner
-  timeline: "Jun 2019 - Present"
-  repo: https://github.com/hossainemruz/toha
-  summary: A Hugo theme for personal portfolio.
-  tags: ["hobby","hugo","theme","professional"]
