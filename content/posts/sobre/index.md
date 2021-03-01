@@ -11,7 +11,7 @@ menu:
 
 Oi! Eu sou o **Fernando** e este é o primeiro post do blog. Indo direto ao ponto, por quê estou criando este blog e o que você encontrará por aqui?
 
-Estou criando o hábito de produzir conteúdo e as vezes eu post algumas coisas no meu [Linkedin](https://www.linkedin.com/in/schoulten/) - sejam textos, gráficos,  análises, etc. - e sempre percebi que faltava um lugar pra deixar tudo junto e organizado. Além disso, lá eu esbarro em problemas como limites de caracteres e formatos de conteúdo que é possível postar. Afinal, é sempre bom poder personalizar nossas coisas né? O blog surgiu justamente para isso, aqui irei centralizar todos os conteúdos que eu produzo.
+Estou criando o hábito de produzir conteúdo e as vezes eu post algumas coisas no meu [Linkedin](https://www.linkedin.com/in/schoulten) - sejam textos, gráficos,  análises, etc. - e sempre percebi que faltava um lugar pra deixar tudo junto e organizado. Além disso, lá eu esbarro em problemas como limites de caracteres e formatos de conteúdo que é possível postar. Afinal, é sempre bom poder personalizar nossas coisas né? O blog surgiu justamente para isso, aqui irei centralizar todos os conteúdos que eu produzo.
 
 ### Que tipo de conteúdo pretendo colocar aqui?
 
