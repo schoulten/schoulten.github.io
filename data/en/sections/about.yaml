@@ -67,8 +67,9 @@ softSkills:
   percentage: 80
   color: sky
 - name: Agilidade
-  percentage: 88
+  percentage: 90
   color: orange
+
 # you can also provide color code instead of pre-defined color name
 # - name: Example 1
 #   percentage: 75
