@@ -21,6 +21,14 @@ buttons:
 
 # your projects
 projects:
+- name: meedr
+  logo: /images/sections/projects/meedr.png
+  role: Desenvolvedor
+  timeline: "Mar/2021"
+  repo: https://github.com/schoulten/meedr
+  summary: Macroeconomic Expectations Data in R using the Central Bank of Brazil API.
+  tags: ["professional", "economics", "R", "api", "data"]
+
 - name: Painel Macro
   logo: /images/sections/projects/painel-macro.png
   role: Desenvolvedor
