@@ -41,7 +41,7 @@ O que é necessário agora é obter esses dados e aplicar a equação de Fisher.
 
 Primeiro temos que carregar os pacotes necessários. Usando o {pacman} já pulamos uma etapa que é verificar se os pacotes estão instalados e depois carregá-los, esse gerenciador de pacotes faz isso automaticamente através da função `p_load()`.
 
-```
+```r
 # Carregar/instalar pacotes
 if(!require(pacman)) install.packages("pacman") # gerenciador de pacotes
 pacman::p_load(
@@ -59,7 +59,7 @@ pacman::p_load(
 
 O próximo passo é termos definido quais os dados que queremos obter, pois ao utilizar as API's precisamos apontar esses parâmetros para filtrar os dados que serão recebidos. A forma de definir isso varia conforme a API e/ou pacote utilizado, mas em geral é bastante simples, conforme a seguir.
 
-```
+```r
 # Parâmetros da API de dados do IPEADATA
 api_ipea = c(
   swap          = "BMF12_SWAPDI36012",    # Taxa do swap DI-Pré 360 dias (média)
@@ -84,7 +84,7 @@ Agora iremos utilizar os parâmetros para obter os dados das fontes indicadas. A
 
 Para entender detalhes destas funções recomendo fortemente consultar as respectivas documentações.
 
-```
+```r
 # Coletar dados do IPEADATA
 dados_ipea <- ipeadata(code = api_ipea) %>%
   select(-c(uname, tcode)) %>% 
@@ -127,7 +127,7 @@ dados_ibge <- get_sidra(api = api_ibge) %>%
 
 Com os dados em mãos, podemos aplicar a equação de Fisher. O resultado final será um objeto "tibble/data.frame" com uma coluna de data, outra de valor da taxa de juros real e outra identificando se o valor é pelo conceito ex-ante ou ex-post.
 
-```
+```r
 # Cálculo
 juros_real <- bind_rows(
   
@@ -158,7 +158,7 @@ juros_real <- bind_rows(
 
 Por fim vamos gerar um gráfico que mostra a tendência das duas séries. Eu gosto muito do pacote {ggplot2}, dá pra criar gráficos muito bonitos e com muita flexibilidade. O código fica um pouco "extensivo", mas o resultado vale a pena!
 
-```
+```r
 # Gerar gráfico
 juros_real %>%
   ggplot(aes(x = data, y = valor, colour = id)) +
