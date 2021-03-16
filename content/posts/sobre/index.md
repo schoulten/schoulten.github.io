@@ -6,7 +6,7 @@ menu:
   sidebar:
     name: Sobre o Blog
     identifier: sobre
-    weight: 10
+    weight: 30
 ---
 
 Oi! Eu sou o **Fernando** e este é o primeiro post do blog. Indo direto ao ponto, por quê estou criando este blog e o que você encontrará por aqui?
