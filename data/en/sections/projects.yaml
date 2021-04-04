@@ -38,15 +38,6 @@ projects:
   summary: Dashboard de indicadores macroeconômicos desenvolvido em R.
   tags: ["academic", "R", "dashboard"]
 
-- name: Boletim de Conjuntura
-  logo: /images/sections/projects/boletim.png
-  role: Analista Macroeconômico
-  timeline: "Set/2017 - Dez/2020"
-  #repo: https://gecefurg.com.br/boletins/boletim-macro/
-  url: "https://gecefurg.com.br/boletins/boletim-macro/"
-  summary: Relatório trimestral de análise de conjuntura econômica.
-  tags: ["academic", "report","macro research"]
-
 - name: Ibovespa Calendar
   logo: /images/sections/projects/ibov.png
   role: Criador
@@ -55,6 +46,15 @@ projects:
   #url: "https://github.com/schoulten/ibov-heatmap-calendar"
   summary: Um calendário de retornos diários do Ibovespa em forma de mapa de calor.
   tags: ["hobby","data viz", "finance"]
+
+- name: Boletim de Conjuntura
+  logo: /images/sections/projects/boletim.png
+  role: Analista Macroeconômico
+  timeline: "Set/2017 - Dez/2020"
+  #repo: https://gecefurg.com.br/boletins/boletim-macro/
+  url: "https://gecefurg.com.br/boletins/boletim-macro/"
+  summary: Relatório trimestral de análise de conjuntura econômica.
+  tags: ["academic", "report","macro research"]
 
 - name: Gestão Fiscal Municipal (IGFM)
   logo: /images/sections/projects/igfm.png

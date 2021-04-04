@@ -60,8 +60,8 @@ softSkills:
 - name: Atitude de dono
   percentage: 95
   color: pink
-- name: Colaboração
-  percentage: 80
+- name: Curiosidade
+  percentage: 95
   color: green
 - name: Flexibilidade
   percentage: 80
