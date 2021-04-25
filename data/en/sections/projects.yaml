@@ -21,31 +21,32 @@ buttons:
 
 # your projects
 projects:
+
+- name: IPCA Forecasting Dashboard
+  logo: /images/sections/projects/ipcaforecasting.png
+  role: Criador
+  timeline: "Abril/2021"
+  #repo: https://github.com/schoulten/ipcaforecasting
+  url: "https://fortietwo.com/ipcaforecasting/"
+  summary: Modelo automatizado de previsão da inflação brasileira medida pelo IPCA.
+  tags: ["professional","economics", "R", "forecasting"]
+
 - name: meedr
   logo: /images/sections/projects/meedr.png
   role: Desenvolvedor
   timeline: "Mar/2021"
   repo: https://github.com/schoulten/meedr
-  summary: Macroeconomic Expectations Data in R using the Central Bank of Brazil API.
+  summary: Pacote no R para acesso aos dados de expectativas macroeconômicas do BCB.
   tags: ["professional", "economics", "R", "api", "data"]
 
 - name: Macro View
   logo: /images/sections/projects/macroview.png
   role: Desenvolvedor
   timeline: "Mar/2020"
-  repo: https://github.com/schoulten/macroview # If your project is a public repo on GitHub, then provide this link. it will show star count.
-  #url: "https://fortietwo.com/macroview/"  # If your project is not a public repo but it has a website or any external details url then provide it here. don't provide "repo" and "url" simultaneously.
+  #repo: https://github.com/schoulten/macroview
+  url: "https://fortietwo.com/macroview/"
   summary: Dashboard de indicadores macroeconômicos desenvolvido em R.
   tags: ["academic", "R", "dashboard"]
-
-- name: Ibovespa Calendar
-  logo: /images/sections/projects/ibov.png
-  role: Criador
-  timeline: "Jan/2021"
-  repo: https://github.com/schoulten/ibov-heatmap-calendar
-  #url: "https://github.com/schoulten/ibov-heatmap-calendar"
-  summary: Um calendário de retornos diários do Ibovespa em forma de mapa de calor.
-  tags: ["hobby","data viz", "finance"]
 
 - name: Boletim de Conjuntura
   logo: /images/sections/projects/boletim.png
