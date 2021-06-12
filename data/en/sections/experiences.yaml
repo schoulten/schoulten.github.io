@@ -6,10 +6,25 @@ section:
   weight: 3
   showOnNavbar: true
   # Can optionally hide the title in sections
-  # hideTitle: true 
+  # hideTitle: true
 
 # Your experiences
 experiences:
+- company:
+    name: Análise Macro
+    url: "https://analisemacro.com.br/"
+    location: Home office
+    overview: Treinamento e consultoria (e paixão) em análise de dados.
+  positions:
+  - designation: Economista
+    start: Maio de 2021
+    end: atualmente
+    responsibilities:
+    - Análise, modelagem e previsão de variáveis econômicas, utilizando a linguagem R;
+    - Análise de conjuntura econômica, produção de relatórios, dashboards e apresentação trimestral;
+    - Aulas e tutoriais de cursos de teoria macroeconômica, gestão de portfolios, modelagem e previsão e linguagem R.
+
+
 - company:
     name: Grupo de Estudos de Conjuntura Econômica (GECE/FURG)
     url: "https://gecefurg.com.br/"
