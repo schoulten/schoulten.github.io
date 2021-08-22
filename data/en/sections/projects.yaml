@@ -57,6 +57,15 @@ projects:
   summary: Relatório trimestral de análise de conjuntura econômica.
   tags: ["academic", "report","macro research"]
 
+- name: Modelos de previsão macro
+  logo: /images/sections/projects/analisemacro.png
+  role: Contribuidor
+  timeline: "Maio/2021"
+  #repo: https://github.com/schoulten/ipcaforecasting
+  url: "https://linktr.ee/schoulten"
+  summary: Modelo preditivos (MLOps) da Análise Macro para variáveis macroeconômicas brasileiras.
+  tags: ["professional","economics", "R", "forecasting"]
+
 - name: Gestão Fiscal Municipal (IGFM)
   logo: /images/sections/projects/igfm.png
   role: Criador

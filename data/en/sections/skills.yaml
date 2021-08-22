@@ -15,16 +15,16 @@ skills:
   logo: /images/sections/skills/r.png
   summary: "Análise e visualização de dados; automatização de relatórios e dashboards; modelagem estatística e econométrica."
   url: "https://www.r-project.org/"
-  
-- name: R Markdown
-  logo: /images/sections/skills/rmarkdown.png
-  summary: "Criação de relatórios, apresentações e dashboards com reprodutibilidade e formatação precisa."  
-  url: "https://rmarkdown.rstudio.com/"
 
 - name: Git
   logo: /images/sections/skills/git.png
   summary: "Experiência com desenvolvimento baseado em git e GitHub para controle de versão."
   url: "https://git-scm.com/"
+
+- name: R Markdown
+  logo: /images/sections/skills/rmarkdown.png
+  summary: "Criação de relatórios, apresentações e dashboards com reprodutibilidade e formatação precisa."
+  url: "https://rmarkdown.rstudio.com/"
 
 - name: Stata
   logo: /images/sections/skills/stata.png
