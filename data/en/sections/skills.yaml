@@ -26,6 +26,11 @@ skills:
   summary: "Criação de relatórios, apresentações e dashboards com reprodutibilidade e formatação precisa."
   url: "https://rmarkdown.rstudio.com/"
 
+- name: EViews
+  logo: /images/sections/skills/eviews.jpg
+  summary: "Modelagem econométrica de séries temporais e modelos macroeconômicos semiestruturais."
+  url: "https://www.eviews.com/"
+
 - name: Stata
   logo: /images/sections/skills/stata.png
   summary: "Modelagem estatística e econométrica usando dados em painel e cross-section."

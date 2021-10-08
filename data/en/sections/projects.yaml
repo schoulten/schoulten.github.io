@@ -28,17 +28,17 @@ projects:
   timeline: "Maio/2021"
   #repo: https://github.com/schoulten/ipcaforecasting
   url: "https://linktr.ee/schoulten"
-  summary: Modelo preditivos (MLOps) da Análise Macro para variáveis macroeconômicas brasileiras.
+  summary: Modelo preditivos (MLOps) desenvolvido na Análise Macro para variáveis macroeconômicas brasileiras.
   tags: ["professional","economics", "R", "forecasting"]
 
-- name: IPCA Forecasting Dashboard
-  logo: /images/sections/projects/ipcaforecasting.png
-  role: Criador
-  timeline: "Abril/2021"
-  #repo: https://github.com/schoulten/ipcaforecasting
-  url: "https://fortietwo.com/ipcaforecasting/"
-  summary: Modelo automatizado de previsão da inflação brasileira medida pelo IPCA.
-  tags: ["professional","economics", "R", "forecasting"]
+# - name: IPCA Forecasting Dashboard
+#   logo: /images/sections/projects/ipcaforecasting.png
+#   role: Criador
+#   timeline: "Abril/2021"
+#   #repo: https://github.com/schoulten/ipcaforecasting
+#   url: "https://fortietwo.com/ipcaforecasting/"
+#   summary: Modelo automatizado de previsão da inflação brasileira medida pelo IPCA.
+#   tags: ["professional","economics", "R", "forecasting"]
 
 - name: meedr
   logo: /images/sections/projects/meedr.png

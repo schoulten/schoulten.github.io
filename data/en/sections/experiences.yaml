@@ -16,13 +16,13 @@ experiences:
     location: Home office
     overview: Treinamento e consultoria (e paixão) em análise de dados.
   positions:
-  - designation: Cientista de Dados
+  - designation: Data Scientist
     start: Maio de 2021
     end: atualmente
     responsibilities:
-    - Análise, modelagem e previsão de variáveis econômicas, utilizando a linguagem R;
-    - Análise de conjuntura econômica, produção de relatórios e dashboards;
-    - Aulas e tutoriais de cursos de teoria macroeconômica, gestão de portfolios, política monetária, modelagem e previsão e linguagem R.
+    - Análise, modelagem e previsão de variáveis macroeconômicas, utilizando a linguagem R;
+    - Análise de conjuntura econômica, produção de relatórios, posts e dashboards;
+    - Aulas e tutoriais para cursos de macroeconometria, gestão de portfolios, política monetária, conjuntura, modelagem e previsão.
 
 
 - company:
@@ -35,9 +35,9 @@ experiences:
     start: Setembro de 2017
     end: Dezembro de 2020
     responsibilities:
-    - Liderança das atividades de gestão, análise de dados e geração de informação;
-    - Publicação e apresentação trimestral de boletins de conjuntura, cobrindo política monetária;
-    - Criação e automatização de relatórios e painéis de dados econômicos utilizando a linguagem R.
+    - Fundação do grupo, liderando atividades de gestão, análise de dados econômicos e criação de conteúdo;
+    - Publicação e apresentação trimestral de relatórios de conjuntura econômica, cobrindo política monetária;
+    - Criação e automatização de relatórios e dashboards de dados econômicos utilizando a linguagem R..
 
 
 - company:
