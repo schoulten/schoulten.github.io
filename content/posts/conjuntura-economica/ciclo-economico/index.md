@@ -213,7 +213,7 @@ ggplot2::ggplot() +
     )
 ```
 
-<img src="cycle_files/figure-gfm/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" />
+![](img/harding_pagan.png)
 
 # Comparação com cronologia do CODACE/FGV
 
