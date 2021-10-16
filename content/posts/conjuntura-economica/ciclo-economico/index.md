@@ -33,7 +33,7 @@ O método é bastante simples e poderoso, conseguindo praticamente
 replicar a cronologia de recessões desenvolvidas pelas instituições
 mencionadas acima.
 
-# Pacotes
+### Pacotes
 
 Para aplicar o algoritmo utilizaremos o pacote `BCDating` na linguagem
 R, criado por Majid Einian (Central Bank of Islamic Republic of Iran) e
@@ -58,7 +58,7 @@ library(tidyr)       # CRAN v1.1.3
 library(flextable)   # CRAN v0.6.1
 ```
 
-# Dados
+### Dados
 
 Neste exercício utilizaremos a série do PIB a preços de mercado (série
 encadeada do índice de volume trimestral com ajuste sazonal, média de
@@ -92,7 +92,7 @@ pib
     ## 10 1998-04-01 107. 
     ## # ... with 92 more rows
 
-# Algoritmo de Harding & Pagan (2002)
+### Algoritmo de Harding & Pagan (2002)
 
 Para aplicar o algoritmo e obter as datações de ciclo de negócios,
 primeiro transformamos o objeto pro formato de série temporal e, em
@@ -115,7 +115,7 @@ class(bc_dates)
     ## attr(,"package")
     ## [1] "BCDating"
 
-# Resultados
+### Resultados
 
 Como pode ser visto abaixo, o objeto retornado traz como resultado as
 datas (trimestres) de picos e vales, assim como a duração do ciclo.
@@ -215,7 +215,7 @@ ggplot2::ggplot() +
 
 ![](img/harding_pagan.png)
 
-# Comparação com cronologia do CODACE/FGV
+### Comparação com cronologia do CODACE/FGV
 
 Por fim, vamos comparar os resultados aqui encontrados com a Cronologia
 de Ciclos de Negócios Brasileiros elaborada pelo Comitê de Datação de

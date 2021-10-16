@@ -34,9 +34,6 @@ knitr::opts_chunk$set(
 # ggplot2::theme_set(theme_am())
 ```
 
-\newpage
-
-# Introdução
 
 Ao longo do tempo a economia apresenta o que se chama de ciclos econômicos, ou seja, períodos de expansão e recessão. Mas de que forma podemos saber **em qual ponto do ciclo econômico a economia se encontra**? Como sabemos se a economia está em recessão? Estas são perguntas de grande interesse para acadêmicos e profissionais da área, e neste breve exercício demonstramos como replicar a datação de ciclos econômicos que instituições como [NBER](https://www.nber.org/) (EUA) e [CODACE](https://portalibre.fgv.br/codace) (Brasil) tradicionalmente publicam.
 
@@ -48,7 +45,7 @@ De maneira prática, neste exercício replicamos o algoritmo de Harding & Pagan 
 
 O método é bastante simples e poderoso, conseguindo praticamente replicar a cronologia de recessões desenvolvidas pelas instituições mencionadas acima.
 
-# Pacotes
+### Pacotes
 
 Para aplicar o algoritmo utilizaremos o pacote `BCDating` na linguagem R, criado por Majid Einian (Central Bank of Islamic Republic of Iran) e Franck Arnaud (National Institute of Statistics and Economic Studies, France). Outros pacotes são utilizados para coleta, tratamento e visualização de dados:
 
@@ -71,7 +68,7 @@ library(tidyr)       # CRAN v1.1.3
 library(flextable)   # CRAN v0.6.1
 ```
 
-# Dados
+### Dados
 
 Neste exercício utilizaremos a série do PIB a preços de mercado (série encadeada do índice de volume trimestral com ajuste sazonal, média de 1995 = 100), disponível no SIDRA/IBGE. Para coletar os dados via API pode-se usar o pacote `sidrar`, especificando o código de coleta. Além disso realizamos a preparação dos dados para utilização posterior:
 
@@ -88,7 +85,7 @@ pib <- sidrar::get_sidra(api = "/t/1621/n1/all/v/all/p/all/c11255/90707/d/v584%2
 pib
 ```
 
-# Algoritmo de Harding & Pagan (2002)
+### Algoritmo de Harding & Pagan (2002)
 
 Para aplicar o algoritmo e obter as datações de ciclo de negócios, primeiro transformamos o objeto pro formato de série temporal e, em seguida, utilizamos a função `BBQ()` do pacote `BCDating`. Optamos por deixar com os valores predefinidos os demais argumentos da função, que servem para definir os valores mínimos de duração do ciclo (pico ao pico ou vale ao vale) e da fase do ciclo (pico ao vale ou vale ao pico).
 
@@ -104,7 +101,7 @@ bc_dates <- pib %>%
 class(bc_dates)
 ```
 
-# Resultados
+### Resultados
 
 Como pode ser visto abaixo, o objeto retornado traz como resultado as datas (trimestres) de picos e vales, assim como a duração do ciclo.
 
@@ -185,7 +182,7 @@ ggplot2::ggplot() +
 
 ![](img/harding_pagan.png)
 
-# Comparação com cronologia do CODACE/FGV
+### Comparação com cronologia do CODACE/FGV
 
 Por fim, vamos comparar os resultados aqui encontrados com a Cronologia de Ciclos de Negócios Brasileiros elaborada pelo Comitê de Datação de Ciclos Econômicos (CODACE). A última reunião do comitê foi em 29 de junho de 2020, na qual reportou a seguinte situação do ciclo de negócios:
 
