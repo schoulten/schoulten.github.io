@@ -1,0 +1,183 @@
+---
+title: "Como reverter a primeira diferença de uma série temporal?"
+author: "Fernando da Silva, Cientista de Dados"
+date: "29 de abril de 2022" 
+description: "Transformar uma série temporal para a primeira diferença é relativamente fácil, mas e quando você precisa desfazer a transformação? Neste texto mostro como reveter uma série para o seu nível."
+output: github_document
+html_preview: false
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+# Configurações dos chunks (outputs / saídas)
+knitr::opts_chunk$set(
+  echo       = TRUE,     # não mostrar código
+  eval       = TRUE,     # executar o código
+  fig.cap    = "",       # título do gráfico
+  results    = "markup", # formato de renderização de texto
+  fig.align  = "center", # alinhamento horizontal do gráfico
+  out.width  = "100%",   # redimensionamento do gráfico (aumentar/diminuir em %)
+  warning    = FALSE,    # exibir avisos do console?
+  message    = FALSE,    # exibir mensagens do console?
+  size       = "tiny"    # tamanho da fonte
+  )
+```
+
+`r wikipediapreview::wp_init()`
+
+
+### Introdução
+
+Modelagem de séries temporais frequentemente exige a aplicação de transformações nas variáveis, tal como a bem conhecida [primeira diferença](https://en.wikipedia.org/wiki/Recurrence_relation#first_difference). Formalmente, podemos descrever essa transformação como:
+
+<img src="https://render.githubusercontent.com/render/math?math=%5CDelta y_t = y_t - y_{t - 1}">
+
+Ou seja, dado uma série temporal regularmente espaçada, subtraímos do valor em <img src="https://render.githubusercontent.com/render/math?math=t"> o valor anterior (<img src="https://render.githubusercontent.com/render/math?math=t-1">), obtendo a série dita "na primeira diferença" ou "nas diferenças". Note que a transformação implica na "perda" da primeira observação da série temporal, ou seja, a série na primeira diferença possuirá <img src="https://render.githubusercontent.com/render/math?math=T - 1"> observações
+
+A mudança de nível da série geralmente contorna diversas características "não desejadas" pelo analista como tendência, sazonalidade, etc., mas dificulta a interpretação dos valores - especialmente quando pretende-se comunicá-los para públicos não técnicos. Para este objetivo é de grande utilidade saber como diferenciar uma série temporal e, sobretudo, também como reverter a transformação. 
+
+Para reverter a primeira diferença de uma série utilizamos a soma cumulativa acrescentando a primeira observação da série original (em nível), conforme:
+
+<img src="https://render.githubusercontent.com/render/math?math=y_t = y_0 %2B %5Csum_{i = 1}^t %5CDelta y_i">
+
+Ou seja, no final teremos um vetor com a soma de cada valor em <img src="https://render.githubusercontent.com/render/math?math=t"> com todos os anteriores, valores estes que neste caso podem representar a série na primeira diferença que se deseja reverter.
+
+### Exemplo no R
+
+Para exemplificar, vamos aplicar um exercício simples no `R`, usando dados reais do nosso dia a dia, com o objetivo de:
+
+1. Tomar a primeira de uma série
+2. Reverter a transformação para obter a série original.
+
+Para esse exemplo você precisará dos seguintes pacotes:
+
+```{r}
+library(magrittr)   # CRAN v2.0.1
+library(GetBCBData) # CRAN v0.6
+library(dplyr)      # CRAN v1.0.7
+library(timetk)     # CRAN v2.6.2
+library(tsibble)    # CRAN v1.0.1
+library(tidyr)      # CRAN v1.1.4
+```
+
+Utilizaremos uma série conhecidamente não estacionária: a série mensal da taxa de câmbio (R\$/US\$) nominal. Primeiro, importamos a série diretamente do banco de dados do Banco Central (SGS/BCB) e tratamos os dados para obter um `tibble`:
+
+```{r}
+# Coleta da série temporal do Dólar no SGS/BCB
+dados <- GetBCBData::gbcbd_get_series(
+  id          = 3696, 
+  first.date  = "2000-01-01",
+  use.memoise = FALSE
+  ) %>% 
+  dplyr::select("date" = "ref.date", "value") %>% 
+  dplyr::as_tibble()
+
+# Resultado
+dados
+```
+
+Uma rápida visualização dos dados:
+
+```{r, echo=FALSE, fig.retina=3, out.width="80%"}
+dados %>% 
+  ggplot2::ggplot() +
+  ggplot2::aes(x = date, y = value) +
+  ggplot2::geom_line(color = "#282f6b", size = 1.5) +
+  ggplot2::labs(
+    title   = "<span style = 'color: #282f6b;'>Taxa de câmbio nominal (R\\$/US\\$)</span>",
+    x       = NULL,
+    y       = "R$/US$",
+    caption = "**Dados**: BCB | **Elaboração**: Fernando da Silva"
+    ) +
+  ggplot2::theme_light() +
+  ggplot2::theme(
+    plot.title       = ggtext::element_markdown(size = 20, face = "bold"),
+    plot.caption     = ggtext::element_markdown(size = 12),
+    panel.grid.minor = ggplot2::element_blank(),
+    axis.text        = ggplot2::element_text(size = 14, face = "bold"),
+    axis.title       = ggplot2::element_text(size = 14, face = "bold")
+  )
+```
+
+Para criar a série na primeira diferença usamos a função `tsibble::difference`<sup>1</sup>, com seus argumentos padrão:
+
+```{r}
+dados %<>%
+  dplyr::mutate(value_diff = tsibble::difference(value))
+dados
+```
+
+
+Quando a diferença é aplicada inevitavelmente perdemos uma observação (a primeira), sendo preenchida no objeto como um `NA`. Sendo assim, a reversão dessa série para o seu nível (valores originais) pode ser feita da seguinte forma: devemos substituir o valor `NA` pelo valor original da série correspondente a esse período dos dados e, então, usar a função `cumsum()` para calcular a soma cumulativa.
+
+```{r}
+dados %<>%
+  dplyr::mutate(
+    value_diff   = dplyr::if_else(is.na(value_diff), value, value_diff),
+    value_revert = cumsum(value_diff)
+    )
+dados
+```
+
+Checando se a série revertida corresponde aos valores originais:
+
+```{r}
+identical(dados$value_revert, dados$value)
+```
+
+Os cálculos ocorreram conforme o esperado: a série original da taxa de câmbio importada do BCB é igual à série que aplicamos e revertemos a primeira diferença.
+
+Simples, não?
+
+Por fim, vale comparar visualmente o comportamento da série em nível e na diferença:
+
+```{r, echo=FALSE, fig.retina=3, out.width="80%"}
+colors <- c(
+  blue   = "#282f6b",
+  red    = "#b22200",
+  green  = "#224f20",
+  yellow = "#eace3f",
+  purple = "#5f487c"
+  )
+
+dados %>% 
+  dplyr::mutate(value_diff = dplyr::na_if(value_diff, dplyr::first(value_diff))) %>% 
+  dplyr::select(
+    "date", 
+    "Nível"           = "value",
+    "1ª diferença"    = "value_diff",
+    "Série revertida" = "value_revert"
+    ) %>% 
+  tidyr::pivot_longer(
+    cols     = -"date", 
+    names_to = "variable"
+    ) %>%  
+  dplyr::mutate(variable = forcats::as_factor(variable)) %>% 
+  ggplot2::ggplot() +
+  ggplot2::aes(x = date, y = value, color = variable) +
+  ggplot2::geom_line(size = 1.5) +
+  ggplot2::labs(
+    title   = "<span style = 'color: #282f6b;'>Taxa de câmbio nominal (R\\$/US\\$)</span>",
+    x       = NULL,
+    y       = NULL,
+    caption = "**Dados**: BCB | **Elaboração**: Fernando da Silva"
+    ) +
+  ggplot2::facet_wrap(~variable, scales = "free", nrow = 3) +
+  ggplot2::scale_color_manual(values = unname(colors)) +
+  ggplot2::theme_light() +
+  ggplot2::theme(
+    plot.title       = ggtext::element_markdown(size = 20, face = "bold"),
+    plot.caption     = ggtext::element_markdown(size = 12),
+    panel.grid.minor = ggplot2::element_blank(),
+    axis.text        = ggplot2::element_text(size = 14, face = "bold"),
+    axis.title       = ggplot2::element_text(size = 14, face = "bold"),
+    legend.position  = "none", 
+    strip.background = ggplot2::element_rect(fill = "#3a393b"),
+    strip.text = ggplot2::element_text(size = 14, face = "bold")
+  )
+```
+
+
+
+---
+<sup>1</sup> Para um equivalente em base R veja a documentação de `diff` no R.
