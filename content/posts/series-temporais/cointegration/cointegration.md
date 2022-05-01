@@ -356,4 +356,4 @@ correction*. The American Statistician, 48(1), 37-39.
 ------------------------------------------------------------------------
 
 <sup>1</sup> Para entender mais sobre diferenciação veja [este
-post](https://analisemacro.com.br/data-science/como-reverter-a-primeira-diferenca-de-uma-serie-temporal/).
+post](https://fortietwo.com/posts/series-temporais/diff-revert/).

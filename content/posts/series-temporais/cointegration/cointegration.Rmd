@@ -166,4 +166,4 @@ Murray, M. P. (1994). *A drunk and her dog: an illustration of cointegration and
 
 ---
 
-<sup>1</sup> Para entender mais sobre diferenciação veja [este post](https://analisemacro.com.br/data-science/como-reverter-a-primeira-diferenca-de-uma-serie-temporal/).
+<sup>1</sup> Para entender mais sobre diferenciação veja [este post](https://fortietwo.com/posts/series-temporais/diff-revert/).
