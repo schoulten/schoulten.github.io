@@ -66,15 +66,6 @@ projects:
   summary: Relatório trimestral de análise de conjuntura econômica.
   tags: ["academic", "report","macro research"]
 
-- name: Gestão Fiscal Municipal (IGFM)
-  logo: /images/sections/projects/igfm.png
-  role: Criador
-  timeline: "Dez/2020"
-  repo: https://github.com/schoulten/indice-igfm
-  #url: "https://github.com/schoulten/indice-igfm"
-  summary: Indicador da capacidade dos municípios brasileiros se sustentarem, adaptado da metodologia da Firjan.
-  tags: ["professional", "R", "macro research"]
-
 - name: Cálculo da Taxa de Juros Real
   logo: /images/sections/projects/juros.png
   role: Criador
