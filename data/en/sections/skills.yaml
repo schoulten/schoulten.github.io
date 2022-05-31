@@ -26,15 +26,15 @@ skills:
   summary: "Criação de relatórios, apresentações e dashboards com reprodutibilidade e formatação precisa."
   url: "https://rmarkdown.rstudio.com/"
 
+- name: Python
+  logo: /images/sections/skills/python.svg
+  summary: "Análise e visualização de dados; modelagem estatística e econométrica."
+  url: "https://www.python.org/"
+
 - name: EViews
   logo: /images/sections/skills/eviews.jpg
   summary: "Modelagem econométrica de séries temporais e modelos macroeconômicos semiestruturais."
   url: "https://www.eviews.com/"
-
-- name: Stata
-  logo: /images/sections/skills/stata.png
-  summary: "Modelagem estatística e econométrica usando dados em painel e cross-section."
-  url: "https://www.stata.com/"
 
 - name: Excel
   logo: /images/sections/skills/excel.png
