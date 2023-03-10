@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Fernando da Silva">
+<meta name="dcterms.date" content="2022-04-30">
+<meta name="description" content="Uma analogia sobre cointegração de Engle-Granger e uma aplicação em R">
+<title>Fernando da Silva - O andar do bêbado e seu cachorro: entendendo cointegração no R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles/css/styles.css">
+<meta property="og:title" content="Fernando da Silva - O andar do bêbado e seu cachorro: entendendo cointegração no R">
+<meta property="og:description" content="Uma analogia sobre cointegração de Engle-Granger e uma aplicação em R">
+<meta property="og:image" content="https://fortietwo.com/blog\2022-04-30-entendendo-cointegracao\imgs\random_walk.png">
+<meta property="og:site-name" content="Fernando da Silva">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:width" content="2100">
+</head>
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Fernando da Silva</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cv.html">
+ <span class="menu-text">CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../portfolio.html">
+ <span class="menu-text">Portfolio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/schoulten/"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/schoulten"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:fernando@fortietwo.com"><i class="bi bi-envelope-fill" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+<div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <div class="quarto-title-block"><div><h1 class="title">O andar do bêbado e seu cachorro: entendendo cointegração no R</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+                  <div>
+        <div class="description">
+          Uma analogia sobre cointegração de Engle-Granger e uma aplicação em R
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Time Series</div>
+                <div class="quarto-category">Cointegration</div>
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">Português</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Fernando da Silva </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 30, 2022</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">March 10, 2023</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#a-analogia-do-b%C3%AAbado-e-seu-cachorro" id="toc-a-analogia-do-bêbado-e-seu-cachorro" class="nav-link active" data-scroll-target="#a-analogia-do-b%C3%AAbado-e-seu-cachorro">A analogia do bêbado e seu cachorro</a></li>
+  <li><a href="#cointegra%C3%A7%C3%A3o-no-sentido-de-engle-granger" id="toc-cointegração-no-sentido-de-engle-granger" class="nav-link" data-scroll-target="#cointegra%C3%A7%C3%A3o-no-sentido-de-engle-granger">Cointegração no sentido de Engle-Granger</a></li>
+  <li><a href="#teste-de-cointegra%C3%A7%C3%A3o-de-engle-granger" id="toc-teste-de-cointegração-de-engle-granger" class="nav-link" data-scroll-target="#teste-de-cointegra%C3%A7%C3%A3o-de-engle-granger">Teste de Cointegração de Engle-Granger</a></li>
+  <li><a href="#exemplo-no-r" id="toc-exemplo-no-r" class="nav-link" data-scroll-target="#exemplo-no-r">Exemplo no R</a></li>
+  <li><a href="#refer%C3%AAncias" id="toc-referências" class="nav-link" data-scroll-target="#refer%C3%AAncias">Referências</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content"><p>Muito utilizado no mercado financeiro para estratégias <em>long-short</em>, arbitragem estatística, <em>pairs trading</em> e em análise e previsão de séries temporais macroeconômicas, o conceito de cointegração é ao mesmo tempo fascinante e intimidador de se compreender. Por isso, neste breve texto iremos explicar o que é cointegração com um exemplo intuitivo e fazer um exercício simples aplicando o teste de cointegração de Engle-Granger com pares de ações brasileiras usando o R!</p>
+<section id="a-analogia-do-bêbado-e-seu-cachorro" class="level2"><h2 class="anchored" data-anchor-id="a-analogia-do-bêbado-e-seu-cachorro">A analogia do bêbado e seu cachorro</h2>
+<p>As definições matemáticas de cointegração, e tópicos relacionados, são um tanto quanto sofisticadas, mas o seu conceito é simples o suficiente para ser introduzido com a cômica analogia do andar do bêbado e seu cachorro. Os créditos da analogia são inteiramente de Michael P. Murray que escreveu, em 1994, um <em>paper</em> didático de apenas 3 páginas elucidando o conceito de cointegração com o conto do andar do bêbado.</p>
+<p>Imagine que você esteja andando na rua da sua cidade e aviste um bêbado que acaba de sair do bar, vagando em direção a sua casa. Você percebe que o bêbado caminha de maneira peculiar e imprevisível, algumas vezes se desviando para a esquerda e outras para a direita enquanto tenta, com dificuldades, seguir o seu caminho. Ao observar a trajetória do bêbado pode-se dizer que seus passos são nada mais do que uma sequência aleatória de passos. Na econometria, chamamos a trajetória do bêbado de <strong>passeio aleatório</strong> (<em>random walk</em>), de maneira a descrever o comportamento de muitas das séries econômicas que existem.</p>
+<p>Por andar de forma aleatória, se você desviar o olhar e parar de observar o bêbado andando, será difícil dizer onde o bêbado estará após um determinado tempo, pois sua trajetória é imprevisível. Uma das características das trajetórias do tipo passeio aleatório, como a do bêbado, é de que a melhor previsão sobre um valor futuro é o último valor observado. Dessa forma, o seu palpite sobre a localização atual do bêbado poderia ser algo como o último lugar onde você o avistou, ou seja, na saída do bar.</p>
+<p>Agora imagine que o bêbado tenha um cachorro amigo, sem coleira, que o acompanha. De forma similar ao bêbado, o cachorro também segue uma sequência aleatória de passos, sendo atraído por cada cheiro novo e estímulos que sente no caminho. Sempre que o bêbado percebe que o cachorro foi muito longe ele o chama: “Thor!”. E o cachorro obedece o chamado retornando para perto de seu dono, caracterizando assim uma correção da distância entre ambos.</p>
+<p>Se fossemos representar por meio de um gráfico a trajetória do bêbado e do cachorro ao longo do tempo e em relação a um ponto de referência qualquer (como o bar), seria algo como:</p>
+<p><img src="imgs/random_walk.png" class="img-fluid"></p>
+<p>Observando as trajetórias de ambos, pode-se dizer que mesmo que a localização atual do bêbado após um tempo seja imprevisível, a localização do cachorro é relativamente previsível, pois ele não se afastará muito do seu dono. Dessa forma, agora um bom palpite sobre a localização do bêbado, por exemplo, pode ser dado uma vez que você tenha encontrado o cachorro, e vice-versa, pois conforme seguem dando passos aleatórios também corrigem a distância entre ambos. Na econometria, chamamos isso formalmente de <strong>mecanismo de correção de erros</strong>.</p>
+<p>Note, também, que ambas as trajetórias são o que chamamos de séries temporais não-estacionárias, dado que quanto mais tempo passa é mais provável que o bêbado e seu cachorro estejam vagando bem longe de onde foram vistos por último. Se for verdade que a distância entre eles seja corrigida por um mecanismo de correção de erros, então a distância entre as trajetórias é dita <em>cointegrada de ordem zero</em>.</p>
+<p>Para entender o que a expressão <em>cointegrada de ordem zero</em> significa, vale primeiro entender o que são <em>séries integradas</em>. Séries temporais não-estacionárias que se tornam estacionárias quando diferenciadas <em>n</em> vezes são ditas <em>integradas de ordem n</em> ou, simplesmente, <span class="math inline">\(\text{I}(n)\)</span>. Para duas séries temporais serem cointegradas, cada série precisa ser integrada de mesma ordem, <em>n</em>; por isso o termo <em>cointegração</em>. Sendo assim, um conjunto de séries temporais, todas integradas de ordem <em>n</em>, são ditas cointegradas se e somente se alguma combinação linear das séries é integrada de ordem menor do que <em>n</em>. Tal combinação linear foi chamada de <strong>relação de cointegração</strong>, conforme o trabalho de Engle e Granger (1987).</p>
+</section><section id="cointegração-no-sentido-de-engle-granger" class="level2"><h2 class="anchored" data-anchor-id="cointegração-no-sentido-de-engle-granger">Cointegração no sentido de Engle-Granger</h2>
+<p>De maneira um pouco mais formal, partindo de um modelo de passeio aleatório para as trajetórias do bêbado (<span class="math inline">\(x_t\)</span>) e do cachorro (<span class="math inline">\(y_t\)</span>), temos:</p>
+<p><span class="math display">\[u_t = x_t - x_{t-1}\]</span> <span class="math display">\[w_t = y_t - y_{t-1}\]</span></p>
+<p>onde <span class="math inline">\(u_t\)</span> e <span class="math inline">\(w_t\)</span> representam, respectivamente, o passeio aleatório do bêbado e do cachorro ao longo do tempo <span class="math inline">\(t\)</span> e são ruído branco estacionários. Podemos então modelar a “trajetória cointegrada” do bêbado e do cachorro como:</p>
+<p><span class="math display">\[u_t + c(y_{t-1} - x_{t-1}) = x_t - x_{t-1}\]</span> <span class="math display">\[w_t + d(x_{t-1} - y_{t-1}) = y_t - y_{t-1}\]</span></p>
+<p>onde <span class="math inline">\(u_t\)</span> e <span class="math inline">\(w_t\)</span> são novamente os passeios aleatórios do bêbado e do cachorro e os termos adicionais no lado esquerdo das equações são os <em>termos de correção de erro</em> pelo quais o bêbado e o cachorro corrigem a distância um do outro, ou seja, permanecem próximos. Podemos então dizer que, das equações acima, <span class="math inline">\((y_{t-1} - x_{t-1})\)</span> é uma relação de cointegração entre a trajetória do bêbado e do cachorro. Dessa forma, se estabelece uma relação de equilíbrio de longo prazo entre as trajetórias.</p>
+<p>Note que se os termos de correção de erros forem não-estacionários, então as trajetórias modeladas para o bêbado e o cachorro também seriam não-estacionárias, portanto ambos iriam provavelmente se distanciar bastante ao longo do tempo. Nesse caso, diríamos que as séries temporais das trajetórias do bêbado e do cachorro não são cointegradas de ordem zero. No entanto, Engle e Granger (1987) provaram que se a trajetória do bêbado e do cachorro são ambas integradas de ordem 1 e seguem o descrito nas equações acima, então as trajetórias cointegram.</p>
+<p>A analogia do bêbado e seu cachorro é uma boa forma de entender os conceitos básicos de cointegração e do mecanismo de correção de erro, no entanto, há inúmeros detalhes técnicos que devem ser considerados em aplicações com dados reais. Para se aprofundar mais no tema considere um curso de econometria de séries temporais.</p>
+<p>O conceito de cointegração é bastante utilizado em exercícios de macroeconomia, mas também pode ser usado no mercado financeiro com o objetivo de identificar relações — como a do bêbado e seu cachorro — entre ativos e realizar operações lucrativas com a técnica. Um exemplo disso são as estratégias de <em>pairs trading</em>, onde se realiza operações com pares de ativos que apresentem relação de cointegração de modo a obter lucro com a arbitragem. O grande desafio dessa aplicação é encontrar o par de ativo que apresente essas características.</p>
+</section><section id="teste-de-cointegração-de-engle-granger" class="level2"><h2 class="anchored" data-anchor-id="teste-de-cointegração-de-engle-granger">Teste de Cointegração de Engle-Granger</h2>
+<p>De maneira prática, para verificar se um conjunto de séries temporais <span class="math inline">\(y_t\)</span> e <span class="math inline">\(x_t\)</span> cointegram, é preciso seguir os procedimentos propostos por Engle e Granger (1987):</p>
+<ol type="1">
+<li>Verificar se as séries são estacionárias;</li>
+<li>Estimar a regressão cointegrante das séries: <span class="math inline">\(y_t = \alpha + \beta x_t + \epsilon_t\)</span>;</li>
+<li>Verificar se o resíduo da regressão cointegrante é estacionário usando os valores críticos de Engle e Granger (1987);</li>
+<li>Se o resíduo for estacionário, a regressão cointegrante não é espúria e pode-se estimar um modelo de correção de erros para obter a relação de equilíbrio das séries.</li>
+</ol>
+<p>A seguir mostraremos como aplicar o teste com um par de ações negociadas na B3 e para isso usaremos a linguagem R.</p>
+</section><section id="exemplo-no-r" class="level2"><h2 class="anchored" data-anchor-id="exemplo-no-r">Exemplo no R</h2>
+<p>O exemplo utilizará o par de ações PETR3 e PETR4 no período de 28 de março de 2021 até 28 de março de 2022. Os dados são públicos e podem ser acessados pelo Yahoo Finance, havendo opção de usar pacotes ou web scraping para extrair os dados. O código abaixo faz a extração e tratamento de dados:</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Carregar pacotes</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(httr2)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">library</span>(ggtext)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">library</span>(aTSA)</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co"># Função para importar arquivo CSV do Yahoo Finance como um tibble</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a>read_yfinance <span class="ot">&lt;-</span> <span class="cf">function</span>(url) {</span>
+<span id="cb1-13"><a href="#cb1-13"></a>  pagina <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="at">base_url =</span> url)</span>
+<span id="cb1-14"><a href="#cb1-14"></a>  conteudo <span class="ot">&lt;-</span> pagina <span class="sc">|&gt;</span> httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span> httr2<span class="sc">::</span><span class="fu">resp_body_string</span>()</span>
+<span id="cb1-15"><a href="#cb1-15"></a>  tabela <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> conteudo)</span>
+<span id="cb1-16"><a href="#cb1-16"></a>  <span class="fu">return</span>(tabela)</span>
+<span id="cb1-17"><a href="#cb1-17"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="co"># Coleta de dados online: ações da PETR3 e PETR4</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>dados_petr3 <span class="ot">&lt;-</span> <span class="fu">read_yfinance</span>(</span>
+<span id="cb1-22"><a href="#cb1-22"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb1-23"><a href="#cb1-23"></a>    <span class="st">"https://query1.finance.yahoo.com/v7/finance/download/PETR3.SA?period1="</span>,</span>
+<span id="cb1-24"><a href="#cb1-24"></a>    <span class="st">"1619568000&amp;period2=1651104000&amp;interval=1d&amp;events=history&amp;includeAdjust"</span>,</span>
+<span id="cb1-25"><a href="#cb1-25"></a>    <span class="st">"edClose=true"</span></span>
+<span id="cb1-26"><a href="#cb1-26"></a>    )</span>
+<span id="cb1-27"><a href="#cb1-27"></a>  )</span>
+<span id="cb1-28"><a href="#cb1-28"></a>dados_petr4 <span class="ot">&lt;-</span> <span class="fu">read_yfinance</span>(</span>
+<span id="cb1-29"><a href="#cb1-29"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb1-30"><a href="#cb1-30"></a>    <span class="st">"https://query1.finance.yahoo.com/v7/finance/download/PETR4.SA?period1="</span>,</span>
+<span id="cb1-31"><a href="#cb1-31"></a>    <span class="st">"1619568000&amp;period2=1651104000&amp;interval=1d&amp;events=history&amp;includeAdjust"</span>,</span>
+<span id="cb1-32"><a href="#cb1-32"></a>    <span class="st">"edClose=true"</span></span>
+<span id="cb1-33"><a href="#cb1-33"></a>    )</span>
+<span id="cb1-34"><a href="#cb1-34"></a>  )</span>
+<span id="cb1-35"><a href="#cb1-35"></a></span>
+<span id="cb1-36"><a href="#cb1-36"></a><span class="co"># Cruzamento e tratamento dde dados</span></span>
+<span id="cb1-37"><a href="#cb1-37"></a>dados <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">left_join</span>(</span>
+<span id="cb1-38"><a href="#cb1-38"></a>  <span class="at">x  =</span> dplyr<span class="sc">::</span><span class="fu">select</span>(dados_petr3, <span class="st">"date"</span> <span class="ot">=</span> <span class="st">"Date"</span>, <span class="st">"PETR3"</span> <span class="ot">=</span> <span class="st">"Adj Close"</span>),</span>
+<span id="cb1-39"><a href="#cb1-39"></a>  <span class="at">y  =</span> dplyr<span class="sc">::</span><span class="fu">select</span>(dados_petr4, <span class="st">"date"</span> <span class="ot">=</span> <span class="st">"Date"</span>, <span class="st">"PETR4"</span> <span class="ot">=</span> <span class="st">"Adj Close"</span>),</span>
+<span id="cb1-40"><a href="#cb1-40"></a>  <span class="at">by =</span> <span class="st">"date"</span></span>
+<span id="cb1-41"><a href="#cb1-41"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Antes de partir para o teste vale visualizar as séries temporais:</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Plotar séries</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>dados_long <span class="ot">&lt;-</span> dados <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="st">"date"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(<span class="at">data =</span> dados_long) <span class="sc">+</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>  ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> value, <span class="at">color =</span> name) <span class="sc">+</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"2 months"</span>, <span class="at">date_labels =</span> <span class="st">"%b/%Y"</span>) <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">n.breaks =</span> <span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#282f6b"</span>, <span class="st">"#b22200"</span>)) <span class="sc">+</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb2-12"><a href="#cb2-12"></a>    <span class="at">title   =</span> <span class="st">"Preço de fechamento diário ajustado"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13"></a>    <span class="at">x       =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-14"><a href="#cb2-14"></a>    <span class="at">y       =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-15"><a href="#cb2-15"></a>    <span class="at">color   =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-16"><a href="#cb2-16"></a>    <span class="at">caption =</span> <span class="st">"**Dados**: Yahoo Finance | **Elaboração**: Fernando da Silva"</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a>    ) <span class="sc">+</span> </span>
+<span id="cb2-18"><a href="#cb2-18"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_light</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb2-20"><a href="#cb2-20"></a>    <span class="at">plot.title   =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb2-21"><a href="#cb2-21"></a>    <span class="at">plot.caption =</span> ggtext<span class="sc">::</span><span class="fu">element_textbox_simple</span>(</span>
+<span id="cb2-22"><a href="#cb2-22"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb2-23"><a href="#cb2-23"></a>      ),</span>
+<span id="cb2-24"><a href="#cb2-24"></a>    <span class="at">plot.title.position   =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-25"><a href="#cb2-25"></a>    <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb2-26"><a href="#cb2-26"></a>    <span class="at">legend.text           =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb2-27"><a href="#cb2-27"></a>    <span class="at">legend.position       =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.85</span>),</span>
+<span id="cb2-28"><a href="#cb2-28"></a>    <span class="at">legend.key            =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
+<span id="cb2-29"><a href="#cb2-29"></a>    <span class="at">legend.background     =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>()</span>
+<span id="cb2-30"><a href="#cb2-30"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="2400"></p>
+</div>
+</div>
+<p>As séries parecem apresentar uma trajetória de passeio aleatório, como a do bêbado e seu cachorro, algo comum em séries de ativos financeiros.</p>
+<p>Agora vamos para a primeira etada do teste de cointegração de Engle-Granger, ou seja, verificar se as séries são estacionárias. Podemos fazer isso com o teste ADF através da função <code>adf.test()</code>:</p>
+<div class="grid">
+<div class="g-col-6">
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>aTSA<span class="sc">::</span><span class="fu">adf.test</span>(dados<span class="sc">$</span>PETR3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Augmented Dickey-Fuller Test 
+alternative: stationary 
+ 
+Type 1: no drift no trend 
+     lag  ADF p.value
+[1,]   0 1.41   0.959
+[2,]   1 1.52   0.967
+[3,]   2 1.64   0.975
+[4,]   3 1.61   0.974
+[5,]   4 1.84   0.983
+Type 2: with drift no trend 
+     lag    ADF p.value
+[1,]   0 -0.982   0.703
+[2,]   1 -1.014   0.692
+[3,]   2 -0.969   0.707
+[4,]   3 -1.007   0.694
+[5,]   4 -0.997   0.698
+Type 3: with drift and trend 
+     lag   ADF p.value
+[1,]   0 -2.42   0.401
+[2,]   1 -2.30   0.447
+[3,]   2 -2.15   0.512
+[4,]   3 -2.18   0.501
+[5,]   4 -2.00   0.576
+---- 
+Note: in fact, p.value = 0.01 means p.value &lt;= 0.01 </code></pre>
+</div>
+</div>
+</div>
+<div class="g-col-6">
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>aTSA<span class="sc">::</span><span class="fu">adf.test</span>(dados<span class="sc">$</span>PETR4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Augmented Dickey-Fuller Test 
+alternative: stationary 
+ 
+Type 1: no drift no trend 
+     lag  ADF p.value
+[1,]   0 1.18   0.937
+[2,]   1 1.24   0.945
+[3,]   2 1.29   0.951
+[4,]   3 1.36   0.956
+[5,]   4 1.56   0.970
+Type 2: with drift no trend 
+     lag   ADF p.value
+[1,]   0 -1.17   0.637
+[2,]   1 -1.20   0.627
+[3,]   2 -1.17   0.636
+[4,]   3 -1.18   0.635
+[5,]   4 -1.18   0.634
+Type 3: with drift and trend 
+     lag   ADF p.value
+[1,]   0 -2.68   0.290
+[2,]   1 -2.62   0.315
+[3,]   2 -2.54   0.349
+[4,]   3 -2.46   0.383
+[5,]   4 -2.28   0.456
+---- 
+Note: in fact, p.value = 0.01 means p.value &lt;= 0.01 </code></pre>
+</div>
+</div>
+</div>
+</div>
+<p>Conforme os resultados, falhamos em rejeitar a hipótese nula do teste de a série ter raiz unitária, ou seja, as séries são não-estacionárias nos testes considerados (sem constante com tendência, com constante sem tendência e com constante e tendência).</p>
+<p>Identificado que as séries são integradas de mesma ordem (nesse caso I(1), conforme pode ser confirmado usando a função <code><a href="https://pkg.robjhyndman.com/forecast/reference/ndiffs.html">forecast::ndiffs</a></code>), podemos prosseguir com as etapas 2 e 3 que envolvem estimar a regressão cointegrante e verificar a estacionariedade do resíduo desta regressão. No R, isso tudo pode ser feito com a função <code>coint.test()</code>, que já toma o cuidado de usar os valores críticos corretos para testar os resíduos, conforme MacKinnon (1991).</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Teste de Cointegração de Engle-Granger</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>aTSA<span class="sc">::</span><span class="fu">coint.test</span>(dados<span class="sc">$</span>PETR3, dados<span class="sc">$</span>PETR4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>Response: dados$PETR3 
+Input: dados$PETR4 
+Number of inputs: 1 
+Model: y ~ X + 1 
+------------------------------- 
+Engle-Granger Cointegration Test 
+alternative: cointegrated 
+
+Type 1: no trend 
+    lag      EG p.value 
+   4.00   -4.25    0.01 
+----- 
+ Type 2: linear trend 
+    lag      EG p.value 
+  4.000   0.437   0.100 
+----- 
+ Type 3: quadratic trend 
+    lag      EG p.value 
+  4.000   0.364   0.100 
+----------- 
+Note: p.value = 0.01 means p.value &lt;= 0.01 
+    : p.value = 0.10 means p.value &gt;= 0.10 </code></pre>
+</div>
+</div>
+<p>Note que a função aplica 3 especificações: sem tendência, com tendência e com tendência quadrática. Em outros pacotes estatísticos e econométricos, como no Gretl, considera-se geralmente somente a primeira. Conforme os resultados, pelo p-valor da primeira especificação, sem tendência, temos que o resíduo da regressão cointegrante é estacionário, mas isso não se verifica para outras especificações. Em outras palavras, há evidências de que <strong>as séries PETR3 e PETR4 cointegram</strong>, para a amostra de dados selecionada e com base no teste sobre o resíduo sem tendência (se o resíduo apresentar tendência, outro tipo do teste deve ser considerado).</p>
+</section><section id="referências" class="level2"><h2 class="anchored" data-anchor-id="referências">Referências</h2>
+<p>Abordamos brevemente o conceito de cointegração de séries temporais no sentido de Engle-Granger. Há vários buracos deixados ao longo do texto que precisam de mais espaço e conhecimentos prévios para serem preenchidos. Espero poder abordar outros desses tópicos sobre séries temporais adiante, mas por enquanto aproveite para conferir abaixo os trabalhos citados.</p>
+<p>Engle, R. F., &amp; Granger, C. W. (1987). <em>Co-integration and error correction: representation, estimation, and testing</em>. Econometrica: journal of the Econometric Society, 251-276.</p>
+<p>MacKinnon, J. G. (1991). <em>Critical values for cointegration tests</em>, Ch. 13 in Long-run Economic Relationships: Readings in Cointegration, eds.&nbsp;R. F. Engle and C. W. J. Granger, Oxford, Oxford University Press.</p>
+<p>Murray, M. P. (1994). <em>A drunk and her dog: an illustration of cointegration and error correction</em>. The American Statistician, 48(1), 37-39.</p>
+<details><summary>
+Informações da sessão
+</summary><div style="font-size:14px;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.2.1 (2022-06-23 ucrt)
+ os       Windows 10 x64 (build 19045)
+ system   x86_64, mingw32
+ ui       RTerm
+ language (EN)
+ collate  Portuguese_Brazil.utf8
+ ctype    Portuguese_Brazil.utf8
+ tz       America/Sao_Paulo
+ date     2023-03-10
+ pandoc   2.19.2 @ C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools/ (via rmarkdown)
+ quarto   1.2.335 @ C:\\PROGRA~1\\Quarto\\bin\\quarto.exe
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ ! package     * version    date (UTC) lib source
+ D archive       1.1.5      2022-05-06 [1] CRAN (R 4.2.2)
+   assertthat    0.2.1      2019-03-21 [1] CRAN (R 4.2.1)
+   aTSA        * 3.1.2      2015-07-08 [1] CRAN (R 4.2.0)
+   bit           4.0.4      2020-08-04 [1] CRAN (R 4.2.1)
+   bit64         4.0.5      2020-08-30 [1] CRAN (R 4.2.1)
+   cli           3.4.1      2022-09-23 [1] CRAN (R 4.2.1)
+   colorspace    2.0-3      2022-02-21 [1] CRAN (R 4.2.1)
+   crayon        1.5.2      2022-09-29 [1] CRAN (R 4.2.1)
+   curl          4.3.3      2022-10-06 [1] CRAN (R 4.2.1)
+   DBI           1.1.3      2022-06-18 [1] CRAN (R 4.2.1)
+   digest        0.6.29     2021-12-01 [1] CRAN (R 4.2.1)
+   dplyr       * 1.0.10     2022-09-01 [1] CRAN (R 4.2.1)
+   ellipsis      0.3.2      2021-04-29 [1] CRAN (R 4.2.1)
+   evaluate      0.17       2022-10-07 [1] CRAN (R 4.2.1)
+   fansi         1.0.3      2022-03-24 [1] CRAN (R 4.2.1)
+   farver        2.1.1      2022-07-06 [1] CRAN (R 4.2.1)
+   fastmap       1.1.0      2021-01-25 [1] CRAN (R 4.2.1)
+   generics      0.1.3      2022-07-05 [1] CRAN (R 4.2.1)
+   ggplot2     * 3.3.6      2022-05-03 [1] CRAN (R 4.2.1)
+   ggtext      * 0.1.2      2022-09-16 [1] CRAN (R 4.2.1)
+   glue          1.6.2      2022-02-24 [1] CRAN (R 4.2.1)
+   gridtext      0.1.4.9000 2022-06-07 [1] Github (wilkelab/gridtext@6192174)
+   gtable        0.3.1      2022-09-01 [1] CRAN (R 4.2.1)
+   hms           1.1.2      2022-08-19 [1] CRAN (R 4.2.1)
+   htmltools     0.5.3      2022-07-18 [1] CRAN (R 4.2.1)
+   htmlwidgets   1.5.4      2021-09-08 [1] CRAN (R 4.2.1)
+   httr2       * 0.2.2      2022-09-25 [1] CRAN (R 4.2.1)
+   jsonlite      1.8.4      2022-12-06 [1] CRAN (R 4.2.2)
+   knitr         1.40       2022-08-24 [1] CRAN (R 4.2.1)
+   labeling      0.4.2      2020-10-20 [1] CRAN (R 4.2.0)
+   lifecycle     1.0.3      2022-10-07 [1] CRAN (R 4.2.1)
+   magrittr      2.0.3      2022-03-30 [1] CRAN (R 4.2.1)
+   markdown      1.1        2019-08-07 [1] CRAN (R 4.2.1)
+   munsell       0.5.0      2018-06-12 [1] CRAN (R 4.2.1)
+   pillar        1.8.1      2022-08-19 [1] CRAN (R 4.2.1)
+   pkgconfig     2.0.3      2019-09-22 [1] CRAN (R 4.2.1)
+   purrr         0.3.5      2022-10-06 [1] CRAN (R 4.2.1)
+   R6            2.5.1      2021-08-19 [1] CRAN (R 4.2.1)
+   rappdirs      0.3.3      2021-01-31 [1] CRAN (R 4.2.1)
+   Rcpp          1.0.9      2022-07-08 [1] CRAN (R 4.2.1)
+   readr       * 2.1.3      2022-10-01 [1] CRAN (R 4.2.1)
+   rlang         1.0.6      2022-09-24 [1] CRAN (R 4.2.1)
+   rmarkdown     2.17       2022-10-07 [1] CRAN (R 4.2.1)
+   rstudioapi    0.14       2022-08-22 [1] CRAN (R 4.2.1)
+   scales        1.2.1      2022-08-20 [1] CRAN (R 4.2.1)
+   sessioninfo   1.2.2      2021-12-06 [1] CRAN (R 4.2.1)
+   stringi       1.7.8      2022-07-11 [1] CRAN (R 4.2.1)
+   stringr       1.5.0      2022-12-02 [1] CRAN (R 4.2.2)
+   tibble        3.1.8      2022-07-22 [1] CRAN (R 4.2.1)
+   tidyr       * 1.2.1      2022-09-08 [1] CRAN (R 4.2.1)
+   tidyselect    1.2.0      2022-10-10 [1] CRAN (R 4.2.1)
+   tzdb          0.3.0      2022-03-28 [1] CRAN (R 4.2.1)
+   utf8          1.2.2      2021-07-24 [1] CRAN (R 4.2.1)
+   vctrs         0.5.1      2022-11-16 [1] CRAN (R 4.2.1)
+   vroom         1.6.0      2022-09-30 [1] CRAN (R 4.2.1)
+   withr         2.5.0      2022-03-03 [1] CRAN (R 4.2.1)
+   xfun          0.33       2022-09-12 [1] CRAN (R 4.2.1)
+   xml2          1.3.3      2021-11-30 [1] CRAN (R 4.2.1)
+   yaml          2.3.5      2022-02-21 [1] CRAN (R 4.2.1)
+
+ [1] C:/Users/ferna/AppData/Local/R/win-library/4.2
+ [2] C:/Program Files/R/R-4.2.1/library
+
+ D ── DLL MD5 mismatch, broken installation.
+
+──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+</div>
+</details><div style="border-top: 1px solid #dee2e6; padding-top: 1rem;">
+<!-- AddToAny BEGIN -->
+<strong>Compartilhar:</strong>
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<p><a class="a2a_button_email"></a> <a class="a2a_button_facebook"></a> <a class="a2a_button_mastodon"></a> <a class="a2a_button_linkedin"></a> <a class="a2a_button_twitter"></a> <a class="a2a_button_whatsapp"></a></p>
+</div>
+<script async="" src="https://static.addtoany.com/menu/page.js"></script><!-- AddToAny END -->
+</div>
+
+
+<!-- -->
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp(/^(?:http:|https:)\/\/(www\.)?fortietwo\.com/);
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb10" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1"></a><span class="co">---</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="an">title:</span><span class="co"> "O andar do bêbado e seu cachorro: entendendo cointegração no R"</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="an">date:</span><span class="co"> "2022-04-30"</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="an">date-modified:</span><span class="co"> "2023-03-10"</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="an">author:</span><span class="co"> "Fernando da Silva"</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="an">description:</span><span class="co"> "Uma analogia sobre cointegração de Engle-Granger e uma aplicação em R"</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="an">categories:</span><span class="co"> [Time Series, Cointegration, R, Português]</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="an">image:</span><span class="co"> "imgs/random_walk.png"</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="an">aliases:</span><span class="co"> </span></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="co">  - /posts/series-temporais/cointegration/index.html</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="co">---</span></span>
+<span id="cb10-12"><a href="#cb10-12"></a></span>
+<span id="cb10-13"><a href="#cb10-13"></a>Muito utilizado no mercado financeiro para estratégias *long-short*, arbitragem estatística, *pairs trading* e em análise e previsão de séries temporais macroeconômicas, o conceito de cointegração é ao mesmo tempo fascinante e intimidador de se compreender. Por isso, neste breve texto iremos explicar o que é cointegração com um exemplo intuitivo e fazer um exercício simples aplicando o teste de cointegração de Engle-Granger com pares de ações brasileiras usando o R!</span>
+<span id="cb10-14"><a href="#cb10-14"></a></span>
+<span id="cb10-15"><a href="#cb10-15"></a></span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="fu">## A analogia do bêbado e seu cachorro</span></span>
+<span id="cb10-17"><a href="#cb10-17"></a></span>
+<span id="cb10-18"><a href="#cb10-18"></a>As definições matemáticas de cointegração, e tópicos relacionados, são um tanto quanto sofisticadas, mas o seu conceito é simples o suficiente para ser introduzido com a cômica analogia do andar do bêbado e seu cachorro. Os créditos da analogia são inteiramente de Michael P. Murray que escreveu, em 1994, um *paper* didático de apenas 3 páginas elucidando o conceito de cointegração com o conto do andar do bêbado.</span>
+<span id="cb10-19"><a href="#cb10-19"></a></span>
+<span id="cb10-20"><a href="#cb10-20"></a>Imagine que você esteja andando na rua da sua cidade e aviste um bêbado que acaba de sair do bar, vagando em direção a sua casa. Você percebe que o bêbado caminha de maneira peculiar e imprevisível, algumas vezes se desviando para a esquerda e outras para a direita enquanto tenta, com dificuldades, seguir o seu caminho. Ao observar a trajetória do bêbado pode-se dizer que seus passos são nada mais do que uma sequência aleatória de passos. Na econometria, chamamos a trajetória do bêbado de **passeio aleatório** (*random walk*), de maneira a descrever o comportamento de muitas das séries econômicas que existem.</span>
+<span id="cb10-21"><a href="#cb10-21"></a></span>
+<span id="cb10-22"><a href="#cb10-22"></a>Por andar de forma aleatória, se você desviar o olhar e parar de observar o bêbado andando, será difícil dizer onde o bêbado estará após um determinado tempo, pois sua trajetória é imprevisível. Uma das características das trajetórias do tipo passeio aleatório, como a do bêbado, é de que a melhor previsão sobre um valor futuro é o último valor observado. Dessa forma, o seu palpite sobre a localização atual do bêbado poderia ser algo como o último lugar onde você o avistou, ou seja, na saída do bar.</span>
+<span id="cb10-23"><a href="#cb10-23"></a></span>
+<span id="cb10-24"><a href="#cb10-24"></a>Agora imagine que o bêbado tenha um cachorro amigo, sem coleira, que o acompanha. De forma similar ao bêbado, o cachorro também segue uma sequência aleatória de passos, sendo atraído por cada cheiro novo e estímulos que sente no caminho. Sempre que o bêbado percebe que o cachorro foi muito longe ele o chama: "Thor!". E o cachorro obedece o chamado retornando para perto de seu dono, caracterizando assim uma correção da distância entre ambos.</span>
+<span id="cb10-25"><a href="#cb10-25"></a></span>
+<span id="cb10-26"><a href="#cb10-26"></a>Se fossemos representar por meio de um gráfico a trajetória do bêbado e do cachorro ao longo do tempo e em relação a um ponto de referência qualquer (como o bar), seria algo como:</span>
+<span id="cb10-27"><a href="#cb10-27"></a></span>
+<span id="cb10-28"><a href="#cb10-28"></a><span class="al">![](imgs/random_walk.png)</span></span>
+<span id="cb10-29"><a href="#cb10-29"></a></span>
+<span id="cb10-30"><a href="#cb10-30"></a>Observando as trajetórias de ambos, pode-se dizer que mesmo que a localização atual do bêbado após um tempo seja imprevisível, a localização do cachorro é relativamente previsível, pois ele não se afastará muito do seu dono. Dessa forma, agora um bom palpite sobre a localização do bêbado, por exemplo, pode ser dado uma vez que você tenha encontrado o cachorro, e vice-versa, pois conforme seguem dando passos aleatórios também corrigem a distância entre ambos. Na econometria, chamamos isso formalmente de **mecanismo de correção de erros**.</span>
+<span id="cb10-31"><a href="#cb10-31"></a></span>
+<span id="cb10-32"><a href="#cb10-32"></a>Note, também, que ambas as trajetórias são o que chamamos de séries temporais não-estacionárias, dado que quanto mais tempo passa é mais provável que o bêbado e seu cachorro estejam vagando bem longe de onde foram vistos por último. Se for verdade que a distância entre eles seja corrigida por um mecanismo de correção de erros, então a distância entre as trajetórias é dita *cointegrada de ordem zero*.</span>
+<span id="cb10-33"><a href="#cb10-33"></a></span>
+<span id="cb10-34"><a href="#cb10-34"></a>Para entender o que a expressão *cointegrada de ordem zero* significa, vale primeiro entender o que são *séries integradas*. Séries temporais não-estacionárias que se tornam estacionárias quando diferenciadas *n* vezes são ditas *integradas de ordem n* ou, simplesmente, $\text{I}(n)$. Para duas séries temporais serem cointegradas, cada série precisa ser integrada de mesma ordem, *n*; por isso o termo *cointegração*. Sendo assim, um conjunto de séries temporais, todas integradas de ordem *n*, são ditas cointegradas se e somente se alguma combinação linear das séries é integrada de ordem menor do que *n*. Tal combinação linear foi chamada de **relação de cointegração**, conforme o trabalho de Engle e Granger (1987).</span>
+<span id="cb10-35"><a href="#cb10-35"></a></span>
+<span id="cb10-36"><a href="#cb10-36"></a><span class="fu">## Cointegração no sentido de Engle-Granger</span></span>
+<span id="cb10-37"><a href="#cb10-37"></a></span>
+<span id="cb10-38"><a href="#cb10-38"></a>De maneira um pouco mais formal, partindo de um modelo de passeio aleatório para as trajetórias do bêbado ($x_t$) e do cachorro ($y_t$), temos:</span>
+<span id="cb10-39"><a href="#cb10-39"></a></span>
+<span id="cb10-40"><a href="#cb10-40"></a>$$u_t = x_t - x_{t-1}$$</span>
+<span id="cb10-41"><a href="#cb10-41"></a>$$w_t = y_t - y_{t-1}$$</span>
+<span id="cb10-42"><a href="#cb10-42"></a></span>
+<span id="cb10-43"><a href="#cb10-43"></a>onde $u_t$ e $w_t$ representam, respectivamente, o passeio aleatório do bêbado e do cachorro ao longo do tempo $t$ e são ruído branco estacionários. Podemos então modelar a "trajetória cointegrada" do bêbado e do cachorro como:</span>
+<span id="cb10-44"><a href="#cb10-44"></a></span>
+<span id="cb10-45"><a href="#cb10-45"></a>$$u_t + c(y_{t-1} - x_{t-1}) = x_t - x_{t-1}$$</span>
+<span id="cb10-46"><a href="#cb10-46"></a>$$w_t + d(x_{t-1} - y_{t-1}) = y_t - y_{t-1}$$</span>
+<span id="cb10-47"><a href="#cb10-47"></a></span>
+<span id="cb10-48"><a href="#cb10-48"></a>onde $u_t$ e $w_t$ são novamente os passeios aleatórios do bêbado e do cachorro e os termos adicionais no lado esquerdo das equações são os *termos de correção de erro* pelo quais o bêbado e o cachorro corrigem a distância um do outro, ou seja, permanecem próximos. Podemos então dizer que, das equações acima, $(y_{t-1} - x_{t-1})$ é uma relação de cointegração entre a trajetória do bêbado e do cachorro. Dessa forma, se estabelece uma relação de equilíbrio de longo prazo entre as trajetórias.</span>
+<span id="cb10-49"><a href="#cb10-49"></a></span>
+<span id="cb10-50"><a href="#cb10-50"></a>Note que se os termos de correção de erros forem não-estacionários, então as trajetórias modeladas para o bêbado e o cachorro também seriam não-estacionárias, portanto ambos iriam provavelmente se distanciar bastante ao longo do tempo. Nesse caso, diríamos que as séries temporais das trajetórias do bêbado e do cachorro não são cointegradas de ordem zero. No entanto, Engle e Granger (1987) provaram que se a trajetória do bêbado e do cachorro são ambas integradas de ordem 1 e seguem o descrito nas equações acima, então as trajetórias cointegram.</span>
+<span id="cb10-51"><a href="#cb10-51"></a></span>
+<span id="cb10-52"><a href="#cb10-52"></a>A analogia do bêbado e seu cachorro é uma boa forma de entender os conceitos básicos de cointegração e do mecanismo de correção de erro, no entanto, há inúmeros detalhes técnicos que devem ser considerados em aplicações com dados reais. Para se aprofundar mais no tema considere um curso de econometria de séries temporais.</span>
+<span id="cb10-53"><a href="#cb10-53"></a></span>
+<span id="cb10-54"><a href="#cb10-54"></a>O conceito de cointegração é bastante utilizado em exercícios de macroeconomia, mas também pode ser usado no mercado financeiro com o objetivo de identificar relações — como a do bêbado e seu cachorro — entre ativos e realizar operações lucrativas com a técnica. Um exemplo disso são as estratégias de *pairs trading*, onde se realiza operações com pares de ativos que apresentem relação de cointegração de modo a obter lucro com a arbitragem. O grande desafio dessa aplicação é encontrar o par de ativo que apresente essas características.</span>
+<span id="cb10-55"><a href="#cb10-55"></a></span>
+<span id="cb10-56"><a href="#cb10-56"></a><span class="fu">## Teste de Cointegração de Engle-Granger</span></span>
+<span id="cb10-57"><a href="#cb10-57"></a></span>
+<span id="cb10-58"><a href="#cb10-58"></a>De maneira prática, para verificar se um conjunto de séries temporais $y_t$ e $x_t$ cointegram, é preciso seguir os procedimentos propostos por Engle e Granger (1987):</span>
+<span id="cb10-59"><a href="#cb10-59"></a></span>
+<span id="cb10-60"><a href="#cb10-60"></a><span class="ss">1. </span>Verificar se as séries são estacionárias;</span>
+<span id="cb10-61"><a href="#cb10-61"></a><span class="ss">2. </span>Estimar a regressão cointegrante das séries: $y_t = \alpha + \beta x_t + \epsilon_t$;</span>
+<span id="cb10-62"><a href="#cb10-62"></a><span class="ss">3. </span>Verificar se o resíduo da regressão cointegrante é estacionário usando os valores críticos de Engle e Granger (1987);</span>
+<span id="cb10-63"><a href="#cb10-63"></a><span class="ss">4. </span>Se o resíduo for estacionário, a regressão cointegrante não é espúria e pode-se estimar um modelo de correção de erros para obter a relação de equilíbrio das séries.</span>
+<span id="cb10-64"><a href="#cb10-64"></a></span>
+<span id="cb10-65"><a href="#cb10-65"></a>A seguir mostraremos como aplicar o teste com um par de ações negociadas na B3 e para isso usaremos a linguagem R.</span>
+<span id="cb10-66"><a href="#cb10-66"></a></span>
+<span id="cb10-67"><a href="#cb10-67"></a><span class="fu">## Exemplo no R</span></span>
+<span id="cb10-68"><a href="#cb10-68"></a></span>
+<span id="cb10-69"><a href="#cb10-69"></a>O exemplo utilizará o par de ações PETR3 e PETR4 no período de 28 de março de 2021 até 28 de março de 2022. Os dados são públicos e podem ser acessados pelo Yahoo Finance, havendo opção de usar pacotes ou web scraping para extrair os dados. O código abaixo faz a extração e tratamento de dados:</span>
+<span id="cb10-70"><a href="#cb10-70"></a></span>
+<span id="cb10-73"><a href="#cb10-73"></a><span class="in">```{r}</span></span>
+<span id="cb10-74"><a href="#cb10-74"></a><span class="co"># Carregar pacotes</span></span>
+<span id="cb10-75"><a href="#cb10-75"></a><span class="fu">library</span>(httr2)</span>
+<span id="cb10-76"><a href="#cb10-76"></a><span class="fu">library</span>(readr)</span>
+<span id="cb10-77"><a href="#cb10-77"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb10-78"><a href="#cb10-78"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb10-79"><a href="#cb10-79"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb10-80"><a href="#cb10-80"></a><span class="fu">library</span>(ggtext)</span>
+<span id="cb10-81"><a href="#cb10-81"></a><span class="fu">library</span>(aTSA)</span>
+<span id="cb10-82"><a href="#cb10-82"></a></span>
+<span id="cb10-83"><a href="#cb10-83"></a></span>
+<span id="cb10-84"><a href="#cb10-84"></a><span class="co"># Função para importar arquivo CSV do Yahoo Finance como um tibble</span></span>
+<span id="cb10-85"><a href="#cb10-85"></a>read_yfinance <span class="ot">&lt;-</span> <span class="cf">function</span>(url) {</span>
+<span id="cb10-86"><a href="#cb10-86"></a>  pagina <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="at">base_url =</span> url)</span>
+<span id="cb10-87"><a href="#cb10-87"></a>  conteudo <span class="ot">&lt;-</span> pagina <span class="sc">|&gt;</span> httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span> httr2<span class="sc">::</span><span class="fu">resp_body_string</span>()</span>
+<span id="cb10-88"><a href="#cb10-88"></a>  tabela <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> conteudo)</span>
+<span id="cb10-89"><a href="#cb10-89"></a>  <span class="fu">return</span>(tabela)</span>
+<span id="cb10-90"><a href="#cb10-90"></a>}</span>
+<span id="cb10-91"><a href="#cb10-91"></a></span>
+<span id="cb10-92"><a href="#cb10-92"></a></span>
+<span id="cb10-93"><a href="#cb10-93"></a><span class="co"># Coleta de dados online: ações da PETR3 e PETR4</span></span>
+<span id="cb10-94"><a href="#cb10-94"></a>dados_petr3 <span class="ot">&lt;-</span> <span class="fu">read_yfinance</span>(</span>
+<span id="cb10-95"><a href="#cb10-95"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb10-96"><a href="#cb10-96"></a>    <span class="st">"https://query1.finance.yahoo.com/v7/finance/download/PETR3.SA?period1="</span>,</span>
+<span id="cb10-97"><a href="#cb10-97"></a>    <span class="st">"1619568000&amp;period2=1651104000&amp;interval=1d&amp;events=history&amp;includeAdjust"</span>,</span>
+<span id="cb10-98"><a href="#cb10-98"></a>    <span class="st">"edClose=true"</span></span>
+<span id="cb10-99"><a href="#cb10-99"></a>    )</span>
+<span id="cb10-100"><a href="#cb10-100"></a>  )</span>
+<span id="cb10-101"><a href="#cb10-101"></a>dados_petr4 <span class="ot">&lt;-</span> <span class="fu">read_yfinance</span>(</span>
+<span id="cb10-102"><a href="#cb10-102"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb10-103"><a href="#cb10-103"></a>    <span class="st">"https://query1.finance.yahoo.com/v7/finance/download/PETR4.SA?period1="</span>,</span>
+<span id="cb10-104"><a href="#cb10-104"></a>    <span class="st">"1619568000&amp;period2=1651104000&amp;interval=1d&amp;events=history&amp;includeAdjust"</span>,</span>
+<span id="cb10-105"><a href="#cb10-105"></a>    <span class="st">"edClose=true"</span></span>
+<span id="cb10-106"><a href="#cb10-106"></a>    )</span>
+<span id="cb10-107"><a href="#cb10-107"></a>  )</span>
+<span id="cb10-108"><a href="#cb10-108"></a></span>
+<span id="cb10-109"><a href="#cb10-109"></a><span class="co"># Cruzamento e tratamento dde dados</span></span>
+<span id="cb10-110"><a href="#cb10-110"></a>dados <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">left_join</span>(</span>
+<span id="cb10-111"><a href="#cb10-111"></a>  <span class="at">x  =</span> dplyr<span class="sc">::</span><span class="fu">select</span>(dados_petr3, <span class="st">"date"</span> <span class="ot">=</span> <span class="st">"Date"</span>, <span class="st">"PETR3"</span> <span class="ot">=</span> <span class="st">"Adj Close"</span>),</span>
+<span id="cb10-112"><a href="#cb10-112"></a>  <span class="at">y  =</span> dplyr<span class="sc">::</span><span class="fu">select</span>(dados_petr4, <span class="st">"date"</span> <span class="ot">=</span> <span class="st">"Date"</span>, <span class="st">"PETR4"</span> <span class="ot">=</span> <span class="st">"Adj Close"</span>),</span>
+<span id="cb10-113"><a href="#cb10-113"></a>  <span class="at">by =</span> <span class="st">"date"</span></span>
+<span id="cb10-114"><a href="#cb10-114"></a>  )</span>
+<span id="cb10-115"><a href="#cb10-115"></a><span class="in">```</span></span>
+<span id="cb10-116"><a href="#cb10-116"></a></span>
+<span id="cb10-117"><a href="#cb10-117"></a>Antes de partir para o teste vale visualizar as séries temporais:</span>
+<span id="cb10-118"><a href="#cb10-118"></a></span>
+<span id="cb10-121"><a href="#cb10-121"></a><span class="in">```{r}</span></span>
+<span id="cb10-122"><a href="#cb10-122"></a><span class="co"># Plotar séries</span></span>
+<span id="cb10-123"><a href="#cb10-123"></a>dados_long <span class="ot">&lt;-</span> dados <span class="sc">|&gt;</span> </span>
+<span id="cb10-124"><a href="#cb10-124"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="st">"date"</span>)</span>
+<span id="cb10-125"><a href="#cb10-125"></a></span>
+<span id="cb10-126"><a href="#cb10-126"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(<span class="at">data =</span> dados_long) <span class="sc">+</span></span>
+<span id="cb10-127"><a href="#cb10-127"></a>  ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> value, <span class="at">color =</span> name) <span class="sc">+</span></span>
+<span id="cb10-128"><a href="#cb10-128"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb10-129"><a href="#cb10-129"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"2 months"</span>, <span class="at">date_labels =</span> <span class="st">"%b/%Y"</span>) <span class="sc">+</span></span>
+<span id="cb10-130"><a href="#cb10-130"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">n.breaks =</span> <span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb10-131"><a href="#cb10-131"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#282f6b"</span>, <span class="st">"#b22200"</span>)) <span class="sc">+</span></span>
+<span id="cb10-132"><a href="#cb10-132"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb10-133"><a href="#cb10-133"></a>    <span class="at">title   =</span> <span class="st">"Preço de fechamento diário ajustado"</span>,</span>
+<span id="cb10-134"><a href="#cb10-134"></a>    <span class="at">x       =</span> <span class="cn">NULL</span>,</span>
+<span id="cb10-135"><a href="#cb10-135"></a>    <span class="at">y       =</span> <span class="cn">NULL</span>,</span>
+<span id="cb10-136"><a href="#cb10-136"></a>    <span class="at">color   =</span> <span class="cn">NULL</span>,</span>
+<span id="cb10-137"><a href="#cb10-137"></a>    <span class="at">caption =</span> <span class="st">"**Dados**: Yahoo Finance | **Elaboração**: Fernando da Silva"</span></span>
+<span id="cb10-138"><a href="#cb10-138"></a>    ) <span class="sc">+</span> </span>
+<span id="cb10-139"><a href="#cb10-139"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_light</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb10-140"><a href="#cb10-140"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb10-141"><a href="#cb10-141"></a>    <span class="at">plot.title   =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb10-142"><a href="#cb10-142"></a>    <span class="at">plot.caption =</span> ggtext<span class="sc">::</span><span class="fu">element_textbox_simple</span>(</span>
+<span id="cb10-143"><a href="#cb10-143"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb10-144"><a href="#cb10-144"></a>      ),</span>
+<span id="cb10-145"><a href="#cb10-145"></a>    <span class="at">plot.title.position   =</span> <span class="st">"plot"</span>,</span>
+<span id="cb10-146"><a href="#cb10-146"></a>    <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb10-147"><a href="#cb10-147"></a>    <span class="at">legend.text           =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb10-148"><a href="#cb10-148"></a>    <span class="at">legend.position       =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.85</span>),</span>
+<span id="cb10-149"><a href="#cb10-149"></a>    <span class="at">legend.key            =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
+<span id="cb10-150"><a href="#cb10-150"></a>    <span class="at">legend.background     =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>()</span>
+<span id="cb10-151"><a href="#cb10-151"></a>    )</span>
+<span id="cb10-152"><a href="#cb10-152"></a><span class="in">```</span></span>
+<span id="cb10-153"><a href="#cb10-153"></a></span>
+<span id="cb10-154"><a href="#cb10-154"></a>As séries parecem apresentar uma trajetória de passeio aleatório, como a do bêbado e seu cachorro, algo comum em séries de ativos financeiros.</span>
+<span id="cb10-155"><a href="#cb10-155"></a></span>
+<span id="cb10-156"><a href="#cb10-156"></a>Agora vamos para a primeira etada do teste de cointegração de Engle-Granger, ou seja, verificar se as séries são estacionárias. Podemos fazer isso com o teste ADF através da função <span class="in">`adf.test()`</span>:</span>
+<span id="cb10-157"><a href="#cb10-157"></a></span>
+<span id="cb10-158"><a href="#cb10-158"></a>::: {.grid}</span>
+<span id="cb10-159"><a href="#cb10-159"></a></span>
+<span id="cb10-160"><a href="#cb10-160"></a>::: {.g-col-6}</span>
+<span id="cb10-163"><a href="#cb10-163"></a><span class="in">```{r}</span></span>
+<span id="cb10-164"><a href="#cb10-164"></a>aTSA<span class="sc">::</span><span class="fu">adf.test</span>(dados<span class="sc">$</span>PETR3)</span>
+<span id="cb10-165"><a href="#cb10-165"></a><span class="in">```</span></span>
+<span id="cb10-166"><a href="#cb10-166"></a>:::</span>
+<span id="cb10-167"><a href="#cb10-167"></a></span>
+<span id="cb10-168"><a href="#cb10-168"></a>::: {.g-col-6}</span>
+<span id="cb10-171"><a href="#cb10-171"></a><span class="in">```{r}</span></span>
+<span id="cb10-172"><a href="#cb10-172"></a>aTSA<span class="sc">::</span><span class="fu">adf.test</span>(dados<span class="sc">$</span>PETR4)</span>
+<span id="cb10-173"><a href="#cb10-173"></a><span class="in">```</span></span>
+<span id="cb10-174"><a href="#cb10-174"></a>:::</span>
+<span id="cb10-175"><a href="#cb10-175"></a></span>
+<span id="cb10-176"><a href="#cb10-176"></a>:::</span>
+<span id="cb10-177"><a href="#cb10-177"></a></span>
+<span id="cb10-178"><a href="#cb10-178"></a>Conforme os resultados, falhamos em rejeitar a hipótese nula do teste de a série ter raiz unitária, ou seja, as séries são não-estacionárias nos testes considerados (sem constante com tendência, com constante sem tendência e com constante e tendência).</span>
+<span id="cb10-179"><a href="#cb10-179"></a></span>
+<span id="cb10-180"><a href="#cb10-180"></a>Identificado que as séries são integradas de mesma ordem (nesse caso I(1), conforme pode ser confirmado usando a função <span class="in">`forecast::ndiffs`</span>), podemos prosseguir com as etapas 2 e 3 que envolvem estimar a regressão cointegrante e verificar a estacionariedade do resíduo desta regressão. No R, isso tudo pode ser feito com a função <span class="in">`coint.test()`</span>, que já toma o cuidado de usar os valores críticos corretos para testar os resíduos, conforme MacKinnon (1991).</span>
+<span id="cb10-181"><a href="#cb10-181"></a></span>
+<span id="cb10-184"><a href="#cb10-184"></a><span class="in">```{r}</span></span>
+<span id="cb10-185"><a href="#cb10-185"></a><span class="co"># Teste de Cointegração de Engle-Granger</span></span>
+<span id="cb10-186"><a href="#cb10-186"></a>aTSA<span class="sc">::</span><span class="fu">coint.test</span>(dados<span class="sc">$</span>PETR3, dados<span class="sc">$</span>PETR4)</span>
+<span id="cb10-187"><a href="#cb10-187"></a><span class="in">```</span></span>
+<span id="cb10-188"><a href="#cb10-188"></a></span>
+<span id="cb10-189"><a href="#cb10-189"></a>Note que a função aplica 3 especificações: sem tendência, com tendência e com tendência quadrática. Em outros pacotes estatísticos e econométricos, como no Gretl, considera-se geralmente somente a primeira. Conforme os resultados, pelo p-valor da primeira especificação, sem tendência, temos que o resíduo da regressão cointegrante é estacionário, mas isso não se verifica para outras especificações. Em outras palavras, há evidências de que **as séries PETR3 e PETR4 cointegram**, para a amostra de dados selecionada e com base no teste sobre o resíduo sem tendência (se o resíduo apresentar tendência, outro tipo do teste deve ser considerado).</span>
+<span id="cb10-190"><a href="#cb10-190"></a></span>
+<span id="cb10-191"><a href="#cb10-191"></a></span>
+<span id="cb10-192"><a href="#cb10-192"></a><span class="fu">## Referências</span></span>
+<span id="cb10-193"><a href="#cb10-193"></a></span>
+<span id="cb10-194"><a href="#cb10-194"></a>Abordamos brevemente o conceito de cointegração de séries temporais no sentido de Engle-Granger. Há vários buracos deixados ao longo do texto que precisam de mais espaço e conhecimentos prévios para serem preenchidos. Espero poder abordar outros desses tópicos sobre séries temporais adiante, mas por enquanto aproveite para conferir abaixo os trabalhos citados.</span>
+<span id="cb10-195"><a href="#cb10-195"></a></span>
+<span id="cb10-196"><a href="#cb10-196"></a>Engle, R. F., &amp; Granger, C. W. (1987). *Co-integration and error correction: representation, estimation, and testing*. Econometrica: journal of the Econometric Society, 251-276.</span>
+<span id="cb10-197"><a href="#cb10-197"></a></span>
+<span id="cb10-198"><a href="#cb10-198"></a>MacKinnon, J. G. (1991). *Critical values for cointegration tests*, Ch. 13 in Long-run Economic Relationships: Readings in Cointegration, eds. R. F. Engle and C. W. J. Granger, Oxford, Oxford University Press.</span>
+<span id="cb10-199"><a href="#cb10-199"></a></span>
+<span id="cb10-200"><a href="#cb10-200"></a>Murray, M. P. (1994). *A drunk and her dog: an illustration of cointegration and error correction*. The American Statistician, 48(1), 37-39.</span>
+<span id="cb10-201"><a href="#cb10-201"></a></span>
+<span id="cb10-202"><a href="#cb10-202"></a>{{&lt; include ../../R/_session_info_pt.qmd &gt;}}</span>
+<span id="cb10-203"><a href="#cb10-203"></a>{{&lt; include ../../styles/html/_footer_pt.qmd &gt;}}</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Licensed under <i class="fa-brands fa-creative-commons" aria-label="creative-commons"></i> <i class="fa-brands fa-creative-commons-by" aria-label="creative-commons-by"></i> <i class="fa-brands fa-creative-commons-sa" aria-label="creative-commons-sa"></i> <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></div>   
+      <div class="nav-footer-center">Made with&nbsp;<a href="https://quarto.org/">Quarto</a></div>
+    <div class="nav-footer-right">View the source at <a href="https://github.com/schoulten/schoulten.github.io"><i class="fa-brands fa-github" aria-label="github"></i> GitHub</a></div>
+  </div>
+</footer>
+
+
+</body></html>

@@ -1,0 +1,52 @@
+/*-- scss:defaults --*/
+// Base document colors
+$body-bg: #f5f5f5;
+$primary: #282f6b;
+
+// Links
+$link-color: #58a6ff;
+$link-shade-percentage: 10% !default;
+$link-decoration: none !default;
+$link-hover-decoration: underline !default;
+
+// Navbar
+$navbar-bg: $primary;
+$navbar-fg: #c1c3d4;
+$navbar-hl: #ffffff;
+
+// Footer
+$footer-bg: $primary;
+$footer-fg: $navbar-fg;
+
+/*-- Blog --*/
+
+// Categories: margin
+.quarto-listing-category .category:hover {
+  background: darken(#ffffff, 10%);
+  border-radius: 0.25rem;
+}
+// Categories: count
+.quarto-category-count {
+  font-size: 0.8em;
+  color: $gray-600;
+}
+
+// Categories: card
+.listing-category:hover {
+  background: darken(#ffffff, 10%);
+}
+
+// Categories: post
+.quarto-category:hover {
+  color: #ffffff;
+}
+
+// Text align
+p {
+  text-align: justify;
+}
+
+// Card: author and date text size
+.quarto-grid-item .card-attribution.justify {
+  font-size: 0.75em;
+}

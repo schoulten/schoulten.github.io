@@ -1,0 +1,27 @@
+---
+pagetitle: "Fernando da Silva — CV"
+page-layout: full
+format: 
+  html:
+    toc: false
+    code-tools: false
+execute: 
+  freeze: false
+---
+
+```{r}
+#| echo: false
+cv_file <- sort(
+  x          = list.files(path = "cv/", pattern = "*.pdf", full.names = TRUE),
+  decreasing = TRUE
+  )[1]
+```
+
+## **Resume**
+
+You can view my resume (in English) below or download it through [this link](`r cv_file`).
+
+<div class="embed-container">
+<iframe src="`r cv_file`" style="wid"></iframe>
+</div>
+
