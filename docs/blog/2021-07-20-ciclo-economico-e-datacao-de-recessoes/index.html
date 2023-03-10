@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Fernando da Silva">
+<meta name="dcterms.date" content="2021-07-20">
+<meta name="description" content="Uma visão geral sobre ciclos econômicos, o algoritmo e uma aplicação em R">
+<title>Fernando da Silva - Datação de ciclos econômicos e o algoritmo de Harding-Pagan</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><script src="../../site_libs/core-js-2.5.3/shim.min.js"></script><script src="../../site_libs/react-17.0.0/react.min.js"></script><script src="../../site_libs/react-17.0.0/react-dom.min.js"></script><script src="../../site_libs/reactwidget-1.0.0/react-tools.js"></script><script src="../../site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><script src="../../site_libs/reactable-binding-0.3.0/reactable.js"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles/css/styles.css">
+<meta property="og:title" content="Fernando da Silva - Datação de ciclos econômicos e o algoritmo de Harding-Pagan">
+<meta property="og:description" content="Uma visão geral sobre ciclos econômicos, o algoritmo e uma aplicação em R">
+<meta property="og:image" content="https://fortietwo.com/blog\2021-07-20-ciclo-economico-e-datacao-de-recessoes\imgs\datacao.png">
+<meta property="og:site-name" content="Fernando da Silva">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:width" content="2160">
+</head>
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Fernando da Silva</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cv.html">
+ <span class="menu-text">CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../portfolio.html">
+ <span class="menu-text">Portfolio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/schoulten/"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/schoulten"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:fernando@fortietwo.com"><i class="bi bi-envelope-fill" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+<div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <div class="quarto-title-block"><div><h1 class="title">Datação de ciclos econômicos e o algoritmo de Harding-Pagan</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+                  <div>
+        <div class="description">
+          Uma visão geral sobre ciclos econômicos, o algoritmo e uma aplicação em R
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Macroeconomics</div>
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">Economic Cycle</div>
+                <div class="quarto-category">Português</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Fernando da Silva </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 20, 2021</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">March 7, 2023</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#a-import%C3%A2ncia-de-datar-o-ciclo-econ%C3%B4mico" id="toc-a-importância-de-datar-o-ciclo-econômico" class="nav-link active" data-scroll-target="#a-import%C3%A2ncia-de-datar-o-ciclo-econ%C3%B4mico">A importância de datar o ciclo econômico</a></li>
+  <li><a href="#caracter%C3%ADsticas-do-ciclo-econ%C3%B4mico" id="toc-características-do-ciclo-econômico" class="nav-link" data-scroll-target="#caracter%C3%ADsticas-do-ciclo-econ%C3%B4mico">Características do ciclo econômico</a></li>
+  <li><a href="#o-algoritmo-de-harding-e-pagan-2002" id="toc-o-algoritmo-de-harding-e-pagan-2002" class="nav-link" data-scroll-target="#o-algoritmo-de-harding-e-pagan-2002">O algoritmo de Harding e Pagan (2002)</a></li>
+  <li>
+<a href="#data%C3%A7%C3%A3o-do-ciclo-econ%C3%B4mico-do-brasil" id="toc-datação-do-ciclo-econômico-do-brasil" class="nav-link" data-scroll-target="#data%C3%A7%C3%A3o-do-ciclo-econ%C3%B4mico-do-brasil">Datação do ciclo econômico do Brasil</a>
+  <ul class="collapse">
+<li><a href="#pacotes" id="toc-pacotes" class="nav-link" data-scroll-target="#pacotes">Pacotes</a></li>
+  <li><a href="#dados" id="toc-dados" class="nav-link" data-scroll-target="#dados">Dados</a></li>
+  <li><a href="#data%C3%A7%C3%A3o" id="toc-datação" class="nav-link" data-scroll-target="#data%C3%A7%C3%A3o">Datação</a></li>
+  <li><a href="#resultados" id="toc-resultados" class="nav-link" data-scroll-target="#resultados">Resultados</a></li>
+  <li><a href="#compara%C3%A7%C3%A3o-com-cronologia-do-codacefgv" id="toc-comparação-com-cronologia-do-codacefgv" class="nav-link" data-scroll-target="#compara%C3%A7%C3%A3o-com-cronologia-do-codacefgv">Comparação com cronologia do CODACE/FGV</a></li>
+  </ul>
+</li>
+  <li><a href="#refer%C3%AAncias" id="toc-referências" class="nav-link" data-scroll-target="#refer%C3%AAncias">Referências</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content"><p>Ao longo do tempo a economia apresenta o que se chama de ciclos econômicos, ou seja, períodos de expansão e recessão. Mas de que forma podemos saber <strong>em qual ponto do ciclo econômico a economia se encontra</strong>? Como sabemos se a economia está em recessão? Estas são perguntas de grande interesse para acadêmicos e profissionais da área, e neste breve exercício demonstramos como replicar a datação de ciclos econômicos que instituições como <a href="https://www.nber.org/">NBER</a> (EUA) e <a href="https://portalibre.fgv.br/codace">CODACE</a> (Brasil) tradicionalmente publicam.</p>
+<section id="a-importância-de-datar-o-ciclo-econômico" class="level2"><h2 class="anchored" data-anchor-id="a-importância-de-datar-o-ciclo-econômico">A importância de datar o ciclo econômico</h2>
+<p>O ciclo econômico desempenha um papel importante para as <strong>decisões de política econômica e de empresas</strong>. Por exemplo, quando a economia está com hiato negativo, as empresas tendem a agir de forma mais conservadora. Em contrapartida, quando a economia está com hiato positivo, as empresas tendem a agir de forma mais agressiva com o objetivo de aumentar sua participação de mercado.</p>
+<p>A teoria do ciclos econômicos sugere que o ciclo econômico é um importante indicador para a política monetária, possibilitando a <strong>atuação do Banco Central para estabilizar as flutuações da economia</strong>. Portanto, a datação precisa do ciclo econômico pode ser fundamental para decisões políticas eficientes e práticas.</p>
+<p>No Brasil o responsável pela datação do ciclo econômico é o Comitê de Datação de Ciclos Econômicos (CODACE), que se reúne periódicamente e publica um informativo contendo as datas dos períodos de expansão e recessão.</p>
+</section><section id="características-do-ciclo-econômico" class="level2"><h2 class="anchored" data-anchor-id="características-do-ciclo-econômico">Características do ciclo econômico</h2>
+<p>Há diveros trabalhos que investigam a questão da datação de ciclos econômicos, aqui exploraremos apenas uma das abordagens. O procedimento completo é descrito em Harding e Pagan (2002) e é largamente utilizado em diversos países. Em resumo, os autores seguem a <strong>definição de Burns e Mitchell</strong> (1946) sobre ciclo econômico e propõem um método que entrega uma <strong>visualização gráfica do ciclo</strong>.</p>
+<p>Existem algumas características interessantes sobre as fases do ciclo econômico (fatos estilizados):</p>
+<ul>
+<li>
+<strong>Pico (A)</strong>: é o ponto de virada quando a expansão transita para a fase de recessão;</li>
+<li>
+<strong>Vale (C)</strong>: é o ponto de virada quando a recessão transita para a fase de expansão/recuperação;</li>
+<li>
+<strong>Duração (AB)</strong>: é o número de trimestres entre o pico e o vale;</li>
+<li>
+<strong>Amplitude (BC)</strong>: é a distância entre o pico e o vale ou altura do triângulo.</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="2400"></p>
+</div>
+</div>
+<p>A imagem acima ilustra didaticamente estas características.</p>
+</section><section id="o-algoritmo-de-harding-e-pagan-2002" class="level2"><h2 class="anchored" data-anchor-id="o-algoritmo-de-harding-e-pagan-2002">O algoritmo de Harding e Pagan (2002)</h2>
+<p>Partindo de uma série <span class="math inline">\(Y_t\)</span> em frequência trimestral, representativa da atividade econômica (PIB) e usualmente transformada como <span class="math inline">\(y_t = ln(Y_t)\)</span>, a datação do ciclo econômico deve compreender as seguintes etapas:</p>
+<ol type="1">
+<li>Determinação de um conjunto potencial de pontos de virada, ou seja, os picos e vales em uma série <span class="math inline">\(y_t\)</span>;</li>
+<li>Um procedimento para garantir que os picos e os vales se alternem;</li>
+<li>Um conjunto de regras que recombinam os pontos de virada estabelecidos após os passos 1) e 2) para satisfazer critérios pré-determinados relativos à <em>duração</em> e <em>amplitude</em> das fases e ciclos completos (isso é chamado de “regras de censura”).</li>
+</ol>
+<p>Conforme Harding e Pagan (2002), os pontos de virada da série acontecem quando:</p>
+<p><span class="math display">\[\begin{align*}
+  \text{Pico na observação } t \text{, se: } &amp; \left[(y_{t-k}, y_{t-1}) &lt; y_t &gt; (y_{t+1}, y_{t+k}) \right] \\
+  \text{Vale na observação } t \text{, se: } &amp; \left[(y_{t-k}, y_{t-1}) &gt; y_t &lt; (y_{t+1}, y_{t+k}) \right]
+\end{align*}\]</span></p>
+<p>O usual e recomendado pelos autores, para séries trimestrais, é definir <span class="math inline">\(k = 2\)</span> para encontrar esses pontos máximos e mínimos locais.</p>
+<p>Em seguida, define-se as fases de expansão, recessão e o ciclo completo:</p>
+<ul>
+<li>
+<strong>Recessão</strong>: o período compreendido entre um pico e um vale;</li>
+<li>
+<strong>Expansão</strong>: o período compreendido entre um vale e um pico;</li>
+<li>
+<strong>Ciclo completo</strong>: pode ser mensurado como a duração das fases de recessão e expansão somadas.</li>
+</ul>
+<p>Para tal, é necessário impor algumas “regras de censura”, que são restrições adicionais para eliminar/manter os pontos de virada identificados. Isso passa por definir uma <strong>duração mínima das fases</strong> de recessão/expansão entre picos/vales, geralmente utilizando-se 2 trimestres (inspirado no NBER). Além disso, restringe-se também a <strong>duração mínima do ciclo completo</strong> como 5 trimestres.</p>
+<p>Em resumo:</p>
+<ul>
+<li>
+<strong>Recessão/Expansão</strong>: duram, no mínimo, 2 trimestres;</li>
+<li>
+<strong>Ciclo completo</strong>: dura, no mínimo, 5 trimestres.</li>
+</ul>
+<p>O método é bastante simples e poderoso, conseguindo praticamente replicar a cronologia de recessões desenvolvidas pelas instituições mencionadas acima.</p>
+</section><section id="datação-do-ciclo-econômico-do-brasil" class="level2"><h2 class="anchored" data-anchor-id="datação-do-ciclo-econômico-do-brasil">Datação do ciclo econômico do Brasil</h2>
+<p>Agora passemos a aplicação do procedimento de datação do ciclo econômico, conforme Harding e Pagan (2002), exemplificando para a série trimestral do PIB brasileiro (série encadeada, ajustada sazonalmente).</p>
+<section id="pacotes" class="level3"><h3 class="anchored" data-anchor-id="pacotes">Pacotes</h3>
+<p>Para aplicar o algoritmo utilizaremos o pacote <code>{BCDating}</code> na linguagem R, criado por Majid Einian (Central Bank of Islamic Republic of Iran) e Franck Arnaud (National Institute of Statistics and Economic Studies, France). Outros pacotes são utilizados para coleta, tratamento e visualização de dados:</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Carregar pacotes</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(BCDating)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(sidrar)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">library</span>(ggthemes)</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="fu">library</span>(ggtext)</span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">library</span>(reactable)</span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">library</span>(reactablefmtr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="dados" class="level3"><h3 class="anchored" data-anchor-id="dados">Dados</h3>
+<p>Neste exercício utilizaremos a série do PIB a preços de mercado (série encadeada do índice de volume trimestral com ajuste sazonal, média de 1995 = 100), disponível no SIDRA/IBGE. Para coletar os dados via API pode-se usar o pacote <a href="https://github.com/rpradosiqueira/sidrar/">sidrar</a>, especificando o código de coleta. Além disso realizamos a preparação dos dados para utilização posterior:</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Coleta e tratamento de dados</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>pib <span class="ot">&lt;-</span> sidrar<span class="sc">::</span><span class="fu">get_sidra</span>(<span class="at">api =</span> <span class="st">"/t/1621/n1/all/v/all/p/all/c11255/90707/d/v584%202"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    <span class="at">date =</span> lubridate<span class="sc">::</span><span class="fu">yq</span>(<span class="st">`</span><span class="at">Trimestre (Código)</span><span class="st">`</span>),</span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="at">value =</span> Valor, </span>
+<span id="cb2-6"><a href="#cb2-6"></a>    <span class="at">.keep =</span> <span class="st">"none"</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb2-8"><a href="#cb2-8"></a>  dplyr<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co"># Inspeção dos dados</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="fu">tail</span>(pib)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  date       value
+  &lt;date&gt;     &lt;dbl&gt;
+1 2021-07-01  173.
+2 2021-10-01  175.
+3 2022-01-01  177.
+4 2022-04-01  179.
+5 2022-07-01  179.
+6 2022-10-01  179.</code></pre>
+</div>
+</div>
+</section><section id="datação" class="level3"><h3 class="anchored" data-anchor-id="datação">Datação</h3>
+<p>Para aplicar o algoritmo e obter as datações de ciclo de negócios, primeiro transformamos o objeto pro formato de série temporal e, em seguida, utilizamos a função <code>BBQ()</code> do pacote <code>{BCDating}</code>. Optamos por deixar com os valores predefinidos os demais argumentos da função, que servem para definir os valores mínimos de duração do ciclo (pico ao pico ou vale ao vale) e da fase do ciclo (pico ao vale ou vale ao pico).</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Obter datação de ciclo de negócios</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>bc_dates <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">ts</span>(</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="at">data =</span> pib<span class="sc">$</span>value, </span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="at">start =</span> <span class="fu">c</span>(lubridate<span class="sc">::</span><span class="fu">year</span>(<span class="fu">min</span>(pib<span class="sc">$</span>date)), lubridate<span class="sc">::</span><span class="fu">quarter</span>(<span class="fu">min</span>(pib<span class="sc">$</span>date))),</span>
+<span id="cb4-5"><a href="#cb4-5"></a>  <span class="at">frequency =</span> <span class="dv">4</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-7"><a href="#cb4-7"></a>  BCDating<span class="sc">::</span><span class="fu">BBQ</span>(<span class="at">name =</span> <span class="st">"Ciclo de Negócios do PIB do Brasil"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8"></a></span>
+<span id="cb4-9"><a href="#cb4-9"></a></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co"># Inspeção do objeto</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="fu">class</span>(bc_dates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>[1] "BCDating"
+attr(,"package")
+[1] "BCDating"</code></pre>
+</div>
+</div>
+</section><section id="resultados" class="level3"><h3 class="anchored" data-anchor-id="resultados">Resultados</h3>
+<p>Como pode ser visto abaixo, o objeto retornado traz como resultado as datas (trimestres) de picos e vales, assim como a duração do ciclo.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Exibir resultados</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">show</span>(bc_dates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>   Peaks Troughs Duration
+1 2001Q1  2001Q4        3
+2 2002Q4  2003Q2        2
+3 2008Q3  2009Q1        2
+4 2014Q1  2016Q4       11
+5 2019Q4  2020Q2        2</code></pre>
+</div>
+</div>
+<p>Outras informações podem ser obtidas com a função <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code>:</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Informações adicionais</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">summary</span>(bc_dates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>       Phase ]Start  ;End] Duration LevStart LevEnd Amplitude
+1  Expansion   &lt;NA&gt; 2001Q1       NA       NA    114        NA
+2  Recession 2001Q1 2001Q4        3      114    112       1.5
+3  Expansion 2001Q4 2002Q4        4      112    118       5.8
+4  Recession 2002Q4 2003Q2        2      118    116       1.5
+5  Expansion 2003Q2 2008Q3       21      116    152      35.1
+6  Recession 2008Q3 2009Q1        2      152    144       7.8
+7  Expansion 2009Q1 2014Q1       20      144    177      33.2
+8  Recession 2014Q1 2016Q4       11      177    163      14.4
+9  Expansion 2016Q4 2019Q4       12      163    172       9.2
+10 Recession 2019Q4 2020Q2        2      172    153      18.4
+11 Expansion 2020Q2   &lt;NA&gt;       NA      153     NA        NA
+
+          Amplitude Duration
+Exp=]T;P]      20.8     14.2
+Rec=]P;T]       8.7      4.0</code></pre>
+</div>
+</div>
+<p>Porém, o mais interessante é avaliar o resultado visualmente através de um gráfico. Para tal, fazemos um tratamento dos dados retornados pela função <code>BBQ()</code> e utilizamos o <a href="https://ggplot2.tidyverse.org">ggplot2</a> para gerar o gráfico com as áreas sombreadas referente às datas de recessão que foram identificadas pelo algoritmo, acompanhadas do comportamento do PIB no período:</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Transformar resultados em tibble</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>bc_dates_tbl <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">quietly</span>(show)(bc_dates)<span class="sc">$</span>result <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a href="#cb10-3"></a>  dplyr<span class="sc">::</span><span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a href="#cb10-4"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb10-5"><a href="#cb10-5"></a>    <span class="st">`</span><span class="at">Peaks</span><span class="st">`</span>   <span class="ot">=</span> lubridate<span class="sc">::</span><span class="fu">yq</span>(<span class="st">`</span><span class="at">Peaks</span><span class="st">`</span>), </span>
+<span id="cb10-6"><a href="#cb10-6"></a>    <span class="st">`</span><span class="at">Troughs</span><span class="st">`</span> <span class="ot">=</span> lubridate<span class="sc">::</span><span class="fu">yq</span>(<span class="st">`</span><span class="at">Troughs</span><span class="st">`</span>)</span>
+<span id="cb10-7"><a href="#cb10-7"></a>    )</span>
+<span id="cb10-8"><a href="#cb10-8"></a></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="co"># Gerar gráfico</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a>g1 <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_rect</span>(</span>
+<span id="cb10-12"><a href="#cb10-12"></a>    <span class="at">data =</span> bc_dates_tbl, </span>
+<span id="cb10-13"><a href="#cb10-13"></a>    <span class="at">mapping =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(</span>
+<span id="cb10-14"><a href="#cb10-14"></a>      <span class="at">xmin =</span> <span class="st">`</span><span class="at">Peaks</span><span class="st">`</span>, <span class="at">xmax =</span> <span class="st">`</span><span class="at">Troughs</span><span class="st">`</span>, <span class="at">ymin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, </span>
+<span id="cb10-15"><a href="#cb10-15"></a>      <span class="at">fill =</span> <span class="st">"Recessão"</span></span>
+<span id="cb10-16"><a href="#cb10-16"></a>      ),</span>
+<span id="cb10-17"><a href="#cb10-17"></a>    <span class="at">alpha =</span> <span class="fl">0.3</span></span>
+<span id="cb10-18"><a href="#cb10-18"></a>    ) <span class="sc">+</span></span>
+<span id="cb10-19"><a href="#cb10-19"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>(</span>
+<span id="cb10-20"><a href="#cb10-20"></a>    <span class="at">data =</span> pib, </span>
+<span id="cb10-21"><a href="#cb10-21"></a>    <span class="at">mapping =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> value, <span class="at">colour =</span> <span class="st">"PIB s. a. (1995 = 100)"</span>), </span>
+<span id="cb10-22"><a href="#cb10-22"></a>    <span class="at">size =</span> <span class="fl">1.5</span></span>
+<span id="cb10-23"><a href="#cb10-23"></a>    ) <span class="sc">+</span></span>
+<span id="cb10-24"><a href="#cb10-24"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="st">"dodgerblue4"</span>) <span class="sc">+</span></span>
+<span id="cb10-25"><a href="#cb10-25"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
+<span id="cb10-26"><a href="#cb10-26"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"4 years"</span>, <span class="at">date_labels =</span> <span class="st">"%Y"</span>) <span class="sc">+</span></span>
+<span id="cb10-27"><a href="#cb10-27"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb10-28"><a href="#cb10-28"></a>    <span class="at">title    =</span> <span class="st">"Brasil: datação de ciclos econômicos"</span>,</span>
+<span id="cb10-29"><a href="#cb10-29"></a>    <span class="at">subtitle =</span> <span class="st">"Recessão datada pelo algoritmo de Harding-Pagan (2002)"</span>,</span>
+<span id="cb10-30"><a href="#cb10-30"></a>    <span class="at">y        =</span> <span class="st">"Índice"</span>,</span>
+<span id="cb10-31"><a href="#cb10-31"></a>    <span class="at">x        =</span> <span class="cn">NULL</span>,</span>
+<span id="cb10-32"><a href="#cb10-32"></a>    <span class="at">color    =</span> <span class="cn">NULL</span>,</span>
+<span id="cb10-33"><a href="#cb10-33"></a>    <span class="at">fill     =</span> <span class="cn">NULL</span>,</span>
+<span id="cb10-34"><a href="#cb10-34"></a>    <span class="at">caption  =</span> <span class="st">"**Dados:** IBGE | **Elaboração:** Fernando da Silva"</span></span>
+<span id="cb10-35"><a href="#cb10-35"></a>    ) <span class="sc">+</span></span>
+<span id="cb10-36"><a href="#cb10-36"></a>  ggthemes<span class="sc">::</span><span class="fu">theme_calc</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb10-37"><a href="#cb10-37"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb10-38"><a href="#cb10-38"></a>    <span class="at">plot.title            =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb10-39"><a href="#cb10-39"></a>    <span class="at">plot.title.position   =</span> <span class="st">"plot"</span>,</span>
+<span id="cb10-40"><a href="#cb10-40"></a>    <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb10-41"><a href="#cb10-41"></a>    <span class="at">plot.background       =</span> ggplot2<span class="sc">::</span><span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="cn">NA</span>),</span>
+<span id="cb10-42"><a href="#cb10-42"></a>    <span class="at">plot.caption          =</span>  ggtext<span class="sc">::</span><span class="fu">element_textbox_simple</span>(</span>
+<span id="cb10-43"><a href="#cb10-43"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb10-44"><a href="#cb10-44"></a>      ),</span>
+<span id="cb10-45"><a href="#cb10-45"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb10-46"><a href="#cb10-46"></a>    )</span>
+<span id="cb10-47"><a href="#cb10-47"></a>g1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="2400"></p>
+</div>
+</div>
+<div class="cell">
+
+</div>
+</section><section id="comparação-com-cronologia-do-codacefgv" class="level3"><h3 class="anchored" data-anchor-id="comparação-com-cronologia-do-codacefgv">Comparação com cronologia do CODACE/FGV</h3>
+<p>Por fim, vamos comparar os resultados aqui encontrados com a Cronologia de Ciclos de Negócios Brasileiros elaborada pelo CODACE. A última reunião do comitê foi em 29 de junho de 2020, na qual reportou a seguinte situação do ciclo de negócios:</p>
+<p><img src="imgs/codace.PNG" class="img-fluid"></p>
+<p>Percebe-se que a série utilizada pelo comitê inicia-se em 1980, mas se analisarmos a partir de 1996 (período de início da série utilizada em nosso exercício), verificamos que 5 de 6 recessões datadas pelo CODACE são identificadas pelo algoritmo de Harding &amp; Pagan (2002). Apenas a recessão do 1º trimestre de 1998 ao 1º trimestre de 1999 não foi detectada. Apesar disso, o resultado é empolgante!</p>
+<p>Por fim, vamos comparar os resultados de ambas as datações mais a fundo na tabela a seguir, na qual contabilizamos o período de recessão partindo do trimestre imediatamente posterior ao pico até o subsequente vale:</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>bc_dates_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb11-3"><a href="#cb11-3"></a>    dplyr<span class="sc">::</span><span class="fu">across</span>(</span>
+<span id="cb11-4"><a href="#cb11-4"></a>      <span class="at">.cols =</span> <span class="fu">c</span>(<span class="st">"Peaks"</span>, <span class="st">"Troughs"</span>), <span class="at">.fns =</span> <span class="sc">~</span>.x <span class="sc">+</span> <span class="fu">months</span>(<span class="dv">3</span>) <span class="co"># pois data de início não é inclusa</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a>      ),</span>
+<span id="cb11-6"><a href="#cb11-6"></a>    dplyr<span class="sc">::</span><span class="fu">across</span>(</span>
+<span id="cb11-7"><a href="#cb11-7"></a>      <span class="at">.cols =</span> <span class="fu">c</span>(<span class="st">"Peaks"</span>, <span class="st">"Troughs"</span>), </span>
+<span id="cb11-8"><a href="#cb11-8"></a>      <span class="at">.fns =</span> <span class="sc">~</span><span class="fu">paste0</span>(<span class="st">"T"</span>, lubridate<span class="sc">::</span><span class="fu">quarter</span>(.x), <span class="st">"/"</span>, lubridate<span class="sc">::</span><span class="fu">year</span>(.x))</span>
+<span id="cb11-9"><a href="#cb11-9"></a>      )</span>
+<span id="cb11-10"><a href="#cb11-10"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb11-11"><a href="#cb11-11"></a>  tidyr<span class="sc">::</span><span class="fu">unite</span>(<span class="at">col =</span> <span class="st">"Período"</span>, <span class="fu">c</span>(<span class="st">"Peaks"</span>, <span class="st">"Troughs"</span>), <span class="at">sep =</span> <span class="st">" - "</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-12"><a href="#cb11-12"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">"Duração"</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Duration</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-13"><a href="#cb11-13"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb11-14"><a href="#cb11-14"></a>    <span class="st">`</span><span class="at">Período </span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb11-15"><a href="#cb11-15"></a>      <span class="st">"T2/2001 - T4/2001"</span>, </span>
+<span id="cb11-16"><a href="#cb11-16"></a>      <span class="st">"T1/2003 - T2/2003"</span>, </span>
+<span id="cb11-17"><a href="#cb11-17"></a>      <span class="st">"T4/2008 - T1/2009"</span>, </span>
+<span id="cb11-18"><a href="#cb11-18"></a>      <span class="st">"T2/2014 - T4/2016"</span>, </span>
+<span id="cb11-19"><a href="#cb11-19"></a>      <span class="st">"T1/2020 - ?"</span></span>
+<span id="cb11-20"><a href="#cb11-20"></a>      ),</span>
+<span id="cb11-21"><a href="#cb11-21"></a>    <span class="st">`</span><span class="at">Duração </span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">11</span>, <span class="st">"?"</span>)</span>
+<span id="cb11-22"><a href="#cb11-22"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb11-23"><a href="#cb11-23"></a>  reactable<span class="sc">::</span><span class="fu">reactable</span>(</span>
+<span id="cb11-24"><a href="#cb11-24"></a>    <span class="at">theme =</span> reactablefmtr<span class="sc">::</span><span class="fu">flatly</span>(),</span>
+<span id="cb11-25"><a href="#cb11-25"></a>    <span class="at">columnGroups =</span> <span class="fu">list</span>(</span>
+<span id="cb11-26"><a href="#cb11-26"></a>      reactable<span class="sc">::</span><span class="fu">colGroup</span>(<span class="at">name =</span> <span class="st">"Algoritmo H. &amp; P."</span>, <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"Período"</span>, <span class="st">"Duração"</span>)),</span>
+<span id="cb11-27"><a href="#cb11-27"></a>      reactable<span class="sc">::</span><span class="fu">colGroup</span>(<span class="at">name =</span> <span class="st">"Cronologia CODACE"</span>, <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"Período "</span>, <span class="st">"Duração "</span>))</span>
+<span id="cb11-28"><a href="#cb11-28"></a>      )</span>
+<span id="cb11-29"><a href="#cb11-29"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb11-30"><a href="#cb11-30"></a>  reactablefmtr<span class="sc">::</span><span class="fu">add_title</span>(</span>
+<span id="cb11-31"><a href="#cb11-31"></a>    <span class="at">title =</span> <span class="st">"Datação de recessões - Ciclo de negócios do PIB brasileiro"</span>, </span>
+<span id="cb11-32"><a href="#cb11-32"></a>    <span class="at">font_size =</span> <span class="dv">20</span></span>
+<span id="cb11-33"><a href="#cb11-33"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb11-34"><a href="#cb11-34"></a>  reactablefmtr<span class="sc">::</span><span class="fu">add_source</span>(<span class="st">"Fonte: Fernando da Silva e CODACE."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+
+<h1 style="color:#000;background:#FFFFFF;text-align:left;font-size:20px;font-style:normal;font-weight:bold;text-decoration:;letter-spacing:px;word-spacing:px;text-transform:;text-shadow:;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px">Datação de recessões - Ciclo de negócios do PIB brasileiro</h1>
+<div id="htmlwidget-e0ef309a66153791f225" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<p style="color:#000;background:#FFFFFF;text-align:left;font-size:16px;font-style:normal;font-weight:normal;text-decoration:;letter-spacing:px;word-spacing:px;text-transform:;text-shadow:;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px">Fonte: Fernando da Silva e CODACE.</p>
+<script type="application/json" data-for="htmlwidget-e0ef309a66153791f225">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Período":["T2/2001 - T1/2002","T1/2003 - T3/2003","T4/2008 - T2/2009","T2/2014 - T1/2017","T1/2020 - T3/2020"],"Duração":["3","2","2","11","2"],"Período ":["T2/2001 - T4/2001","T1/2003 - T2/2003","T4/2008 - T1/2009","T2/2014 - T4/2016","T1/2020 - ?"],"Duração ":["3","2","2","11","?"]},"columns":[{"accessor":"Período","name":"Período","type":"character"},{"accessor":"Duração","name":"Duração","type":"character"},{"accessor":"Período ","name":"Período ","type":"character"},{"accessor":"Duração ","name":"Duração ","type":"character"}],"columnGroups":[{"name":"Algoritmo H. & P.","columns":["Período","Duração"]},{"name":"Cronologia CODACE","columns":["Período ","Duração "]}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"theme":{"color":"#212529","borderColor":"#ffffff","borderWidth":"1px","stripedColor":"#ecf0f1","highlightColor":"#ecf0f1","cellPadding":6,"tableStyle":{"fontSize":14},"headerStyle":{"borderWidth":"2px","backgroundColor":"#2c3e50","color":"#ffffff","transitionDuration":"0.5s","&:hover[aria-sort]":{"color":"#1cbc9c"},"&[aria-sort='ascending'], &[aria-sort='descending']":{"color":"#1cbc9c"},"fontSize":15},"groupHeaderStyle":{"&:not(:empty)":{"color":"#212529","fontSize":15},"&:hover":{"fontWeight":"bold","transitionDuration":"1s","transitionTimingFunction":"ease-out","color":"#1cbc9c"}},"rowSelectedStyle":{"backgroundColor":"#2c3e50","color":"#ffffff"},"inputStyle":{"backgroundColor":"#ffffff","color":"#212529"},"searchInputStyle":{"backgroundColor":"#ffffff","color":"#212529","&:focus":{"color":"#212529"}},"selectStyle":{"backgroundColor":"#18bc9c","color":"#ffffff","borderColor":"#ffffff","outlineColor":"#ffffff","&:hover":{"backgroundColor":"#0f7864"}},"pageButtonStyle":{"backgroundColor":"#18bc9c","color":"#ffffff","&:hover":{"backgroundColor":"#0f7864"}},"pageButtonHoverStyle":{"backgroundColor":"#0f7864","color":"#ffffff"},"pageButtonActiveStyle":{"backgroundColor":"#0f7864","color":"#ffffff"},"pageButtonCurrentStyle":{"backgroundColor":"#0f7864","color":"#ffffff"}},"dataKey":"e8fbc5378f03182626cff7ef528e59b5"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p><br> Perceba que ambas as datações são idênticas! A única diferença está na última datação, a qual o CODACE ainda não definiu o próximo vale. Dessa forma, fica demonstrado o poder e facilidade de uso do algoritmo de Harding &amp; Pagan para datação de ciclos econômicos.</p>
+</section></section><section id="referências" class="level2"><h2 class="anchored" data-anchor-id="referências">Referências</h2>
+<p>Burns, Arthur F. &amp; Mitchell, Wesley C., (1946). <em>Measuring Business Cycles</em>. National Bureau of Economic Research, Inc, https://EconPapers.repec.org/RePEc:nbr:nberbk:burn46-1.</p>
+<p>Harding, D., &amp; Pagan, A. (2002). <em>Dissecting the cycle: a methodological investigation</em>. Journal of monetary economics, 49(2), 365-381.</p>
+<details><summary>
+Informações da sessão
+</summary><div style="font-size:14px;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.2.1 (2022-06-23 ucrt)
+ os       Windows 10 x64 (build 19045)
+ system   x86_64, mingw32
+ ui       RTerm
+ language (EN)
+ collate  Portuguese_Brazil.utf8
+ ctype    Portuguese_Brazil.utf8
+ tz       America/Sao_Paulo
+ date     2023-03-10
+ pandoc   2.19.2 @ C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools/ (via rmarkdown)
+ quarto   1.2.335 @ C:\\PROGRA~1\\Quarto\\bin\\quarto.exe
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package       * version    date (UTC) lib source
+ assertthat      0.2.1      2019-03-21 [1] CRAN (R 4.2.1)
+ BCDating      * 0.9.8      2019-01-07 [1] CRAN (R 4.2.0)
+ cli             3.4.1      2022-09-23 [1] CRAN (R 4.2.1)
+ colorspace      2.0-3      2022-02-21 [1] CRAN (R 4.2.1)
+ crosstalk       1.2.0      2021-11-04 [1] CRAN (R 4.2.1)
+ curl            4.3.3      2022-10-06 [1] CRAN (R 4.2.1)
+ DBI             1.1.3      2022-06-18 [1] CRAN (R 4.2.1)
+ digest          0.6.29     2021-12-01 [1] CRAN (R 4.2.1)
+ dplyr         * 1.0.10     2022-09-01 [1] CRAN (R 4.2.1)
+ ellipsis        0.3.2      2021-04-29 [1] CRAN (R 4.2.1)
+ evaluate        0.17       2022-10-07 [1] CRAN (R 4.2.1)
+ fansi           1.0.3      2022-03-24 [1] CRAN (R 4.2.1)
+ farver          2.1.1      2022-07-06 [1] CRAN (R 4.2.1)
+ fastmap         1.1.0      2021-01-25 [1] CRAN (R 4.2.1)
+ generics        0.1.3      2022-07-05 [1] CRAN (R 4.2.1)
+ ggbrace         0.1.0      2022-06-17 [1] Github (NicolasH2/ggbrace@51cc034)
+ ggplot2       * 3.3.6      2022-05-03 [1] CRAN (R 4.2.1)
+ ggtext        * 0.1.2      2022-09-16 [1] CRAN (R 4.2.1)
+ ggthemes      * 4.2.4      2021-01-20 [1] CRAN (R 4.2.1)
+ glue            1.6.2      2022-02-24 [1] CRAN (R 4.2.1)
+ gridtext        0.1.4.9000 2022-06-07 [1] Github (wilkelab/gridtext@6192174)
+ gtable          0.3.1      2022-09-01 [1] CRAN (R 4.2.1)
+ htmltools       0.5.3      2022-07-18 [1] CRAN (R 4.2.1)
+ htmlwidgets     1.5.4      2021-09-08 [1] CRAN (R 4.2.1)
+ httr            1.4.5      2023-02-24 [1] CRAN (R 4.2.2)
+ jsonlite        1.8.4      2022-12-06 [1] CRAN (R 4.2.2)
+ knitr           1.40       2022-08-24 [1] CRAN (R 4.2.1)
+ labeling        0.4.2      2020-10-20 [1] CRAN (R 4.2.0)
+ lifecycle       1.0.3      2022-10-07 [1] CRAN (R 4.2.1)
+ lubridate     * 1.9.2      2023-02-10 [1] CRAN (R 4.2.2)
+ magrittr        2.0.3      2022-03-30 [1] CRAN (R 4.2.1)
+ markdown        1.1        2019-08-07 [1] CRAN (R 4.2.1)
+ munsell         0.5.0      2018-06-12 [1] CRAN (R 4.2.1)
+ pillar          1.8.1      2022-08-19 [1] CRAN (R 4.2.1)
+ pkgconfig       2.0.3      2019-09-22 [1] CRAN (R 4.2.1)
+ purrr         * 0.3.5      2022-10-06 [1] CRAN (R 4.2.1)
+ R6              2.5.1      2021-08-19 [1] CRAN (R 4.2.1)
+ ragg            1.2.2      2022-02-21 [1] CRAN (R 4.2.1)
+ Rcpp            1.0.9      2022-07-08 [1] CRAN (R 4.2.1)
+ reactable     * 0.3.0      2022-05-26 [1] CRAN (R 4.2.1)
+ reactablefmtr * 2.1.0      2022-08-10 [1] Github (kcuilla/reactablefmtr@8768b0a)
+ reactR          0.4.4      2021-02-22 [1] CRAN (R 4.2.1)
+ rjson           0.2.21     2022-01-09 [1] CRAN (R 4.2.0)
+ rlang           1.0.6      2022-09-24 [1] CRAN (R 4.2.1)
+ rmarkdown       2.17       2022-10-07 [1] CRAN (R 4.2.1)
+ rstudioapi      0.14       2022-08-22 [1] CRAN (R 4.2.1)
+ sass            0.4.2      2022-07-16 [1] CRAN (R 4.2.1)
+ scales          1.2.1      2022-08-20 [1] CRAN (R 4.2.1)
+ sessioninfo     1.2.2      2021-12-06 [1] CRAN (R 4.2.1)
+ sidrar        * 0.2.9      2022-07-12 [1] CRAN (R 4.2.0)
+ stringi         1.7.8      2022-07-11 [1] CRAN (R 4.2.1)
+ stringr         1.5.0      2022-12-02 [1] CRAN (R 4.2.2)
+ systemfonts     1.0.4      2022-02-11 [1] CRAN (R 4.2.1)
+ textshaping     0.3.6      2021-10-13 [1] CRAN (R 4.2.1)
+ tibble          3.1.8      2022-07-22 [1] CRAN (R 4.2.1)
+ tidyr         * 1.2.1      2022-09-08 [1] CRAN (R 4.2.1)
+ tidyselect      1.2.0      2022-10-10 [1] CRAN (R 4.2.1)
+ timechange      0.2.0      2023-01-11 [1] CRAN (R 4.2.2)
+ utf8            1.2.2      2021-07-24 [1] CRAN (R 4.2.1)
+ vctrs           0.5.1      2022-11-16 [1] CRAN (R 4.2.1)
+ withr           2.5.0      2022-03-03 [1] CRAN (R 4.2.1)
+ xfun            0.33       2022-09-12 [1] CRAN (R 4.2.1)
+ xml2            1.3.3      2021-11-30 [1] CRAN (R 4.2.1)
+ yaml            2.3.5      2022-02-21 [1] CRAN (R 4.2.1)
+
+ [1] C:/Users/ferna/AppData/Local/R/win-library/4.2
+ [2] C:/Program Files/R/R-4.2.1/library
+
+──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+</div>
+</details><div style="border-top: 1px solid #dee2e6; padding-top: 1rem;">
+<!-- AddToAny BEGIN -->
+<strong>Compartilhar:</strong>
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<p><a class="a2a_button_email"></a> <a class="a2a_button_facebook"></a> <a class="a2a_button_mastodon"></a> <a class="a2a_button_linkedin"></a> <a class="a2a_button_twitter"></a> <a class="a2a_button_whatsapp"></a></p>
+</div>
+<script async="" src="https://static.addtoany.com/menu/page.js"></script><!-- AddToAny END -->
+</div>
+
+
+<!-- -->
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp(/^(?:http:|https:)\/\/(www\.)?fortietwo\.com/);
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb13" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1"></a><span class="co">---</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="an">title:</span><span class="co"> "Datação de ciclos econômicos e o algoritmo de Harding-Pagan"</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="an">date:</span><span class="co"> "2021-07-20"</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="an">date-modified:</span><span class="co"> "2023-03-07"</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="an">author:</span><span class="co"> "Fernando da Silva"</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="an">description:</span><span class="co"> "Uma visão geral sobre ciclos econômicos, o algoritmo e uma aplicação em R"</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="an">categories:</span><span class="co"> [Macroeconomics, R, Economic Cycle, Português]</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a><span class="an">image:</span><span class="co"> "imgs/datacao.png"</span></span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="an">aliases:</span><span class="co"> </span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="co">  - /posts/conjuntura-economica/ciclo-economico/index.html</span></span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="co">---</span></span>
+<span id="cb13-12"><a href="#cb13-12"></a></span>
+<span id="cb13-13"><a href="#cb13-13"></a>Ao longo do tempo a economia apresenta o que se chama de ciclos econômicos, ou seja, períodos de expansão e recessão. Mas de que forma podemos saber **em qual ponto do ciclo econômico a economia se encontra**? Como sabemos se a economia está em recessão? Estas são perguntas de grande interesse para acadêmicos e profissionais da área, e neste breve exercício demonstramos como replicar a datação de ciclos econômicos que instituições como <span class="co">[</span><span class="ot">NBER</span><span class="co">](https://www.nber.org/)</span> (EUA) e <span class="co">[</span><span class="ot">CODACE</span><span class="co">](https://portalibre.fgv.br/codace)</span> (Brasil) tradicionalmente publicam.</span>
+<span id="cb13-14"><a href="#cb13-14"></a></span>
+<span id="cb13-15"><a href="#cb13-15"></a><span class="fu">## A importância de datar o ciclo econômico</span></span>
+<span id="cb13-16"><a href="#cb13-16"></a></span>
+<span id="cb13-17"><a href="#cb13-17"></a>O ciclo econômico desempenha um papel importante para as **decisões de política econômica e de empresas**. Por exemplo, quando a economia está com hiato negativo, as empresas tendem a agir de forma mais conservadora. Em contrapartida, quando a economia está com hiato positivo, as empresas tendem a agir de forma mais agressiva com o objetivo de aumentar sua participação de mercado.</span>
+<span id="cb13-18"><a href="#cb13-18"></a></span>
+<span id="cb13-19"><a href="#cb13-19"></a>A teoria do ciclos econômicos sugere que o ciclo econômico é um importante indicador para a política monetária, possibilitando a **atuação do Banco Central para estabilizar as flutuações da economia**. Portanto, a datação precisa do ciclo econômico pode ser fundamental para decisões políticas eficientes e práticas.</span>
+<span id="cb13-20"><a href="#cb13-20"></a></span>
+<span id="cb13-21"><a href="#cb13-21"></a>No Brasil o responsável pela datação do ciclo econômico é o Comitê de Datação de Ciclos Econômicos (CODACE), que se reúne periódicamente e publica um informativo contendo as datas dos períodos de expansão e recessão.</span>
+<span id="cb13-22"><a href="#cb13-22"></a></span>
+<span id="cb13-23"><a href="#cb13-23"></a><span class="fu">## Características do ciclo econômico</span></span>
+<span id="cb13-24"><a href="#cb13-24"></a></span>
+<span id="cb13-25"><a href="#cb13-25"></a>Há diveros trabalhos que investigam a questão da datação de ciclos econômicos, aqui exploraremos apenas uma das abordagens. O procedimento completo é descrito em Harding e Pagan (2002) e é largamente utilizado em diversos países. Em resumo, os autores seguem a **definição de Burns e Mitchell** (1946) sobre ciclo econômico e propõem um método que entrega uma **visualização gráfica do ciclo**.</span>
+<span id="cb13-26"><a href="#cb13-26"></a></span>
+<span id="cb13-27"><a href="#cb13-27"></a>Existem algumas características interessantes sobre as fases do ciclo econômico (fatos estilizados):</span>
+<span id="cb13-28"><a href="#cb13-28"></a></span>
+<span id="cb13-29"><a href="#cb13-29"></a><span class="ss">- </span>**Pico (A)**: é o ponto de virada quando a expansão transita para a fase de recessão;</span>
+<span id="cb13-30"><a href="#cb13-30"></a><span class="ss">- </span>**Vale (C)**: é o ponto de virada quando a recessão transita para a fase de expansão/recuperação;</span>
+<span id="cb13-31"><a href="#cb13-31"></a><span class="ss">- </span>**Duração (AB)**: é o número de trimestres entre o pico e o vale;</span>
+<span id="cb13-32"><a href="#cb13-32"></a><span class="ss">- </span>**Amplitude (BC)**: é a distância entre o pico e o vale ou altura do triângulo.</span>
+<span id="cb13-33"><a href="#cb13-33"></a></span>
+<span id="cb13-36"><a href="#cb13-36"></a><span class="in">```{r}</span></span>
+<span id="cb13-37"><a href="#cb13-37"></a><span class="co">#| echo: false</span></span>
+<span id="cb13-38"><a href="#cb13-38"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb13-39"><a href="#cb13-39"></a><span class="fu">library</span>(ggtext)</span>
+<span id="cb13-40"><a href="#cb13-40"></a></span>
+<span id="cb13-41"><a href="#cb13-41"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">1.2</span>, <span class="at">to =</span> <span class="fl">5.2</span>, <span class="at">by =</span> <span class="fl">0.1</span>)</span>
+<span id="cb13-42"><a href="#cb13-42"></a>line <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="fu">exp</span>(.<span class="dv">2</span> <span class="sc">*</span> x) <span class="sc">*</span> <span class="fu">sin</span>(<span class="fl">3.5</span> <span class="sc">*</span> x)</span>
+<span id="cb13-43"><a href="#cb13-43"></a>cycle <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">time =</span> x, <span class="at">cycle =</span> line)</span>
+<span id="cb13-44"><a href="#cb13-44"></a></span>
+<span id="cb13-45"><a href="#cb13-45"></a>pts <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb13-46"><a href="#cb13-46"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="fl">2.55</span>, <span class="fl">3.05</span>, <span class="fl">3.05</span>),</span>
+<span id="cb13-47"><a href="#cb13-47"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">3.9</span>, <span class="fl">3.9</span>, <span class="fl">1.65</span>),</span>
+<span id="cb13-48"><a href="#cb13-48"></a>  <span class="at">l =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>)</span>
+<span id="cb13-49"><a href="#cb13-49"></a>  )</span>
+<span id="cb13-50"><a href="#cb13-50"></a></span>
+<span id="cb13-51"><a href="#cb13-51"></a></span>
+<span id="cb13-52"><a href="#cb13-52"></a>cycle <span class="sc">|&gt;</span> </span>
+<span id="cb13-53"><a href="#cb13-53"></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb13-54"><a href="#cb13-54"></a>  ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> cycle) <span class="sc">+</span></span>
+<span id="cb13-55"><a href="#cb13-55"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>(</span>
+<span id="cb13-56"><a href="#cb13-56"></a>    <span class="at">size  =</span> <span class="dv">1</span>,</span>
+<span id="cb13-57"><a href="#cb13-57"></a>    <span class="at">color =</span> <span class="fu">ifelse</span>(cycle<span class="sc">$</span>time <span class="sc">&lt;</span> <span class="fl">2.3</span> <span class="sc">|</span> cycle<span class="sc">$</span>time <span class="sc">&gt;</span> <span class="dv">3</span>, <span class="st">"grey"</span>, <span class="st">"black"</span>)</span>
+<span id="cb13-58"><a href="#cb13-58"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-59"><a href="#cb13-59"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_polygon</span>(</span>
+<span id="cb13-60"><a href="#cb13-60"></a>    <span class="at">mapping =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">x =</span> x), </span>
+<span id="cb13-61"><a href="#cb13-61"></a>    <span class="at">fill    =</span> <span class="st">"black"</span>, </span>
+<span id="cb13-62"><a href="#cb13-62"></a>    <span class="at">color   =</span> <span class="st">"black"</span>, </span>
+<span id="cb13-63"><a href="#cb13-63"></a>    <span class="at">size    =</span> <span class="dv">1</span>, </span>
+<span id="cb13-64"><a href="#cb13-64"></a>    <span class="at">data    =</span> pts</span>
+<span id="cb13-65"><a href="#cb13-65"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-66"><a href="#cb13-66"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(</span>
+<span id="cb13-67"><a href="#cb13-67"></a>    <span class="at">mapping     =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y),</span>
+<span id="cb13-68"><a href="#cb13-68"></a>    <span class="at">data        =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="fl">2.3</span>, <span class="fl">3.1</span>), <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">3.85</span>, <span class="fl">1.26</span>)),</span>
+<span id="cb13-69"><a href="#cb13-69"></a>    <span class="at">size        =</span> <span class="fl">2.8</span>,</span>
+<span id="cb13-70"><a href="#cb13-70"></a>    <span class="at">color       =</span> <span class="fu">c</span>(<span class="st">"darkgreen"</span>, <span class="st">"darkred"</span>),</span>
+<span id="cb13-71"><a href="#cb13-71"></a>    <span class="at">inherit.aes =</span> <span class="cn">FALSE</span></span>
+<span id="cb13-72"><a href="#cb13-72"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-73"><a href="#cb13-73"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_text</span>(</span>
+<span id="cb13-74"><a href="#cb13-74"></a>    <span class="at">mapping  =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">label =</span> l),</span>
+<span id="cb13-75"><a href="#cb13-75"></a>    <span class="at">size     =</span> <span class="dv">5</span>,</span>
+<span id="cb13-76"><a href="#cb13-76"></a>    <span class="at">fontface =</span> <span class="st">"bold"</span>,</span>
+<span id="cb13-77"><a href="#cb13-77"></a>    <span class="at">color    =</span> <span class="fu">c</span>(<span class="st">"darkgreen"</span>, <span class="st">"black"</span>, <span class="st">"darkred"</span>),</span>
+<span id="cb13-78"><a href="#cb13-78"></a>    <span class="at">nudge_y  =</span> <span class="fu">ifelse</span>(pts<span class="sc">$</span>l <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), <span class="fl">0.25</span>, <span class="dv">0</span>),</span>
+<span id="cb13-79"><a href="#cb13-79"></a>    <span class="at">nudge_x  =</span> <span class="fu">ifelse</span>(pts<span class="sc">$</span>l <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"B"</span>, <span class="st">"C"</span>), <span class="fl">0.1</span>, <span class="sc">-</span><span class="fl">0.1</span>), </span>
+<span id="cb13-80"><a href="#cb13-80"></a>    <span class="at">data     =</span> pts</span>
+<span id="cb13-81"><a href="#cb13-81"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-82"><a href="#cb13-82"></a>  ggplot2<span class="sc">::</span><span class="fu">annotate</span>(</span>
+<span id="cb13-83"><a href="#cb13-83"></a>    <span class="at">geom     =</span> <span class="st">"text"</span>,</span>
+<span id="cb13-84"><a href="#cb13-84"></a>    <span class="at">x        =</span> <span class="fl">2.8</span>, </span>
+<span id="cb13-85"><a href="#cb13-85"></a>    <span class="at">y        =</span> <span class="fl">5.2</span>, </span>
+<span id="cb13-86"><a href="#cb13-86"></a>    <span class="at">label    =</span> <span class="st">"Duração"</span>,</span>
+<span id="cb13-87"><a href="#cb13-87"></a>    <span class="at">size     =</span> <span class="dv">5</span>,</span>
+<span id="cb13-88"><a href="#cb13-88"></a>    <span class="at">fontface =</span> <span class="st">"bold"</span></span>
+<span id="cb13-89"><a href="#cb13-89"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-90"><a href="#cb13-90"></a>  ggplot2<span class="sc">::</span><span class="fu">annotate</span>(</span>
+<span id="cb13-91"><a href="#cb13-91"></a>    <span class="at">geom     =</span> <span class="st">"text"</span>,</span>
+<span id="cb13-92"><a href="#cb13-92"></a>    <span class="at">x        =</span> <span class="fl">3.8</span>, </span>
+<span id="cb13-93"><a href="#cb13-93"></a>    <span class="at">y        =</span> <span class="fl">2.725</span>, </span>
+<span id="cb13-94"><a href="#cb13-94"></a>    <span class="at">label    =</span> <span class="st">"Amplitude"</span>,</span>
+<span id="cb13-95"><a href="#cb13-95"></a>    <span class="at">size     =</span> <span class="dv">5</span>,</span>
+<span id="cb13-96"><a href="#cb13-96"></a>    <span class="at">fontface =</span> <span class="st">"bold"</span></span>
+<span id="cb13-97"><a href="#cb13-97"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-98"><a href="#cb13-98"></a>  ggbrace<span class="sc">::</span><span class="fu">geom_brace</span>(</span>
+<span id="cb13-99"><a href="#cb13-99"></a>    <span class="at">mapping      =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="fl">3.25</span>, <span class="fl">3.4</span>), <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">3.8</span>, <span class="fl">1.65</span>)),</span>
+<span id="cb13-100"><a href="#cb13-100"></a>    <span class="at">inherit.data =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb13-101"><a href="#cb13-101"></a>    <span class="at">rotate       =</span> <span class="dv">90</span>, </span>
+<span id="cb13-102"><a href="#cb13-102"></a>    <span class="at">size         =</span> <span class="dv">1</span></span>
+<span id="cb13-103"><a href="#cb13-103"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-104"><a href="#cb13-104"></a>  ggbrace<span class="sc">::</span><span class="fu">geom_brace</span>(</span>
+<span id="cb13-105"><a href="#cb13-105"></a>    <span class="at">mapping      =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="fl">2.55</span>, <span class="fl">3.05</span>), <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">4.4</span>, <span class="fl">4.82</span>)),</span>
+<span id="cb13-106"><a href="#cb13-106"></a>    <span class="at">inherit.data =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb13-107"><a href="#cb13-107"></a>    <span class="at">size         =</span> <span class="dv">1</span></span>
+<span id="cb13-108"><a href="#cb13-108"></a>    )  <span class="sc">+</span></span>
+<span id="cb13-109"><a href="#cb13-109"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb13-110"><a href="#cb13-110"></a>    <span class="at">title    =</span> <span class="st">"Fases do Ciclo Econômico"</span>,</span>
+<span id="cb13-111"><a href="#cb13-111"></a>    <span class="at">subtitle =</span> <span class="st">"Estilizado, baseado em Harding e Pagan (2002)"</span>,</span>
+<span id="cb13-112"><a href="#cb13-112"></a>    <span class="at">y        =</span> <span class="st">"Atividade Econômica"</span>,</span>
+<span id="cb13-113"><a href="#cb13-113"></a>    <span class="at">x        =</span> <span class="st">"Tempo"</span>,</span>
+<span id="cb13-114"><a href="#cb13-114"></a>    <span class="at">caption  =</span> <span class="st">"**Elaboração**: Fernando da Silva"</span></span>
+<span id="cb13-115"><a href="#cb13-115"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-116"><a href="#cb13-116"></a>  ggplot2<span class="sc">::</span><span class="fu">annotate</span>(</span>
+<span id="cb13-117"><a href="#cb13-117"></a>    <span class="at">geom =</span> <span class="st">"richtext"</span>,</span>
+<span id="cb13-118"><a href="#cb13-118"></a>    <span class="at">x =</span> <span class="fl">1.45</span>,</span>
+<span id="cb13-119"><a href="#cb13-119"></a>    <span class="at">y =</span> <span class="dv">6</span>,</span>
+<span id="cb13-120"><a href="#cb13-120"></a>    <span class="at">label =</span> <span class="st">"&lt;span style = 'color: darkgreen;'&gt;&lt;b&gt;A&lt;/b&gt;&lt;/span&gt; = Pico local&lt;br&gt;&lt;span style = 'color: darkred;'&gt;&lt;b&gt;B&lt;/b&gt;&lt;/span&gt; = Vale local"</span>,</span>
+<span id="cb13-121"><a href="#cb13-121"></a>    <span class="at">fill =</span> <span class="cn">NA</span>,</span>
+<span id="cb13-122"><a href="#cb13-122"></a>    <span class="at">label.color =</span> <span class="cn">NA</span></span>
+<span id="cb13-123"><a href="#cb13-123"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-124"><a href="#cb13-124"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_light</span>() <span class="sc">+</span></span>
+<span id="cb13-125"><a href="#cb13-125"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb13-126"><a href="#cb13-126"></a>    <span class="at">axis.text =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
+<span id="cb13-127"><a href="#cb13-127"></a>    <span class="at">axis.title =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb13-128"><a href="#cb13-128"></a>    <span class="at">axis.ticks =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
+<span id="cb13-129"><a href="#cb13-129"></a>    <span class="at">plot.title =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb13-130"><a href="#cb13-130"></a>    <span class="at">plot.caption =</span> ggtext<span class="sc">::</span><span class="fu">element_markdown</span>(<span class="at">size =</span> <span class="dv">11</span>)</span>
+<span id="cb13-131"><a href="#cb13-131"></a>    )</span>
+<span id="cb13-132"><a href="#cb13-132"></a><span class="in">```</span></span>
+<span id="cb13-133"><a href="#cb13-133"></a></span>
+<span id="cb13-134"><a href="#cb13-134"></a>A imagem acima ilustra didaticamente estas características.</span>
+<span id="cb13-135"><a href="#cb13-135"></a></span>
+<span id="cb13-136"><a href="#cb13-136"></a><span class="fu">## O algoritmo de Harding e Pagan (2002)</span></span>
+<span id="cb13-137"><a href="#cb13-137"></a></span>
+<span id="cb13-138"><a href="#cb13-138"></a>Partindo de uma série $Y_t$ em frequência trimestral, representativa da atividade econômica (PIB) e usualmente transformada como $y_t = ln(Y_t)$, a datação do ciclo econômico deve compreender as seguintes etapas:</span>
+<span id="cb13-139"><a href="#cb13-139"></a></span>
+<span id="cb13-140"><a href="#cb13-140"></a><span class="ss">1. </span>Determinação de um conjunto potencial de pontos de virada, ou seja, os picos e vales em uma série $y_t$;</span>
+<span id="cb13-141"><a href="#cb13-141"></a><span class="ss">2. </span>Um procedimento para garantir que os picos e os vales se alternem;</span>
+<span id="cb13-142"><a href="#cb13-142"></a><span class="ss">3. </span>Um conjunto de regras que recombinam os pontos de virada estabelecidos após os passos 1) e 2) para satisfazer critérios pré-determinados relativos à *duração* e *amplitude* das fases e ciclos completos (isso é chamado de "regras de censura").</span>
+<span id="cb13-143"><a href="#cb13-143"></a></span>
+<span id="cb13-144"><a href="#cb13-144"></a>Conforme Harding e Pagan (2002), os pontos de virada da série acontecem quando:</span>
+<span id="cb13-145"><a href="#cb13-145"></a></span>
+<span id="cb13-146"><a href="#cb13-146"></a>$$\begin{align*}</span>
+<span id="cb13-147"><a href="#cb13-147"></a>  \text{Pico na observação } t \text{, se: } &amp; \left<span class="co">[</span><span class="ot">(y_{t-k}, y_{t-1}) &lt; y_t &gt; (y_{t+1}, y_{t+k}) \right</span><span class="co">]</span> <span class="sc">\\</span></span>
+<span id="cb13-148"><a href="#cb13-148"></a>  \text{Vale na observação } t \text{, se: } &amp; \left<span class="co">[</span><span class="ot">(y_{t-k}, y_{t-1}) &gt; y_t &lt; (y_{t+1}, y_{t+k}) \right</span><span class="co">]</span></span>
+<span id="cb13-149"><a href="#cb13-149"></a>\end{align*}$$</span>
+<span id="cb13-150"><a href="#cb13-150"></a></span>
+<span id="cb13-151"><a href="#cb13-151"></a>O usual e recomendado pelos autores, para séries trimestrais, é definir $k = 2$ para encontrar esses pontos máximos e mínimos locais.</span>
+<span id="cb13-152"><a href="#cb13-152"></a></span>
+<span id="cb13-153"><a href="#cb13-153"></a>Em seguida, define-se as fases de expansão, recessão e o ciclo completo:</span>
+<span id="cb13-154"><a href="#cb13-154"></a></span>
+<span id="cb13-155"><a href="#cb13-155"></a><span class="ss">- </span>**Recessão**: o período compreendido entre um pico e um vale;</span>
+<span id="cb13-156"><a href="#cb13-156"></a><span class="ss">- </span>**Expansão**: o período compreendido entre um vale e um pico;</span>
+<span id="cb13-157"><a href="#cb13-157"></a><span class="ss">- </span>**Ciclo completo**: pode ser mensurado como a duração das fases de recessão e expansão somadas.</span>
+<span id="cb13-158"><a href="#cb13-158"></a></span>
+<span id="cb13-159"><a href="#cb13-159"></a>Para tal, é necessário impor algumas "regras de censura", que são restrições adicionais para eliminar/manter os pontos de virada identificados. Isso passa por definir uma **duração mínima das fases** de recessão/expansão entre picos/vales, geralmente utilizando-se 2 trimestres (inspirado no NBER). Além disso, restringe-se também a **duração mínima do ciclo completo** como 5 trimestres.</span>
+<span id="cb13-160"><a href="#cb13-160"></a></span>
+<span id="cb13-161"><a href="#cb13-161"></a>Em resumo:</span>
+<span id="cb13-162"><a href="#cb13-162"></a></span>
+<span id="cb13-163"><a href="#cb13-163"></a><span class="ss">- </span>**Recessão/Expansão**: duram, no mínimo, 2 trimestres;</span>
+<span id="cb13-164"><a href="#cb13-164"></a><span class="ss">- </span>**Ciclo completo**: dura, no mínimo, 5 trimestres.</span>
+<span id="cb13-165"><a href="#cb13-165"></a></span>
+<span id="cb13-166"><a href="#cb13-166"></a>O método é bastante simples e poderoso, conseguindo praticamente replicar a cronologia de recessões desenvolvidas pelas instituições mencionadas acima. </span>
+<span id="cb13-167"><a href="#cb13-167"></a></span>
+<span id="cb13-168"><a href="#cb13-168"></a><span class="fu">## Datação do ciclo econômico do Brasil</span></span>
+<span id="cb13-169"><a href="#cb13-169"></a></span>
+<span id="cb13-170"><a href="#cb13-170"></a>Agora passemos a aplicação do procedimento de datação do ciclo econômico, conforme Harding e Pagan (2002), exemplificando para a série trimestral do PIB brasileiro (série encadeada, ajustada sazonalmente).</span>
+<span id="cb13-171"><a href="#cb13-171"></a></span>
+<span id="cb13-172"><a href="#cb13-172"></a><span class="fu">### Pacotes</span></span>
+<span id="cb13-173"><a href="#cb13-173"></a></span>
+<span id="cb13-174"><a href="#cb13-174"></a>Para aplicar o algoritmo utilizaremos o pacote <span class="in">`{BCDating}`</span> na linguagem R, criado por Majid Einian (Central Bank of Islamic Republic of Iran) e Franck Arnaud (National Institute of Statistics and Economic Studies, France). Outros pacotes são utilizados para coleta, tratamento e visualização de dados:</span>
+<span id="cb13-175"><a href="#cb13-175"></a></span>
+<span id="cb13-178"><a href="#cb13-178"></a><span class="in">```{r}</span></span>
+<span id="cb13-179"><a href="#cb13-179"></a><span class="co"># Carregar pacotes</span></span>
+<span id="cb13-180"><a href="#cb13-180"></a><span class="fu">library</span>(BCDating)</span>
+<span id="cb13-181"><a href="#cb13-181"></a><span class="fu">library</span>(sidrar)</span>
+<span id="cb13-182"><a href="#cb13-182"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb13-183"><a href="#cb13-183"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb13-184"><a href="#cb13-184"></a><span class="fu">library</span>(purrr)</span>
+<span id="cb13-185"><a href="#cb13-185"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb13-186"><a href="#cb13-186"></a><span class="fu">library</span>(ggthemes)</span>
+<span id="cb13-187"><a href="#cb13-187"></a><span class="fu">library</span>(ggtext)</span>
+<span id="cb13-188"><a href="#cb13-188"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb13-189"><a href="#cb13-189"></a><span class="fu">library</span>(reactable)</span>
+<span id="cb13-190"><a href="#cb13-190"></a><span class="fu">library</span>(reactablefmtr)</span>
+<span id="cb13-191"><a href="#cb13-191"></a><span class="in">```</span></span>
+<span id="cb13-192"><a href="#cb13-192"></a></span>
+<span id="cb13-193"><a href="#cb13-193"></a><span class="fu">### Dados</span></span>
+<span id="cb13-194"><a href="#cb13-194"></a></span>
+<span id="cb13-195"><a href="#cb13-195"></a>Neste exercício utilizaremos a série do PIB a preços de mercado (série encadeada do índice de volume trimestral com ajuste sazonal, média de 1995 = 100), disponível no SIDRA/IBGE. Para coletar os dados via API pode-se usar o pacote <span class="in">`{sidrar}`</span>, especificando o código de coleta. Além disso realizamos a preparação dos dados para utilização posterior:</span>
+<span id="cb13-196"><a href="#cb13-196"></a></span>
+<span id="cb13-199"><a href="#cb13-199"></a><span class="in">```{r}</span></span>
+<span id="cb13-200"><a href="#cb13-200"></a><span class="co"># Coleta e tratamento de dados</span></span>
+<span id="cb13-201"><a href="#cb13-201"></a>pib <span class="ot">&lt;-</span> sidrar<span class="sc">::</span><span class="fu">get_sidra</span>(<span class="at">api =</span> <span class="st">"/t/1621/n1/all/v/all/p/all/c11255/90707/d/v584%202"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-202"><a href="#cb13-202"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb13-203"><a href="#cb13-203"></a>    <span class="at">date =</span> lubridate<span class="sc">::</span><span class="fu">yq</span>(<span class="st">`</span><span class="at">Trimestre (Código)</span><span class="st">`</span>),</span>
+<span id="cb13-204"><a href="#cb13-204"></a>    <span class="at">value =</span> Valor, </span>
+<span id="cb13-205"><a href="#cb13-205"></a>    <span class="at">.keep =</span> <span class="st">"none"</span></span>
+<span id="cb13-206"><a href="#cb13-206"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb13-207"><a href="#cb13-207"></a>  dplyr<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
+<span id="cb13-208"><a href="#cb13-208"></a></span>
+<span id="cb13-209"><a href="#cb13-209"></a><span class="co"># Inspeção dos dados</span></span>
+<span id="cb13-210"><a href="#cb13-210"></a><span class="fu">tail</span>(pib)</span>
+<span id="cb13-211"><a href="#cb13-211"></a><span class="in">```</span></span>
+<span id="cb13-212"><a href="#cb13-212"></a></span>
+<span id="cb13-213"><a href="#cb13-213"></a><span class="fu">### Datação</span></span>
+<span id="cb13-214"><a href="#cb13-214"></a></span>
+<span id="cb13-215"><a href="#cb13-215"></a>Para aplicar o algoritmo e obter as datações de ciclo de negócios, primeiro transformamos o objeto pro formato de série temporal e, em seguida, utilizamos a função <span class="in">`BBQ()`</span> do pacote <span class="in">`{BCDating}`</span>. Optamos por deixar com os valores predefinidos os demais argumentos da função, que servem para definir os valores mínimos de duração do ciclo (pico ao pico ou vale ao vale) e da fase do ciclo (pico ao vale ou vale ao pico).</span>
+<span id="cb13-216"><a href="#cb13-216"></a></span>
+<span id="cb13-219"><a href="#cb13-219"></a><span class="in">```{r}</span></span>
+<span id="cb13-220"><a href="#cb13-220"></a><span class="co"># Obter datação de ciclo de negócios</span></span>
+<span id="cb13-221"><a href="#cb13-221"></a>bc_dates <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">ts</span>(</span>
+<span id="cb13-222"><a href="#cb13-222"></a>  <span class="at">data =</span> pib<span class="sc">$</span>value, </span>
+<span id="cb13-223"><a href="#cb13-223"></a>  <span class="at">start =</span> <span class="fu">c</span>(lubridate<span class="sc">::</span><span class="fu">year</span>(<span class="fu">min</span>(pib<span class="sc">$</span>date)), lubridate<span class="sc">::</span><span class="fu">quarter</span>(<span class="fu">min</span>(pib<span class="sc">$</span>date))),</span>
+<span id="cb13-224"><a href="#cb13-224"></a>  <span class="at">frequency =</span> <span class="dv">4</span></span>
+<span id="cb13-225"><a href="#cb13-225"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb13-226"><a href="#cb13-226"></a>  BCDating<span class="sc">::</span><span class="fu">BBQ</span>(<span class="at">name =</span> <span class="st">"Ciclo de Negócios do PIB do Brasil"</span>)</span>
+<span id="cb13-227"><a href="#cb13-227"></a></span>
+<span id="cb13-228"><a href="#cb13-228"></a></span>
+<span id="cb13-229"><a href="#cb13-229"></a><span class="co"># Inspeção do objeto</span></span>
+<span id="cb13-230"><a href="#cb13-230"></a><span class="fu">class</span>(bc_dates)</span>
+<span id="cb13-231"><a href="#cb13-231"></a><span class="in">```</span></span>
+<span id="cb13-232"><a href="#cb13-232"></a></span>
+<span id="cb13-233"><a href="#cb13-233"></a><span class="fu">### Resultados</span></span>
+<span id="cb13-234"><a href="#cb13-234"></a></span>
+<span id="cb13-235"><a href="#cb13-235"></a>Como pode ser visto abaixo, o objeto retornado traz como resultado as datas (trimestres) de picos e vales, assim como a duração do ciclo.</span>
+<span id="cb13-236"><a href="#cb13-236"></a></span>
+<span id="cb13-239"><a href="#cb13-239"></a><span class="in">```{r}</span></span>
+<span id="cb13-240"><a href="#cb13-240"></a><span class="co"># Exibir resultados</span></span>
+<span id="cb13-241"><a href="#cb13-241"></a><span class="fu">show</span>(bc_dates)</span>
+<span id="cb13-242"><a href="#cb13-242"></a><span class="in">```</span></span>
+<span id="cb13-243"><a href="#cb13-243"></a></span>
+<span id="cb13-244"><a href="#cb13-244"></a>Outras informações podem ser obtidas com a função <span class="in">`summary()`</span>:</span>
+<span id="cb13-245"><a href="#cb13-245"></a></span>
+<span id="cb13-248"><a href="#cb13-248"></a><span class="in">```{r}</span></span>
+<span id="cb13-249"><a href="#cb13-249"></a><span class="co"># Informações adicionais</span></span>
+<span id="cb13-250"><a href="#cb13-250"></a><span class="fu">summary</span>(bc_dates)</span>
+<span id="cb13-251"><a href="#cb13-251"></a><span class="in">```</span></span>
+<span id="cb13-252"><a href="#cb13-252"></a></span>
+<span id="cb13-253"><a href="#cb13-253"></a>Porém, o mais interessante é avaliar o resultado visualmente através de um gráfico. Para tal, fazemos um tratamento dos dados retornados pela função <span class="in">`BBQ()`</span> e utilizamos o <span class="in">`{ggplot2}`</span> para gerar o gráfico com as áreas sombreadas referente às datas de recessão que foram identificadas pelo algoritmo, acompanhadas do comportamento do PIB no período:</span>
+<span id="cb13-254"><a href="#cb13-254"></a></span>
+<span id="cb13-257"><a href="#cb13-257"></a><span class="in">```{r}</span></span>
+<span id="cb13-258"><a href="#cb13-258"></a><span class="co"># Transformar resultados em tibble</span></span>
+<span id="cb13-259"><a href="#cb13-259"></a>bc_dates_tbl <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">quietly</span>(show)(bc_dates)<span class="sc">$</span>result <span class="sc">|&gt;</span> </span>
+<span id="cb13-260"><a href="#cb13-260"></a>  dplyr<span class="sc">::</span><span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-261"><a href="#cb13-261"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb13-262"><a href="#cb13-262"></a>    <span class="st">`</span><span class="at">Peaks</span><span class="st">`</span>   <span class="ot">=</span> lubridate<span class="sc">::</span><span class="fu">yq</span>(<span class="st">`</span><span class="at">Peaks</span><span class="st">`</span>), </span>
+<span id="cb13-263"><a href="#cb13-263"></a>    <span class="st">`</span><span class="at">Troughs</span><span class="st">`</span> <span class="ot">=</span> lubridate<span class="sc">::</span><span class="fu">yq</span>(<span class="st">`</span><span class="at">Troughs</span><span class="st">`</span>)</span>
+<span id="cb13-264"><a href="#cb13-264"></a>    )</span>
+<span id="cb13-265"><a href="#cb13-265"></a></span>
+<span id="cb13-266"><a href="#cb13-266"></a><span class="co"># Gerar gráfico</span></span>
+<span id="cb13-267"><a href="#cb13-267"></a>g1 <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb13-268"><a href="#cb13-268"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_rect</span>(</span>
+<span id="cb13-269"><a href="#cb13-269"></a>    <span class="at">data =</span> bc_dates_tbl, </span>
+<span id="cb13-270"><a href="#cb13-270"></a>    <span class="at">mapping =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(</span>
+<span id="cb13-271"><a href="#cb13-271"></a>      <span class="at">xmin =</span> <span class="st">`</span><span class="at">Peaks</span><span class="st">`</span>, <span class="at">xmax =</span> <span class="st">`</span><span class="at">Troughs</span><span class="st">`</span>, <span class="at">ymin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, </span>
+<span id="cb13-272"><a href="#cb13-272"></a>      <span class="at">fill =</span> <span class="st">"Recessão"</span></span>
+<span id="cb13-273"><a href="#cb13-273"></a>      ),</span>
+<span id="cb13-274"><a href="#cb13-274"></a>    <span class="at">alpha =</span> <span class="fl">0.3</span></span>
+<span id="cb13-275"><a href="#cb13-275"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-276"><a href="#cb13-276"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>(</span>
+<span id="cb13-277"><a href="#cb13-277"></a>    <span class="at">data =</span> pib, </span>
+<span id="cb13-278"><a href="#cb13-278"></a>    <span class="at">mapping =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> value, <span class="at">colour =</span> <span class="st">"PIB s. a. (1995 = 100)"</span>), </span>
+<span id="cb13-279"><a href="#cb13-279"></a>    <span class="at">size =</span> <span class="fl">1.5</span></span>
+<span id="cb13-280"><a href="#cb13-280"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-281"><a href="#cb13-281"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="st">"dodgerblue4"</span>) <span class="sc">+</span></span>
+<span id="cb13-282"><a href="#cb13-282"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
+<span id="cb13-283"><a href="#cb13-283"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_x_date</span>(<span class="at">date_breaks =</span> <span class="st">"4 years"</span>, <span class="at">date_labels =</span> <span class="st">"%Y"</span>) <span class="sc">+</span></span>
+<span id="cb13-284"><a href="#cb13-284"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb13-285"><a href="#cb13-285"></a>    <span class="at">title    =</span> <span class="st">"Brasil: datação de ciclos econômicos"</span>,</span>
+<span id="cb13-286"><a href="#cb13-286"></a>    <span class="at">subtitle =</span> <span class="st">"Recessão datada pelo algoritmo de Harding-Pagan (2002)"</span>,</span>
+<span id="cb13-287"><a href="#cb13-287"></a>    <span class="at">y        =</span> <span class="st">"Índice"</span>,</span>
+<span id="cb13-288"><a href="#cb13-288"></a>    <span class="at">x        =</span> <span class="cn">NULL</span>,</span>
+<span id="cb13-289"><a href="#cb13-289"></a>    <span class="at">color    =</span> <span class="cn">NULL</span>,</span>
+<span id="cb13-290"><a href="#cb13-290"></a>    <span class="at">fill     =</span> <span class="cn">NULL</span>,</span>
+<span id="cb13-291"><a href="#cb13-291"></a>    <span class="at">caption  =</span> <span class="st">"**Dados:** IBGE | **Elaboração:** Fernando da Silva"</span></span>
+<span id="cb13-292"><a href="#cb13-292"></a>    ) <span class="sc">+</span></span>
+<span id="cb13-293"><a href="#cb13-293"></a>  ggthemes<span class="sc">::</span><span class="fu">theme_calc</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb13-294"><a href="#cb13-294"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb13-295"><a href="#cb13-295"></a>    <span class="at">plot.title            =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb13-296"><a href="#cb13-296"></a>    <span class="at">plot.title.position   =</span> <span class="st">"plot"</span>,</span>
+<span id="cb13-297"><a href="#cb13-297"></a>    <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb13-298"><a href="#cb13-298"></a>    <span class="at">plot.background       =</span> ggplot2<span class="sc">::</span><span class="fu">element_rect</span>(<span class="at">colour =</span> <span class="cn">NA</span>),</span>
+<span id="cb13-299"><a href="#cb13-299"></a>    <span class="at">plot.caption          =</span>  ggtext<span class="sc">::</span><span class="fu">element_textbox_simple</span>(</span>
+<span id="cb13-300"><a href="#cb13-300"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb13-301"><a href="#cb13-301"></a>      ),</span>
+<span id="cb13-302"><a href="#cb13-302"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb13-303"><a href="#cb13-303"></a>    )</span>
+<span id="cb13-304"><a href="#cb13-304"></a>g1</span>
+<span id="cb13-305"><a href="#cb13-305"></a><span class="in">```</span></span>
+<span id="cb13-306"><a href="#cb13-306"></a></span>
+<span id="cb13-309"><a href="#cb13-309"></a><span class="in">```{r}</span></span>
+<span id="cb13-310"><a href="#cb13-310"></a><span class="co">#| echo: false</span></span>
+<span id="cb13-311"><a href="#cb13-311"></a>ggplot2<span class="sc">::</span><span class="fu">ggsave</span>(</span>
+<span id="cb13-312"><a href="#cb13-312"></a>  <span class="at">filename =</span> <span class="st">"imgs/datacao.png"</span>,</span>
+<span id="cb13-313"><a href="#cb13-313"></a>  <span class="at">plot =</span> g1,</span>
+<span id="cb13-314"><a href="#cb13-314"></a>  <span class="at">width =</span> <span class="fl">7.2</span>,</span>
+<span id="cb13-315"><a href="#cb13-315"></a>  <span class="at">height =</span> <span class="dv">4</span></span>
+<span id="cb13-316"><a href="#cb13-316"></a>  )</span>
+<span id="cb13-317"><a href="#cb13-317"></a><span class="in">```</span></span>
+<span id="cb13-318"><a href="#cb13-318"></a></span>
+<span id="cb13-319"><a href="#cb13-319"></a></span>
+<span id="cb13-320"><a href="#cb13-320"></a></span>
+<span id="cb13-321"><a href="#cb13-321"></a><span class="fu">### Comparação com cronologia do CODACE/FGV</span></span>
+<span id="cb13-322"><a href="#cb13-322"></a></span>
+<span id="cb13-323"><a href="#cb13-323"></a>Por fim, vamos comparar os resultados aqui encontrados com a Cronologia de Ciclos de Negócios Brasileiros elaborada pelo CODACE. A última reunião do comitê foi em 29 de junho de 2020, na qual reportou a seguinte situação do ciclo de negócios:</span>
+<span id="cb13-324"><a href="#cb13-324"></a></span>
+<span id="cb13-325"><a href="#cb13-325"></a><span class="al">![](imgs/codace.PNG)</span></span>
+<span id="cb13-326"><a href="#cb13-326"></a></span>
+<span id="cb13-327"><a href="#cb13-327"></a>Percebe-se que a série utilizada pelo comitê inicia-se em 1980, mas se analisarmos a partir de 1996 (período de início da série utilizada em nosso exercício), verificamos que 5 de 6 recessões datadas pelo CODACE são identificadas pelo algoritmo de Harding &amp; Pagan (2002). Apenas a recessão do 1º trimestre de 1998 ao 1º trimestre de 1999 não foi detectada. Apesar disso, o resultado é empolgante!</span>
+<span id="cb13-328"><a href="#cb13-328"></a></span>
+<span id="cb13-329"><a href="#cb13-329"></a>Por fim, vamos comparar os resultados de ambas as datações mais a fundo na tabela a seguir, na qual contabilizamos o período de recessão partindo do trimestre imediatamente posterior ao pico até o subsequente vale:</span>
+<span id="cb13-330"><a href="#cb13-330"></a></span>
+<span id="cb13-333"><a href="#cb13-333"></a><span class="in">```{r}</span></span>
+<span id="cb13-334"><a href="#cb13-334"></a>bc_dates_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb13-335"><a href="#cb13-335"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb13-336"><a href="#cb13-336"></a>    dplyr<span class="sc">::</span><span class="fu">across</span>(</span>
+<span id="cb13-337"><a href="#cb13-337"></a>      <span class="at">.cols =</span> <span class="fu">c</span>(<span class="st">"Peaks"</span>, <span class="st">"Troughs"</span>), <span class="at">.fns =</span> <span class="sc">~</span>.x <span class="sc">+</span> <span class="fu">months</span>(<span class="dv">3</span>) <span class="co"># pois data de início não é inclusa</span></span>
+<span id="cb13-338"><a href="#cb13-338"></a>      ),</span>
+<span id="cb13-339"><a href="#cb13-339"></a>    dplyr<span class="sc">::</span><span class="fu">across</span>(</span>
+<span id="cb13-340"><a href="#cb13-340"></a>      <span class="at">.cols =</span> <span class="fu">c</span>(<span class="st">"Peaks"</span>, <span class="st">"Troughs"</span>), </span>
+<span id="cb13-341"><a href="#cb13-341"></a>      <span class="at">.fns =</span> <span class="sc">~</span><span class="fu">paste0</span>(<span class="st">"T"</span>, lubridate<span class="sc">::</span><span class="fu">quarter</span>(.x), <span class="st">"/"</span>, lubridate<span class="sc">::</span><span class="fu">year</span>(.x))</span>
+<span id="cb13-342"><a href="#cb13-342"></a>      )</span>
+<span id="cb13-343"><a href="#cb13-343"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb13-344"><a href="#cb13-344"></a>  tidyr<span class="sc">::</span><span class="fu">unite</span>(<span class="at">col =</span> <span class="st">"Período"</span>, <span class="fu">c</span>(<span class="st">"Peaks"</span>, <span class="st">"Troughs"</span>), <span class="at">sep =</span> <span class="st">" - "</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-345"><a href="#cb13-345"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="st">"Duração"</span> <span class="ot">=</span> <span class="st">`</span><span class="at">Duration</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-346"><a href="#cb13-346"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb13-347"><a href="#cb13-347"></a>    <span class="st">`</span><span class="at">Período </span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb13-348"><a href="#cb13-348"></a>      <span class="st">"T2/2001 - T4/2001"</span>, </span>
+<span id="cb13-349"><a href="#cb13-349"></a>      <span class="st">"T1/2003 - T2/2003"</span>, </span>
+<span id="cb13-350"><a href="#cb13-350"></a>      <span class="st">"T4/2008 - T1/2009"</span>, </span>
+<span id="cb13-351"><a href="#cb13-351"></a>      <span class="st">"T2/2014 - T4/2016"</span>, </span>
+<span id="cb13-352"><a href="#cb13-352"></a>      <span class="st">"T1/2020 - ?"</span></span>
+<span id="cb13-353"><a href="#cb13-353"></a>      ),</span>
+<span id="cb13-354"><a href="#cb13-354"></a>    <span class="st">`</span><span class="at">Duração </span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">11</span>, <span class="st">"?"</span>)</span>
+<span id="cb13-355"><a href="#cb13-355"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb13-356"><a href="#cb13-356"></a>  reactable<span class="sc">::</span><span class="fu">reactable</span>(</span>
+<span id="cb13-357"><a href="#cb13-357"></a>    <span class="at">theme =</span> reactablefmtr<span class="sc">::</span><span class="fu">flatly</span>(),</span>
+<span id="cb13-358"><a href="#cb13-358"></a>    <span class="at">columnGroups =</span> <span class="fu">list</span>(</span>
+<span id="cb13-359"><a href="#cb13-359"></a>      reactable<span class="sc">::</span><span class="fu">colGroup</span>(<span class="at">name =</span> <span class="st">"Algoritmo H. &amp; P."</span>, <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"Período"</span>, <span class="st">"Duração"</span>)),</span>
+<span id="cb13-360"><a href="#cb13-360"></a>      reactable<span class="sc">::</span><span class="fu">colGroup</span>(<span class="at">name =</span> <span class="st">"Cronologia CODACE"</span>, <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">"Período "</span>, <span class="st">"Duração "</span>))</span>
+<span id="cb13-361"><a href="#cb13-361"></a>      )</span>
+<span id="cb13-362"><a href="#cb13-362"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb13-363"><a href="#cb13-363"></a>  reactablefmtr<span class="sc">::</span><span class="fu">add_title</span>(</span>
+<span id="cb13-364"><a href="#cb13-364"></a>    <span class="at">title =</span> <span class="st">"Datação de recessões - Ciclo de negócios do PIB brasileiro"</span>, </span>
+<span id="cb13-365"><a href="#cb13-365"></a>    <span class="at">font_size =</span> <span class="dv">20</span></span>
+<span id="cb13-366"><a href="#cb13-366"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb13-367"><a href="#cb13-367"></a>  reactablefmtr<span class="sc">::</span><span class="fu">add_source</span>(<span class="st">"Fonte: Fernando da Silva e CODACE."</span>)</span>
+<span id="cb13-368"><a href="#cb13-368"></a><span class="in">```</span></span>
+<span id="cb13-369"><a href="#cb13-369"></a><span class="kw">&lt;br&gt;</span></span>
+<span id="cb13-370"><a href="#cb13-370"></a>Perceba que ambas as datações são idênticas! A única diferença está na última datação, a qual o CODACE ainda não definiu o próximo vale. Dessa forma, fica demonstrado o poder e facilidade de uso do algoritmo de Harding &amp; Pagan para datação de ciclos econômicos.</span>
+<span id="cb13-371"><a href="#cb13-371"></a></span>
+<span id="cb13-372"><a href="#cb13-372"></a><span class="fu">## Referências</span></span>
+<span id="cb13-373"><a href="#cb13-373"></a></span>
+<span id="cb13-374"><a href="#cb13-374"></a>Burns, Arthur F. &amp; Mitchell, Wesley C., (1946). *Measuring Business Cycles*. National Bureau of Economic Research, Inc, https://EconPapers.repec.org/RePEc:nbr:nberbk:burn46-1.</span>
+<span id="cb13-375"><a href="#cb13-375"></a></span>
+<span id="cb13-376"><a href="#cb13-376"></a>Harding, D., &amp; Pagan, A. (2002). *Dissecting the cycle: a methodological investigation*. Journal of monetary economics, 49(2), 365-381.</span>
+<span id="cb13-377"><a href="#cb13-377"></a></span>
+<span id="cb13-378"><a href="#cb13-378"></a>{{&lt; include ../../R/_session_info_pt.qmd &gt;}}</span>
+<span id="cb13-379"><a href="#cb13-379"></a>{{&lt; include ../../styles/html/_footer_pt.qmd &gt;}}</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Licensed under <i class="fa-brands fa-creative-commons" aria-label="creative-commons"></i> <i class="fa-brands fa-creative-commons-by" aria-label="creative-commons-by"></i> <i class="fa-brands fa-creative-commons-sa" aria-label="creative-commons-sa"></i> <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></div>   
+      <div class="nav-footer-center">Made with&nbsp;<a href="https://quarto.org/">Quarto</a></div>
+    <div class="nav-footer-right">View the source at <a href="https://github.com/schoulten/schoulten.github.io"><i class="fa-brands fa-github" aria-label="github"></i> GitHub</a></div>
+  </div>
+</footer>
+
+
+</body></html>

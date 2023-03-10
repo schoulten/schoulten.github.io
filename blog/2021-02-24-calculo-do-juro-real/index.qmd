@@ -1,0 +1,210 @@
+---
+title: "Cálculo da taxa de juros real: ex post e ex ante"
+date: "2021-02-24"
+date-modified: "2023-03-09"
+author: "Fernando da Silva"
+description: "O porquê e o como de analisar o preço do dinheiro ao longo do tempo, com uma aplicação em R"
+categories: [Macroeconomics, Monetary Policy, R, Português]
+image: "imgs/conducao.png"
+aliases: 
+  - /posts/macroeconomia/juro-real/index.html
+---
+
+O dinheiro existe há bastante tempo e, geralmente, pagamos para poder usar o dinheiro e/ou poupança de outra pessoa (afinal, não existe almoço grátis). O preço dessa troca, entre o credor e o devedor, é o que usualmente se chama de juros. Também é comum que essa taxa, chamada de juros nominal, seja positiva e definida como um referencial pelo Banco Central de cada país, constituindo um dos principais instrumentos de controle da inflação.
+
+Sabendo que a taxa de juros nominal é um preço, logo, há motivos para deflacioná-lo por um índice de correção de preços como o IPCA, por exemplo, de forma semelhante ao que fazemos quando é necessário "corrigir" o valor de um imóvel que irá à venda. O resultado dessa operação é o que é chamado de taxa de juros real, ou seja, a taxa nominal deflacionada pela taxa de inflação.
+
+Também é com a taxa de juros real, em conjunto com uma outra taxa — a taxa neutra, que é uma taxa de juros teórica, consistente com a estabilidade da inflação ao longo do tempo —, que é possível analisar a condução da política monetária de uma economia. A política monetária é dita "contracionista" quando a taxa de juros real está acima da taxa de juros neutra, ou seja, a autoridade monetária está com a taxa de juros em território que desincentiva a tomada de crédito, os investimentos e o consumo de maneira geral. Do contrário, a política monetária é dita "expansionista".
+
+## Conceitos ex-post e ex-ante
+
+Existem basicamente duas perspectivas sobre a taxa de juros real: pelo conceito ex-post e pelo conceito ex-ante. No primeiro caso olhamos o comportamento dos juros no período passado, geralmente usando valores acumulados em 12 meses, o que nos permite verificar a tendência de juros real da economia; enquanto que no segundo caso é o oposto, estamos interessados em verificar o comportamento do juros real à frente, tomando como base expectativas de agentes de mercado, assim é possível identificar como é esperado o comportamento dos juros no futuro.
+
+De forma mais visual, esses conceitos podem se traduzir em uma realidade da economia do país bastante impressionante se olharmos um período de tempo suficientemente grande, conforme a imagem abaixo:
+
+```{r}
+#| echo: false
+source("R/juro_real.R")
+g1
+```
+
+## Cálculo do juros real
+
+Para chegar ao resultado que determina o juros real da economia usamos a **equação de Fisher**, através da fórmula bem simples a seguir:
+
+$$r = \left(\frac{1+i}{1+\pi}\right)-1$$
+Onde os termos significam:
+
+$r$ = taxa de juros real<br>
+$i$ = taxa de juros nominal<br>
+$\pi$ = taxa de inflação
+
+Note que se os dados estiverem expressos em percentual (% a.m., % a.a., etc.), você deve dividir o termo correspondente por 100 na fórmula acima.
+
+## Juros real no Brasil
+
+Explicados brevemente estes conceitos e dado uma prévia do resultado que queremos chegar, podemos partir para uma aplicação do cálculo das taxas para a economia brasileira.
+
+No caso da **taxa de juros real ex-ante**, opto aqui por utilizar a taxa do Swap DI-Pré 360 dias e as expectativas de IPCA esperado também de 1 ano à frente, provenientes da B3 e do boletim Focus/BCB respectivamente. Há outras maneiras de obter essa taxa, para uma discussão sobre o assunto recomendo [esse texto](https://blogdoibre.fgv.br/posts/juro-real-ex-ante-caindo-ou-subindo) do Bráulio Borges e Gilberto Borça Jr. Já no caso da **taxa de juros real ex-post** usamos a taxa Selic acumulada no mês anualizada em base de 252 dias úteis e o IPCA acumulado em 12 meses, provenientes do BCB e do IBGE respectivamente.
+
+O que é necessário agora é obter esses dados e aplicar a equação de Fisher. A obtenção dos dados é bastante simples e rápida usando a linguagem R. Vamos usar as API's de três fontes públicas de dados (IPEADATA, BCB e IBGE).
+
+### Pacotes
+
+Primeiro carregamos os pacotes de R necessários (instale com `install.packages()` caso você não tenha algum instalado).
+
+```{r}
+# Carregar pacotes
+library(rbcb)
+library(ipeadatar)
+library(sidrar)
+library()
+library()
+```
+
+### Coleta de dados 
+
+Em seguida utilizamos os parâmetros de cada API para obter os dados das fontes indicadas.
+
+```{r}
+# Expectativas IPCA em 12 meses
+dados_focus_12m <- rbcb::get_market_expectations(
+  type = "inflation-12-months", 
+  indic = "IPCA",
+  start_date = "1999-01-01"
+  )
+
+# Swaps DI pré 360
+dados_ipea <- ipeadatar::ipeadata("BMF12_SWAPDI36012")
+
+# SELIC acumulada no mês anualizada base 252
+dados_selic <- rbcb::get_series(code = c("selic" = 4189))
+
+# IPCA acumulado em 12 meses
+dados_ipca <- sidrar::get_sidra(api = "/t/1737/n1/all/v/2265/p/all/d/v2265%202")
+```
+
+### Tratamento de dados
+
+Os dados coletados precisam de alguns tratamentos para ficarem no formato desejado, o que envolve cruzar as tabelas, calcular médias, filtrar observações, etc.
+
+```{r}
+# Swaps DI pré 360
+swaps <- dplyr::select(dados_ipea, "data" = "date", "swaps" = "value")
+
+# Expectativa média do IPCA em 12 meses
+focus_12m <- dados_focus_12m |>
+  dplyr::filter(baseCalculo == 0 & Suavizada == "S") |>
+  dplyr::group_by(data = lubridate::floor_date(Data, unit = "month")) |>
+  dplyr::summarise(ipca_exp = mean(x = Mediana, na.rm = TRUE))
+
+# SELIC acumulada no mês anualizada base 252
+selic <- dplyr::rename(dados_selic, "data" = "date")
+
+# IPCA acumulado em 12 meses
+ipca <- dados_ipca |> 
+  dplyr::mutate(
+    data     = lubridate::ym(`Mês (Código)`),
+    ipca_obs = Valor,
+    .keep    = "none"
+    ) |> 
+  dplyr::as_tibble()
+
+# Cruzar tabelas
+tabelas <- purrr::reduce(
+  .x = list(swaps, focus_12m, selic, ipca),
+  .f = dplyr::full_join,
+  by = "data"
+  ) |> 
+  dplyr::arrange(data) |> 
+  dplyr::filter(data >= lubridate::ymd("2001-12-01"))
+
+# Exibe dados
+tail(tabelas)
+```
+
+### Calcular o juros real
+
+Com os dados em mãos, podemos finalmente aplicar a equação de Fisher. O resultado final será uma tabela com uma coluna com o período da observação, uma com o valor da taxa de juros real pelo conceito ex ante e outra pelo conceito ex-post.
+
+```{r}
+# Função útil para computar o cálculo
+fisher <- function(juros, inflacao) {
+  r = ((1 + juros) / (1 + inflacao)) - 1
+  return(r)
+}
+
+# Cálculo da taxa de juros real
+juros_real <- tabelas |> 
+  dplyr::mutate(
+    ex_ante = fisher(juros = swaps/100, inflacao = ipca_exp/100) * 100,
+    ex_post = fisher(juros = selic/100, inflacao = ipca_obs/100) * 100,
+    data    = data,
+    .keep   = "none"
+    )
+
+# Exibe dados
+tail(juros_real)
+```
+
+### Extra: visualização de dados
+
+Por fim vamos gerar um gráfico que mostra a evolução das duas séries. Eu gosto muito do pacote `{ggplot2}`, dá pra criar gráficos muito bonitos e com muita flexibilidade:
+
+```{r}
+# Gerar gráfico de linhas
+juros_real <- juros_real |>
+  tidyr::drop_na() |> 
+  tidyr::pivot_longer(cols = -"data", names_to = "conceito", values_to = "juros") |> 
+  dplyr::mutate(conceito = dplyr::if_else(conceito == "ex_ante", "Ex ante", "Ex post"))
+
+set.seed(1984)
+ggplot2::ggplot(data = juros_real) +
+  ggplot2::aes(x = data, y = juros, color = conceito) +
+  ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
+  ggplot2::geom_line(size = 1) +
+  ggplot2::coord_cartesian(
+    clip = "off",
+    xlim = c(min(juros_real$data), max(juros_real$data) + months(12))
+    ) +
+  ggrepel::geom_label_repel(
+    data        = dplyr::filter(juros_real, data == max(data)),
+    mapping     = ggplot2::aes(
+      label = format(x = juros, big.mark = ".", decimal.mark = ",", digits = 2, nsmall = 2)
+      ),
+    show.legend    = FALSE,
+    nudge_x        = 70,
+    segment.colour = NA,
+    fontface       = "bold"
+    ) +
+  ggplot2::scale_color_manual(values = c("#282f6b", "#b22200")) +
+  ggplot2::scale_x_date(breaks = "3 years", date_labels = "%Y") +
+  ggplot2::scale_y_continuous(labels = scales::label_percent(scale = 1, accuracy = 1)) +
+  ggplot2::labs(
+    title    = "Brasil: taxa de juros real (% a.a.)",
+    x        = NULL,
+    y        = NULL,
+    color    = NULL,
+    caption  = "**Dados**: B3, BCB e IBGE | **Elaboração**: Fernando da Silva"
+    ) +
+  ggplot2::theme_light(base_size = 16) +
+  ggplot2::theme(
+    plot.title      = ggplot2::element_text(face = "bold"),
+    plot.caption    = ggtext::element_textbox_simple(
+      margin = ggplot2::margin(10, 0, 0, 0)
+      ),
+    plot.title.position   = "plot",
+    plot.caption.position = "plot",
+    axis.text             = ggplot2::element_text(face = "bold"),
+    legend.text           = ggplot2::element_text(face = "bold"),
+    legend.position       = c(0.75, 0.9),
+    legend.key            = ggplot2::element_blank(),
+    legend.background     = ggplot2::element_blank(),
+    legend.direction      = "horizontal"
+    )
+```
+
+Voilà! Eis o gráfico com os resultados do cálculo de juros real pelos conceitos ex-ante e ex-post. Espero que esse conteúdo tenha sido útil ou interessante para você. Até mais!
+
+{{< include ../../R/_session_info_pt.qmd >}}
+{{< include ../../styles/html/_footer_pt.qmd >}}

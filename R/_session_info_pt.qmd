@@ -1,0 +1,14 @@
+<details><summary>Informações da sessão</summary>
+
+<div style="font-size:14px;">
+
+```{r}
+#| echo: false
+r_session <- sessioninfo::session_info()
+r_session$platform$quarto <- paste(quarto::quarto_version(), "@", quarto::quarto_path())
+r_session
+```
+
+</div>
+
+</details>

@@ -1,0 +1,213 @@
+---
+title: "meedr: MacroEconomic Expectations Data in R"
+date: "2021-03-13"
+date-modified: "2023-03-10"
+author: "Fernando da Silva"
+description: "Quick and easy access to market expectations data of the Focus report from Central Bank of Brazil"
+categories: [R, Macroeconomics, Data, API, English]
+image: "imgs/logo.png"
+aliases: 
+  - /posts/r/meedr/index.html
+---
+
+Very happy to announce that `{meedr}`, my first package on R, is on its way to CRAN!
+
+**Note**: This package was definitively archived by CRAN on July 22, 2021 and is only available on GitHub. Despite this, maintenance and bug fixes will continue to be done.
+
+::: {.grid}
+
+::: {.g-col-10}
+The goal of `{meedr}` is to provide quick and easy access to market expectations data for the main macroeconomic indicators in the Focus report, made available by the **Central Bank of Brazil** through the [Expectations System data API](https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/aplicacao#!/recursos). This data comes from several financial institutions such as banks, brokers, funds, consultancies, etc.
+:::
+
+::: {.g-col-2}
+<img src="imgs/logo.png" align="right" height="139" />
+:::
+
+:::
+
+The `{meedr}` package offers an R interface to the API and other advantages:
+
+- Use of a caching system with package `{memoise}` to speed up repeated requests for data;
+- Users can utilize all cores of the machine (parallel computing) when fetching a large batch of time series.
+
+## Installation
+
+You can install the development version from GitHub with:
+
+```r
+# install.packages("devtools")
+devtools::install_github("schoulten/meedr")
+```
+
+## Features
+
+- To retrieve data from the API, there are several useful functions that connect to the endpoints:
+  - Monthly market expectations with [get_monthly()](#get_monthly)
+  - Quarterly market expectations with [get_quarterly()](#get_quarterly)
+  - Annual market expectations with [get_annual()](#get_annual)
+  - Market expectations for inflation over the next 12 months with [get_inflation_12m()](#get_inflation_12m)
+  - Monthly market expectations for the Top 5 indicators with [get_monthly_top5()](#get_monthly_top5)
+  - Annual market expectations for the Top 5 indicators with [get_annual_top5()](#get_annual_top5)
+
+## Example
+
+These are some basic examples of using the package:
+
+### get_monthly()
+
+```{r}
+library(meedr)
+
+# Monthly market expectations for IPCA indicator
+meedr::get_monthly(
+  indicator      = "IPCA",
+  first_date     = Sys.Date() - 30,
+  reference_date = format(Sys.Date(), "%m/%Y"),
+  be_quiet       = TRUE
+  )
+```
+
+### get_quarterly()
+
+```{r}
+# Quarterly market expectations for GDP indicator
+meedr::get_quarterly(
+  indicator      = "PIB Total",
+  first_date     = "2021-01-01",
+  reference_date = paste0(
+    lubridate::quarter(Sys.Date()), "/", 
+    lubridate::year(Sys.Date())
+    ),
+  be_quiet       = TRUE
+  )
+```
+
+### get_annual()
+
+```{r}
+# Annual market expectations for SELIC and exchange rate (BRL) indicator
+meedr::get_annual(
+  indicator      = c("Selic", "Câmbio"),
+  reference_date = format(Sys.Date(), "%Y"),
+  be_quiet       = TRUE
+  )
+```
+
+### get_inflation_12m()
+
+```{r}
+#| message: true
+#| warning: true
+# Inflation over the next 12 months
+# First, and a suggestion, run this for using parallel computing:
+future::plan(future::multisession, workers = floor(future::availableCores()/2))
+meedr::get_inflation_12m(
+  indicator   = c(
+    "IGP-DI", "IGP-M", "INPC", "IPA-DI", "IPA-M", "IPCA", "IPCA-15", "IPC-Fipe"
+    ),
+  smoothed    = "yes",
+  be_quiet    = FALSE, # display messages
+  do_parallel = TRUE # turn on parallel computing
+  )
+```
+
+### get_monthly_top5()
+
+```{r}
+# Monthly market expectations for IGP-M indicator (Top 5 Focus)
+meedr::get_monthly_top5(
+  indicator  = "IGP-M",
+  first_date = NULL, # get all data to current date
+  calc_type  = "long",
+  be_quiet   = TRUE
+  )
+```
+
+### get_annual_top5()
+
+```{r}
+# Annual market expectations for SELIC indicator (Top 5 Focus)
+meedr::get_annual_top5(
+  indicator   = "Selic",
+  be_quiet    = TRUE,
+  use_memoise = FALSE # disable caching system
+  )
+```
+
+## Data visualization
+
+Now we will create a cool chart about inflation expectations in Brazil. First, we will import the data from the Central Bank API using `{meedr}`:
+
+```{r}
+# Get market expectations for inflation over the next 12 months
+inflation <- meedr::get_inflation_12m(
+  indicator   = "IPCA",
+  first_date  = Sys.Date() - months(5 * 12),
+  smoothed    = "yes"
+  )
+```
+
+Next, we use `{ggplot2}` to generate a customized line chart. We plot the median of expectations and one standard deviation to observe some data distribution.
+
+```{r}
+#| fig-width: 8.5
+# Plot
+inflation |> 
+  dplyr::filter(basis == 0) |> 
+  ggplot2::ggplot() +
+  ggplot2::aes(x = date) +
+  ggplot2::geom_ribbon(
+    mapping = ggplot2::aes(ymin = median - sd, ymax = median + sd),
+    alpha   = 0.2, 
+    fill    = "#282f6b"
+    ) +
+  ggplot2::geom_line(
+    mapping = ggplot2::aes(y = median - sd), 
+    size    = 0.5, 
+    color   = "#282f6b"
+      ) +
+  ggplot2::geom_line(
+    mapping = ggplot2::aes(y = median + sd), 
+    size    = 0.5, 
+    color   = "#282f6b"
+      ) +
+  ggplot2::geom_line(
+    mapping = ggplot2::aes(y = median, colour = "IPCA"),
+    size    = 1, 
+    color   = "#b22200"
+    ) +
+  ggplot2::scale_x_date(date_breaks = "9 months", date_labels = "%m/%Y") +
+  ggplot2::labs(
+    title    = "Brazil: Market expectations for inflation over the next 12 months",
+    subtitle = "Smoothed median and standard deviation, IPCA",
+    x        = NULL,
+    y        = "%",
+    caption  = "**Data**: BCB | **Chart**: Fernando da Silva"
+    ) +
+  ggplot2::theme_light(base_size = 16) +
+  ggplot2::theme(
+    plot.title   = ggplot2::element_text(face = "bold"),
+    plot.caption = ggtext::element_textbox_simple(
+      margin = ggplot2::margin(10, 0, 0, 0)
+      ),
+    plot.title.position   = "plot",
+    plot.caption.position = "plot",
+    axis.text             = ggplot2::element_text(face = "bold"),
+    axis.title            = ggplot2::element_text(face = "bold"),
+    legend.text           = ggplot2::element_text(face = "bold")
+    )
+```
+
+And that's it!
+
+The process of developing a package is a lot of learning and enrichment. Soon I intend to increase the package with new utilities. In the meantime, feel free to use and test the package, I will be happy to receive any feedback!
+
+## GitHub repo and documentation
+
+Check the source code and other information in the package repository on [GitHub](https://github.com/schoulten/meedr).
+
+Check the package documentation on [this page](https://fortietwo.com/meedr/).
+
+{{< include ../../R/_session_info_pt.qmd >}}
+{{< include ../../styles/html/_footer_pt.qmd >}}

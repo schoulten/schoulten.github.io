@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Fernando da Silva">
+<meta name="dcterms.date" content="2021-11-27">
+<meta name="description" content="As nuances que só descobrimos sujando as mãos nos dados brutos">
+<title>Fernando da Silva - 5 armadilhas dos dados (macro)econômicos no Brasil</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><link rel="stylesheet" href="../../styles/css/styles.css">
+<meta property="og:title" content="Fernando da Silva - 5 armadilhas dos dados (macro)econômicos no Brasil">
+<meta property="og:description" content="As nuances que só descobrimos sujando as mãos nos dados brutos">
+<meta property="og:image" content="https://fortietwo.com/blog\2021-11-27-armadilhas-dos-dados-macro-no-brasil\imgs\Calvin_Hobbes_Data_Quality.png">
+<meta property="og:site-name" content="Fernando da Silva">
+<meta property="og:image:height" content="191">
+<meta property="og:image:width" content="600">
+</head>
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Fernando da Silva</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cv.html">
+ <span class="menu-text">CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../portfolio.html">
+ <span class="menu-text">Portfolio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/schoulten/"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/schoulten"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:fernando@fortietwo.com"><i class="bi bi-envelope-fill" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+<div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <div class="quarto-title-block"><div><h1 class="title">5 armadilhas dos dados (macro)econômicos no Brasil</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+                  <div>
+        <div class="description">
+          As nuances que só descobrimos sujando as mãos nos dados brutos
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Macroeconomics</div>
+                <div class="quarto-category">Data</div>
+                <div class="quarto-category">Português</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Fernando da Silva </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 27, 2021</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">March 9, 2023</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#dados-simplesmente-somem" id="toc-dados-simplesmente-somem" class="nav-link active" data-scroll-target="#dados-simplesmente-somem">1) Dados simplesmente somem</a></li>
+  <li><a href="#dados-mudam-constantemente" id="toc-dados-mudam-constantemente" class="nav-link" data-scroll-target="#dados-mudam-constantemente">2) Dados mudam constantemente</a></li>
+  <li><a href="#dados-s%C3%A3o-imprecisos" id="toc-dados-são-imprecisos" class="nav-link" data-scroll-target="#dados-s%C3%A3o-imprecisos">3) Dados são imprecisos</a></li>
+  <li><a href="#metodologias-dos-dados-mudam" id="toc-metodologias-dos-dados-mudam" class="nav-link" data-scroll-target="#metodologias-dos-dados-mudam">4) Metodologias dos dados mudam</a></li>
+  <li><a href="#disponibilidade-de-dados-p%C3%BAblicos-%C3%A9-prec%C3%A1ria" id="toc-disponibilidade-de-dados-públicos-é-precária" class="nav-link" data-scroll-target="#disponibilidade-de-dados-p%C3%BAblicos-%C3%A9-prec%C3%A1ria">5) Disponibilidade de dados públicos é precária</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content"><p>Diariamente os economistas utilizam uma grande variedade de dados que são de difícil mensuração e que, portanto, são estimados/coletados por terceiros (IBGE, BCB, etc.). A falta de investigação aprofundada sobre como esses dados são produzidos, entendendo seus pontos fortes e suas limitações, pode nos levar a cair em algumas “armadilhas” peculiares.</p>
+<p>Apesar de as fontes públicas de dados econômicos e financeiros do Brasil serem aderentes as “boas práticas” de dados do FMI - conforme o site dedicado ao assunto intitulado “Dissemination Standards Bulletin Board (DSBB)” -, o tema de qualidade de dados (macro)econômicos por essas bandas é sempre produtivo. Problemas de consistência, mudança de metodologia, disponibilidade e acesso a bancos de dados são corriqueiros no dia a dia de quem trabalha com esses dados, de modo que, mesmo que se queira fazer uma simples análise, você provavelmente precisará “matar um leão por dia”. Em um contexto mais amplo, frequentemente circulam notícias reportando algum tipo de desvario observado em dados públicos, desde na área da saúde até em dados de programas sociais.</p>
+<p>Apesar dos problemas, dados são o sangue que corre na veia de quase todo macroeconomista - eles não sobrevivem sem! - sendo imprescindível conhecer suas nuances. Dessa forma, destacamos abaixo 5 casos das principais armadilhas e nuances dos dados (macro)econômicos brasileiros:</p>
+<section id="dados-simplesmente-somem" class="level2"><h2 class="anchored" data-anchor-id="dados-simplesmente-somem">1) Dados simplesmente somem</h2>
+<p>Talvez a “armadilha” mais gritante seja a situação inesperada de determinado dado, que você habitualmente utiliza, simplesmente… sumir. Nessas circunstâncias, o primeiro palpite razoável que pode surgir é que a pesquisa/variável/etc. pode ter sido descontinuada pela fonte primária. Mas, como é o caso de diversas variáveis, os dados são geralmente mantidos no banco de dados para acesso, mesmo que não haja ingestão de dados novos. Não foi o caso, por exemplo, do que aconteceu alguns meses atrás com as tabelas 6390 e 6392 da PNAD Contínua mensal, disponibilizada no SIDRA/IBGE, das quais as variáveis referentes a massa e rendimento real simplesmente sumiram. Apesar de esses dados já terem sido reestabelecidos, pelo menos até a data de hoje, fica a lição: pode ser útil você ter e manter o seu próprio banco de dados!</p>
+</section><section id="dados-mudam-constantemente" class="level2"><h2 class="anchored" data-anchor-id="dados-mudam-constantemente">2) Dados mudam constantemente</h2>
+<p>Aquela frase que diz que “no Brasil até o passado é incerto” é tão verdadeira que até mesmo sua autoria é questionável - alguns atribuem a Pedro Malan, outros a Gustavo Loyola. E em se tratando de dados macroeconômicos, essa incerteza é até esperada, pois diversas estatísticas produzidas em um país - como as Contas Nacionais, por exemplo - são revisadas com frequência. Portanto, não se deve assumir que aqueles gráficos e tabelas bonitas vistos por aí continuarão com os mesmos valores históricos para sempre.</p>
+<p>Um caso recente dessa armadilha aconteceu com os dados de 2020 do saldo de empregos do CAGED (que já tem histórico de mudanças metodológicas), após uma revisão expressiva. Portanto, se você utiliza com frequência dados passíveis de revisão, o melhor remédio para evitar dor de cabeça é sempre atualizar a série total, não apenas as novas observações mais recentemente divulgadas.</p>
+</section><section id="dados-são-imprecisos" class="level2"><h2 class="anchored" data-anchor-id="dados-são-imprecisos">3) Dados são imprecisos</h2>
+<p>Não podemos também escapar de problemas de acurácia, erros de medida, de registro e de coleta dos dados que, apesar disso, estão diariamente na mídia. Na maioria dos casos, dados que são provenientes de pesquisas (surveys) estão mais propensos a apresentar estas armadilhas, mas não limitado a esse tipo de dado. Por exemplo, você sabia que em diversos meses os pesos dos subitens do IPCA não somam 100%, considerando 4 casas decimais? Ou que no Sistema de Expectativas (Focus) do Banco Central do Brasil estão registradas expectativas em certas datas para variáveis cujo valor real já havia sido divulgado? São casos, no mínimo, curiosos e que passam despercebidos.</p>
+<p>No caso dos pesos do IPCA alguém pode argumentar um certo preciosismo ao considerar 4 casas decimais - de fato é - e outrem poderia ponderar que se o dado é divulgado com 4 casas decimais, espera-se que, pela metodologia, feche 100%. Já no caso das expectativas do Focus, preocupa o fato de que dados com tal “sujeira” guiem as decisões do COPOM, afinal o sistema não deveria aceitar ou registrar expectativas para variáveis cujo valor/horizonte de previsão já é sabido.</p>
+<p>Sobre imprecisão e qualidade dos dados, aproveito a oportunidade para resgatar a ótima tirinha de Calvin e Haroldo sobre o assunto:</p>
+<p style="text-align:center;">
+<img src="imgs/Calvin_Hobbes_Data_Quality.png" class="img-fluid"></p>
+</section><section id="metodologias-dos-dados-mudam" class="level2"><h2 class="anchored" data-anchor-id="metodologias-dos-dados-mudam">4) Metodologias dos dados mudam</h2>
+<p>De tempos em tempos as metodologias e definições de dados podem mudar, em alguns casos de maneira programática e em outros inesperadamente. Dependendo da alteração, como no caso recente e famoso do CAGED, pode-se inviabilizar a comparação dos dados pré e pós mudança metodológica. Isso torna obrigatória a leitura das notas de rodapé associadas a divulgação dos dados, além da página de histórico das mudanças da pesquisa na internet, pois tais mudanças e rupturas nas séries afetam a análise dos dados.</p>
+<p>Além disso, vale enfatizar que também há problemas quando as metodologias <em>não</em> mudam quando deveriam mudar, ou seja, pesquisas que estão defasadas e precisam de atualização. Isso foi (tem sido) especialmente importante nos tempos recentes de pandemia e seus choques, onde, por exemplo, indicadores que mensuram a inflação no país utilizam estruturas de consumo das famílias de 2017-18, mas isso é outra discussão.</p>
+</section><section id="disponibilidade-de-dados-públicos-é-precária" class="level2"><h2 class="anchored" data-anchor-id="disponibilidade-de-dados-públicos-é-precária">5) Disponibilidade de dados públicos é precária</h2>
+<p>A questão de infraestrutura para disponibilidade e acesso aos dados econômicos também merece atenção. Dados disponibilizados em formatos arcaicos - como planilhas de Excel com formatação pouco convidativa -, sites instáveis ou que ficam fora do ar, limitações de download/requisição e até mesmo a própria usabilidade dos sites e fontes públicas brasileiras são alguns dos problemas mais frequentes e que ninguém escapa. Apesar de avanços, nos dados macroeconômicos o âmbito fiscal parece ser o mais problemático. Por exemplo, há alguns meses a planilha de resultado primário do Tesouro Nacional ficou indisponível por cerca de 2 semanas.</p>
+<p>Por fim, enfatizo que instituições brasileiras como o IBGE cumprem um papel fundamental no país e, atualmente, são respeitadas nacional e internacionalmente pelo seu trabalho. Este texto não visa realizar críticas, mas apenas relata fatos do dia a dia de quem lida com dados (macro)econômicos, acendendo o alerta para os mais iniciantes. Comentários são bem-vindos!</p>
+<details><summary>
+Informações da sessão
+</summary><div style="font-size:14px;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.2.1 (2022-06-23 ucrt)
+ os       Windows 10 x64 (build 19045)
+ system   x86_64, mingw32
+ ui       RTerm
+ language (EN)
+ collate  Portuguese_Brazil.utf8
+ ctype    Portuguese_Brazil.utf8
+ tz       America/Sao_Paulo
+ date     2023-03-10
+ pandoc   2.19.2 @ C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools/ (via rmarkdown)
+ quarto   1.2.335 @ C:\\PROGRA~1\\Quarto\\bin\\quarto.exe
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package     * version date (UTC) lib source
+ cli           3.4.1   2022-09-23 [1] CRAN (R 4.2.1)
+ digest        0.6.29  2021-12-01 [1] CRAN (R 4.2.1)
+ evaluate      0.17    2022-10-07 [1] CRAN (R 4.2.1)
+ fastmap       1.1.0   2021-01-25 [1] CRAN (R 4.2.1)
+ glue          1.6.2   2022-02-24 [1] CRAN (R 4.2.1)
+ htmltools     0.5.3   2022-07-18 [1] CRAN (R 4.2.1)
+ htmlwidgets   1.5.4   2021-09-08 [1] CRAN (R 4.2.1)
+ jsonlite      1.8.4   2022-12-06 [1] CRAN (R 4.2.2)
+ knitr         1.40    2022-08-24 [1] CRAN (R 4.2.1)
+ lifecycle     1.0.3   2022-10-07 [1] CRAN (R 4.2.1)
+ magrittr      2.0.3   2022-03-30 [1] CRAN (R 4.2.1)
+ rlang         1.0.6   2022-09-24 [1] CRAN (R 4.2.1)
+ rmarkdown     2.17    2022-10-07 [1] CRAN (R 4.2.1)
+ rstudioapi    0.14    2022-08-22 [1] CRAN (R 4.2.1)
+ sessioninfo   1.2.2   2021-12-06 [1] CRAN (R 4.2.1)
+ stringi       1.7.8   2022-07-11 [1] CRAN (R 4.2.1)
+ stringr       1.5.0   2022-12-02 [1] CRAN (R 4.2.2)
+ vctrs         0.5.1   2022-11-16 [1] CRAN (R 4.2.1)
+ xfun          0.33    2022-09-12 [1] CRAN (R 4.2.1)
+ yaml          2.3.5   2022-02-21 [1] CRAN (R 4.2.1)
+
+ [1] C:/Users/ferna/AppData/Local/R/win-library/4.2
+ [2] C:/Program Files/R/R-4.2.1/library
+
+──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+</div>
+</details><div style="border-top: 1px solid #dee2e6; padding-top: 1rem;">
+<!-- AddToAny BEGIN -->
+<strong>Compartilhar:</strong>
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<p><a class="a2a_button_email"></a> <a class="a2a_button_facebook"></a> <a class="a2a_button_mastodon"></a> <a class="a2a_button_linkedin"></a> <a class="a2a_button_twitter"></a> <a class="a2a_button_whatsapp"></a></p>
+</div>
+<script async="" src="https://static.addtoany.com/menu/page.js"></script><!-- AddToAny END -->
+</div>
+
+
+<!-- -->
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp(/^(?:http:|https:)\/\/(www\.)?fortietwo\.com/);
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="an">title:</span><span class="co"> "5 armadilhas dos dados (macro)econômicos no Brasil"</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="an">author:</span><span class="co"> "Fernando da Silva"</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="an">date:</span><span class="co"> "2021-11-27"</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="an">date-modified:</span><span class="co"> "2023-03-09"</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="an">description:</span><span class="co"> "As nuances que só descobrimos sujando as mãos nos dados brutos"</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="an">categories:</span><span class="co"> [Macroeconomics, Data, Português]</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="an">image:</span><span class="co"> "imgs/Calvin_Hobbes_Data_Quality.png"</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="an">aliases:</span><span class="co"> </span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co">  - /posts/macroeconomia/pitfalls-macro-br/index.html</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co">---</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a></span>
+<span id="cb2-13"><a href="#cb2-13"></a>Diariamente os economistas utilizam uma grande variedade de dados que são de difícil mensuração e que, portanto, são estimados/coletados por terceiros (IBGE, BCB, etc.). A falta de investigação aprofundada sobre como esses dados são produzidos, entendendo seus pontos fortes e suas limitações, pode nos levar a cair em algumas "armadilhas" peculiares.</span>
+<span id="cb2-14"><a href="#cb2-14"></a></span>
+<span id="cb2-15"><a href="#cb2-15"></a>Apesar de as fontes públicas de dados econômicos e financeiros do Brasil serem aderentes as "boas práticas" de dados do FMI - conforme o site dedicado ao assunto intitulado "Dissemination Standards Bulletin Board (DSBB)" -, o tema de qualidade de dados (macro)econômicos por essas bandas é sempre produtivo. Problemas de consistência, mudança de metodologia, disponibilidade e acesso a bancos de dados são corriqueiros no dia a dia de quem trabalha com esses dados, de modo que, mesmo que se queira fazer uma simples análise, você provavelmente precisará "matar um leão por dia". Em um contexto mais amplo, frequentemente circulam notícias reportando algum tipo de desvario observado em dados públicos, desde na área da saúde até em dados de programas sociais.</span>
+<span id="cb2-16"><a href="#cb2-16"></a></span>
+<span id="cb2-17"><a href="#cb2-17"></a>Apesar dos problemas, dados são o sangue que corre na veia de quase todo macroeconomista - eles não sobrevivem sem! - sendo imprescindível conhecer suas nuances. Dessa forma, destacamos abaixo 5 casos das principais armadilhas e nuances dos dados (macro)econômicos brasileiros:</span>
+<span id="cb2-18"><a href="#cb2-18"></a></span>
+<span id="cb2-19"><a href="#cb2-19"></a><span class="fu">## 1) Dados simplesmente somem</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a></span>
+<span id="cb2-21"><a href="#cb2-21"></a>Talvez a "armadilha" mais gritante seja a situação inesperada de determinado dado, que você habitualmente utiliza, simplesmente... sumir. Nessas circunstâncias, o primeiro palpite razoável que pode surgir é que a pesquisa/variável/etc. pode ter sido descontinuada pela fonte primária. Mas, como é o caso de diversas variáveis, os dados são geralmente mantidos no banco de dados para acesso, mesmo que não haja ingestão de dados novos. Não foi o caso, por exemplo, do que aconteceu alguns meses atrás com as tabelas 6390 e 6392 da PNAD Contínua mensal, disponibilizada no SIDRA/IBGE, das quais as variáveis referentes a massa e rendimento real simplesmente sumiram. Apesar de esses dados já terem sido reestabelecidos, pelo menos até a data de hoje, fica a lição: pode ser útil você ter e manter o seu próprio banco de dados!</span>
+<span id="cb2-22"><a href="#cb2-22"></a></span>
+<span id="cb2-23"><a href="#cb2-23"></a><span class="fu">## 2) Dados mudam constantemente</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a></span>
+<span id="cb2-25"><a href="#cb2-25"></a>Aquela frase que diz que "no Brasil até o passado é incerto" é tão verdadeira que até mesmo sua autoria é questionável - alguns atribuem a Pedro Malan, outros a Gustavo Loyola. E em se tratando de dados macroeconômicos, essa incerteza é até esperada, pois diversas estatísticas produzidas em um país - como as Contas Nacionais, por exemplo - são revisadas com frequência. Portanto, não se deve assumir que aqueles gráficos e tabelas bonitas vistos por aí continuarão com os mesmos valores históricos para sempre. </span>
+<span id="cb2-26"><a href="#cb2-26"></a></span>
+<span id="cb2-27"><a href="#cb2-27"></a>Um caso recente dessa armadilha aconteceu com os dados de 2020 do saldo de empregos do CAGED (que já tem histórico de mudanças metodológicas), após uma revisão expressiva. Portanto, se você utiliza com frequência dados passíveis de revisão, o melhor remédio para evitar dor de cabeça é sempre atualizar a série total, não apenas as novas observações mais recentemente divulgadas.</span>
+<span id="cb2-28"><a href="#cb2-28"></a></span>
+<span id="cb2-29"><a href="#cb2-29"></a><span class="fu">## 3) Dados são imprecisos</span></span>
+<span id="cb2-30"><a href="#cb2-30"></a></span>
+<span id="cb2-31"><a href="#cb2-31"></a>Não podemos também escapar de problemas de acurácia, erros de medida, de registro e de coleta dos dados que, apesar disso, estão diariamente na mídia. Na maioria dos casos, dados que são provenientes de pesquisas (surveys) estão mais propensos a apresentar estas armadilhas, mas não limitado a esse tipo de dado. Por exemplo, você sabia que em diversos meses os pesos dos subitens do IPCA não somam 100%, considerando 4 casas decimais? Ou que no Sistema de Expectativas (Focus) do Banco Central do Brasil estão registradas expectativas em certas datas para variáveis cujo valor real já havia sido divulgado? São casos, no mínimo, curiosos e que passam despercebidos.</span>
+<span id="cb2-32"><a href="#cb2-32"></a></span>
+<span id="cb2-33"><a href="#cb2-33"></a>No caso dos pesos do IPCA alguém pode argumentar um certo preciosismo ao considerar 4 casas decimais - de fato é - e outrem poderia ponderar que se o dado é divulgado com 4 casas decimais, espera-se que, pela metodologia, feche 100%. Já no caso das expectativas do Focus, preocupa o fato de que dados com tal "sujeira" guiem as decisões do COPOM, afinal o sistema não deveria aceitar ou registrar expectativas para variáveis cujo valor/horizonte de previsão já é sabido.</span>
+<span id="cb2-34"><a href="#cb2-34"></a></span>
+<span id="cb2-35"><a href="#cb2-35"></a>Sobre imprecisão e qualidade dos dados, aproveito a oportunidade para resgatar a ótima tirinha de Calvin e Haroldo sobre o assunto:</span>
+<span id="cb2-36"><a href="#cb2-36"></a></span>
+<span id="cb2-37"><a href="#cb2-37"></a><span class="kw">&lt;p</span> <span class="er">style</span><span class="ot">=</span><span class="st">"text-align:center;"</span><span class="kw">&gt;</span></span>
+<span id="cb2-38"><a href="#cb2-38"></a><span class="al">![](imgs/Calvin_Hobbes_Data_Quality.png)</span></span>
+<span id="cb2-39"><a href="#cb2-39"></a><span class="kw">&lt;/p&gt;</span></span>
+<span id="cb2-40"><a href="#cb2-40"></a></span>
+<span id="cb2-41"><a href="#cb2-41"></a><span class="fu">## 4) Metodologias dos dados mudam</span></span>
+<span id="cb2-42"><a href="#cb2-42"></a></span>
+<span id="cb2-43"><a href="#cb2-43"></a>De tempos em tempos as metodologias e definições de dados podem mudar, em alguns casos de maneira programática e em outros inesperadamente. Dependendo da alteração, como no caso recente e famoso do CAGED, pode-se inviabilizar a comparação dos dados pré e pós mudança metodológica. Isso torna obrigatória a leitura das notas de rodapé associadas a divulgação dos dados, além da página de histórico das mudanças da pesquisa na internet, pois tais mudanças e rupturas nas séries afetam a análise dos dados.</span>
+<span id="cb2-44"><a href="#cb2-44"></a></span>
+<span id="cb2-45"><a href="#cb2-45"></a>Além disso, vale enfatizar que também há problemas quando as metodologias *não* mudam quando deveriam mudar, ou seja, pesquisas que estão defasadas e precisam de atualização. Isso foi (tem sido) especialmente importante nos tempos recentes de pandemia e seus choques, onde, por exemplo, indicadores que mensuram a inflação no país utilizam estruturas de consumo das famílias de 2017-18, mas isso é outra discussão.</span>
+<span id="cb2-46"><a href="#cb2-46"></a></span>
+<span id="cb2-47"><a href="#cb2-47"></a><span class="fu">## 5) Disponibilidade de dados públicos é precária</span></span>
+<span id="cb2-48"><a href="#cb2-48"></a></span>
+<span id="cb2-49"><a href="#cb2-49"></a>A questão de infraestrutura para disponibilidade e acesso aos dados econômicos também merece atenção. Dados disponibilizados em formatos arcaicos - como planilhas de Excel com formatação pouco convidativa -, sites instáveis ou que ficam fora do ar, limitações de download/requisição e até mesmo a própria usabilidade dos sites e fontes públicas brasileiras são alguns dos problemas mais frequentes e que ninguém escapa. Apesar de avanços, nos dados macroeconômicos o âmbito fiscal parece ser o mais problemático. Por exemplo, há alguns meses a planilha de resultado primário do Tesouro Nacional ficou indisponível por cerca de 2 semanas.</span>
+<span id="cb2-50"><a href="#cb2-50"></a></span>
+<span id="cb2-51"><a href="#cb2-51"></a>Por fim, enfatizo que instituições brasileiras como o IBGE cumprem um papel fundamental no país e, atualmente, são respeitadas nacional e internacionalmente pelo seu trabalho. Este texto não visa realizar críticas, mas apenas relata fatos do dia a dia de quem lida com dados (macro)econômicos, acendendo o alerta para os mais iniciantes. Comentários são bem-vindos!</span>
+<span id="cb2-52"><a href="#cb2-52"></a></span>
+<span id="cb2-53"><a href="#cb2-53"></a>{{&lt; include ../../R/_session_info_pt.qmd &gt;}}</span>
+<span id="cb2-54"><a href="#cb2-54"></a>{{&lt; include ../../styles/html/_footer_pt.qmd &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Licensed under <i class="fa-brands fa-creative-commons" aria-label="creative-commons"></i> <i class="fa-brands fa-creative-commons-by" aria-label="creative-commons-by"></i> <i class="fa-brands fa-creative-commons-sa" aria-label="creative-commons-sa"></i> <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></div>   
+      <div class="nav-footer-center">Made with&nbsp;<a href="https://quarto.org/">Quarto</a></div>
+    <div class="nav-footer-right">View the source at <a href="https://github.com/schoulten/schoulten.github.io"><i class="fa-brands fa-github" aria-label="github"></i> GitHub</a></div>
+  </div>
+</footer>
+
+
+</body></html>

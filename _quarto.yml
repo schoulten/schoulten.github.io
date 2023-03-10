@@ -1,0 +1,81 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+    - "!cv/"
+
+website:
+  title: "Fernando da Silva"
+  description: "Portfolio and blog of a half Data Scientist half Macroeconomist"
+  navbar:
+    left:
+      - href: index.qmd
+        text: About
+      - href: cv.qmd
+        text: CV
+      - href: portfolio.qmd
+        text: Portfolio
+      - text: Blog
+        href: blog.qmd
+    right:
+      - href: https://www.linkedin.com/in/schoulten/
+        icon: linkedin
+      - href: https://github.com/schoulten
+        icon: github
+      - href: "mailto:fernando@fortietwo.com"
+        icon: envelope-fill
+    background: primary
+    search: true
+  page-footer: 
+    left: |
+      Licensed under {{< fa brands creative-commons >}} {{< fa brands creative-commons-by >}} {{< fa brands creative-commons-sa >}} [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+    center: |
+      Made with&nbsp;[Quarto](https://quarto.org/)
+    right: |
+      View the source at [{{< fa brands github >}} GitHub]({{< var github-repo >}})
+    border: true
+    background: dark
+  site-url: "https://fortietwo.com"
+  repo-url: "https://github.com/schoulten/schoulten.github.io"
+  open-graph: true
+
+lang: en
+freeze: true
+
+format:
+  html:
+    author: "Fernando da Silva"
+    theme: 
+      - flatly
+      - styles/css/custom-light.scss
+      # light: [flatly, styles/css/custom-light.scss]
+      # dark: [darkly, styles/css/custom-dark.scss]
+    css: styles/css/styles.css
+    toc: true
+    mainfont: "Lato"
+    monofont: "Fira Mono"
+    linkcolor: "#3b89bc"
+    cap-location: bottom
+    page-layout: full
+    code-fold: show
+    code-overflow: wrap
+    code-line-numbers: true
+    code-link: true
+    code-tools: true
+    code-block-bg: "#0d1117"
+    highlight-style: oblivion
+    freeze: true
+    fig-align: center
+    fig-width: 8
+    fig-height: 4
+    fig-asp: 0.618
+    fig-dpi: 300
+    fig-responsive: true
+    link-external-newwindow: true
+    link-external-filter: ^(?:http:|https:)\/\/(www\.)?fortietwo\.com
+    footnotes-hover: true
+    reference-location: document
+
+
+

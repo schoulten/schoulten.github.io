@@ -1,0 +1,361 @@
+---
+title: "Datação de ciclos econômicos e o algoritmo de Harding-Pagan"
+date: "2021-07-20"
+date-modified: "2023-03-07"
+author: "Fernando da Silva"
+description: "Uma visão geral sobre ciclos econômicos, o algoritmo e uma aplicação em R"
+categories: [Macroeconomics, R, Economic Cycle, Português]
+image: "imgs/datacao.png"
+aliases: 
+  - /posts/conjuntura-economica/ciclo-economico/index.html
+---
+
+Ao longo do tempo a economia apresenta o que se chama de ciclos econômicos, ou seja, períodos de expansão e recessão. Mas de que forma podemos saber **em qual ponto do ciclo econômico a economia se encontra**? Como sabemos se a economia está em recessão? Estas são perguntas de grande interesse para acadêmicos e profissionais da área, e neste breve exercício demonstramos como replicar a datação de ciclos econômicos que instituições como [NBER](https://www.nber.org/) (EUA) e [CODACE](https://portalibre.fgv.br/codace) (Brasil) tradicionalmente publicam.
+
+## A importância de datar o ciclo econômico
+
+O ciclo econômico desempenha um papel importante para as **decisões de política econômica e de empresas**. Por exemplo, quando a economia está com hiato negativo, as empresas tendem a agir de forma mais conservadora. Em contrapartida, quando a economia está com hiato positivo, as empresas tendem a agir de forma mais agressiva com o objetivo de aumentar sua participação de mercado.
+
+A teoria do ciclos econômicos sugere que o ciclo econômico é um importante indicador para a política monetária, possibilitando a **atuação do Banco Central para estabilizar as flutuações da economia**. Portanto, a datação precisa do ciclo econômico pode ser fundamental para decisões políticas eficientes e práticas.
+
+No Brasil o responsável pela datação do ciclo econômico é o Comitê de Datação de Ciclos Econômicos (CODACE), que se reúne periódicamente e publica um informativo contendo as datas dos períodos de expansão e recessão.
+
+## Características do ciclo econômico
+
+Há diveros trabalhos que investigam a questão da datação de ciclos econômicos, aqui exploraremos apenas uma das abordagens. O procedimento completo é descrito em Harding e Pagan (2002) e é largamente utilizado em diversos países. Em resumo, os autores seguem a **definição de Burns e Mitchell** (1946) sobre ciclo econômico e propõem um método que entrega uma **visualização gráfica do ciclo**.
+
+Existem algumas características interessantes sobre as fases do ciclo econômico (fatos estilizados):
+
+- **Pico (A)**: é o ponto de virada quando a expansão transita para a fase de recessão;
+- **Vale (C)**: é o ponto de virada quando a recessão transita para a fase de expansão/recuperação;
+- **Duração (AB)**: é o número de trimestres entre o pico e o vale;
+- **Amplitude (BC)**: é a distância entre o pico e o vale ou altura do triângulo.
+
+```{r}
+#| echo: false
+#| fig-height: 4
+library(ggtext)
+
+x <- seq(from = 1.2, to = 5.2, by = 0.1)
+line <- x + exp(.2 * x) * sin(3.5 * x)
+cycle <- data.frame(time = x, cycle = line)
+
+pts <- data.frame(
+  x = c(2.55, 3.05, 3.05),
+  y = c(3.9, 3.9, 1.65),
+  l = c("A", "B", "C")
+  )
+
+
+cycle |> 
+  ggplot2::ggplot() +
+  ggplot2::aes(x = time, y = cycle) +
+  ggplot2::geom_line(
+    size  = 1,
+    color = ifelse(cycle$time < 2.3 | cycle$time > 3, "grey", "black")
+    ) +
+  ggplot2::geom_polygon(
+    mapping = ggplot2::aes(y = y, x = x), 
+    fill    = "black", 
+    color   = "black", 
+    size    = 1, 
+    data    = pts
+    ) +
+  ggplot2::geom_point(
+    mapping     = ggplot2::aes(x = x, y = y),
+    data        = data.frame(x = c(2.3, 3.1), y = c(3.85, 1.26)),
+    size        = 2.8,
+    color       = c("darkgreen", "darkred"),
+    inherit.aes = FALSE
+    ) +
+  ggplot2::geom_text(
+    mapping  = ggplot2::aes(y = y, x = x, label = l),
+    size     = 5,
+    fontface = "bold",
+    color    = c("darkgreen", "black", "darkred"),
+    nudge_y  = ifelse(pts$l %in% c("A", "B"), 0.25, 0),
+    nudge_x  = ifelse(pts$l %in% c("B", "C"), 0.1, -0.1), 
+    data     = pts
+    ) +
+  ggplot2::annotate(
+    geom     = "text",
+    x        = 2.8, 
+    y        = 5.2, 
+    label    = "Duração",
+    size     = 5,
+    fontface = "bold"
+    ) +
+  ggplot2::annotate(
+    geom     = "text",
+    x        = 3.8, 
+    y        = 2.725, 
+    label    = "Amplitude",
+    size     = 5,
+    fontface = "bold"
+    ) +
+  ggbrace::geom_brace(
+    mapping      = ggplot2::aes(x = c(3.25, 3.4), y = c(3.8, 1.65)),
+    inherit.data = FALSE,
+    rotate       = 90, 
+    size         = 1
+    ) +
+  ggbrace::geom_brace(
+    mapping      = ggplot2::aes(x = c(2.55, 3.05), y = c(4.4, 4.82)),
+    inherit.data = FALSE,
+    size         = 1
+    )  +
+  ggplot2::labs(
+    title    = "Fases do Ciclo Econômico",
+    subtitle = "Estilizado, baseado em Harding e Pagan (2002)",
+    y        = "Atividade Econômica",
+    x        = "Tempo",
+    caption  = "**Elaboração**: Fernando da Silva"
+    ) +
+  ggplot2::annotate(
+    geom = "richtext",
+    x = 1.45,
+    y = 6,
+    label = "<span style = 'color: darkgreen;'><b>A</b></span> = Pico local<br><span style = 'color: darkred;'><b>B</b></span> = Vale local",
+    fill = NA,
+    label.color = NA
+    ) +
+  ggplot2::theme_light() +
+  ggplot2::theme(
+    axis.text = ggplot2::element_blank(),
+    axis.title = ggplot2::element_text(size = 12, face = "bold"),
+    axis.ticks = ggplot2::element_blank(),
+    plot.title = ggplot2::element_text(size = 20, face = "bold"),
+    plot.caption = ggtext::element_markdown(size = 11)
+    )
+```
+
+A imagem acima ilustra didaticamente estas características.
+
+## O algoritmo de Harding e Pagan (2002)
+
+Partindo de uma série $Y_t$ em frequência trimestral, representativa da atividade econômica (PIB) e usualmente transformada como $y_t = ln(Y_t)$, a datação do ciclo econômico deve compreender as seguintes etapas:
+
+1. Determinação de um conjunto potencial de pontos de virada, ou seja, os picos e vales em uma série $y_t$;
+2. Um procedimento para garantir que os picos e os vales se alternem;
+3. Um conjunto de regras que recombinam os pontos de virada estabelecidos após os passos 1) e 2) para satisfazer critérios pré-determinados relativos à *duração* e *amplitude* das fases e ciclos completos (isso é chamado de "regras de censura").
+
+Conforme Harding e Pagan (2002), os pontos de virada da série acontecem quando:
+
+$$\begin{align*}
+  \text{Pico na observação } t \text{, se: } & \left[(y_{t-k}, y_{t-1}) < y_t > (y_{t+1}, y_{t+k}) \right] \\
+  \text{Vale na observação } t \text{, se: } & \left[(y_{t-k}, y_{t-1}) > y_t < (y_{t+1}, y_{t+k}) \right]
+\end{align*}$$
+
+O usual e recomendado pelos autores, para séries trimestrais, é definir $k = 2$ para encontrar esses pontos máximos e mínimos locais.
+
+Em seguida, define-se as fases de expansão, recessão e o ciclo completo:
+
+- **Recessão**: o período compreendido entre um pico e um vale;
+- **Expansão**: o período compreendido entre um vale e um pico;
+- **Ciclo completo**: pode ser mensurado como a duração das fases de recessão e expansão somadas.
+
+Para tal, é necessário impor algumas "regras de censura", que são restrições adicionais para eliminar/manter os pontos de virada identificados. Isso passa por definir uma **duração mínima das fases** de recessão/expansão entre picos/vales, geralmente utilizando-se 2 trimestres (inspirado no NBER). Além disso, restringe-se também a **duração mínima do ciclo completo** como 5 trimestres.
+
+Em resumo:
+
+- **Recessão/Expansão**: duram, no mínimo, 2 trimestres;
+- **Ciclo completo**: dura, no mínimo, 5 trimestres.
+
+O método é bastante simples e poderoso, conseguindo praticamente replicar a cronologia de recessões desenvolvidas pelas instituições mencionadas acima. 
+
+## Datação do ciclo econômico do Brasil
+
+Agora passemos a aplicação do procedimento de datação do ciclo econômico, conforme Harding e Pagan (2002), exemplificando para a série trimestral do PIB brasileiro (série encadeada, ajustada sazonalmente).
+
+### Pacotes
+
+Para aplicar o algoritmo utilizaremos o pacote `{BCDating}` na linguagem R, criado por Majid Einian (Central Bank of Islamic Republic of Iran) e Franck Arnaud (National Institute of Statistics and Economic Studies, France). Outros pacotes são utilizados para coleta, tratamento e visualização de dados:
+
+```{r}
+# Carregar pacotes
+library(BCDating)
+library(sidrar)
+library(dplyr)
+library(lubridate)
+library(purrr)
+library(ggplot2)
+library(ggthemes)
+library(ggtext)
+library(tidyr)
+library(reactable)
+library(reactablefmtr)
+```
+
+### Dados
+
+Neste exercício utilizaremos a série do PIB a preços de mercado (série encadeada do índice de volume trimestral com ajuste sazonal, média de 1995 = 100), disponível no SIDRA/IBGE. Para coletar os dados via API pode-se usar o pacote `{sidrar}`, especificando o código de coleta. Além disso realizamos a preparação dos dados para utilização posterior:
+
+```{r}
+# Coleta e tratamento de dados
+pib <- sidrar::get_sidra(api = "/t/1621/n1/all/v/all/p/all/c11255/90707/d/v584%202") |> 
+  dplyr::mutate(
+    date = lubridate::yq(`Trimestre (Código)`),
+    value = Valor, 
+    .keep = "none"
+    ) |> 
+  dplyr::as_tibble()
+
+# Inspeção dos dados
+tail(pib)
+```
+
+### Datação
+
+Para aplicar o algoritmo e obter as datações de ciclo de negócios, primeiro transformamos o objeto pro formato de série temporal e, em seguida, utilizamos a função `BBQ()` do pacote `{BCDating}`. Optamos por deixar com os valores predefinidos os demais argumentos da função, que servem para definir os valores mínimos de duração do ciclo (pico ao pico ou vale ao vale) e da fase do ciclo (pico ao vale ou vale ao pico).
+
+```{r}
+# Obter datação de ciclo de negócios
+bc_dates <- stats::ts(
+  data = pib$value, 
+  start = c(lubridate::year(min(pib$date)), lubridate::quarter(min(pib$date))),
+  frequency = 4
+  ) |> 
+  BCDating::BBQ(name = "Ciclo de Negócios do PIB do Brasil")
+
+
+# Inspeção do objeto
+class(bc_dates)
+```
+
+### Resultados
+
+Como pode ser visto abaixo, o objeto retornado traz como resultado as datas (trimestres) de picos e vales, assim como a duração do ciclo.
+
+```{r}
+# Exibir resultados
+show(bc_dates)
+```
+
+Outras informações podem ser obtidas com a função `summary()`:
+
+```{r}
+# Informações adicionais
+summary(bc_dates)
+```
+
+Porém, o mais interessante é avaliar o resultado visualmente através de um gráfico. Para tal, fazemos um tratamento dos dados retornados pela função `BBQ()` e utilizamos o `{ggplot2}` para gerar o gráfico com as áreas sombreadas referente às datas de recessão que foram identificadas pelo algoritmo, acompanhadas do comportamento do PIB no período:
+
+```{r}
+# Transformar resultados em tibble
+bc_dates_tbl <- purrr::quietly(show)(bc_dates)$result |> 
+  dplyr::as_tibble() |> 
+  dplyr::mutate(
+    `Peaks`   = lubridate::yq(`Peaks`), 
+    `Troughs` = lubridate::yq(`Troughs`)
+    )
+
+# Gerar gráfico
+g1 <- ggplot2::ggplot() +
+  ggplot2::geom_rect(
+    data = bc_dates_tbl, 
+    mapping = ggplot2::aes(
+      xmin = `Peaks`, xmax = `Troughs`, ymin = -Inf, ymax = Inf, 
+      fill = "Recessão"
+      ),
+    alpha = 0.3
+    ) +
+  ggplot2::geom_line(
+    data = pib, 
+    mapping = ggplot2::aes(x = date, y = value, colour = "PIB s. a. (1995 = 100)"), 
+    size = 1.5
+    ) +
+  ggplot2::scale_colour_manual(values = "dodgerblue4") +
+  ggplot2::scale_fill_manual(values = "grey50") +
+  ggplot2::scale_x_date(date_breaks = "4 years", date_labels = "%Y") +
+  ggplot2::labs(
+    title    = "Brasil: datação de ciclos econômicos",
+    subtitle = "Recessão datada pelo algoritmo de Harding-Pagan (2002)",
+    y        = "Índice",
+    x        = NULL,
+    color    = NULL,
+    fill     = NULL,
+    caption  = "**Dados:** IBGE | **Elaboração:** Fernando da Silva"
+    ) +
+  ggthemes::theme_calc(base_size = 16) +
+  ggplot2::theme(
+    plot.title            = ggplot2::element_text(face = "bold"),
+    plot.title.position   = "plot",
+    plot.caption.position = "plot",
+    plot.background       = ggplot2::element_rect(colour = NA),
+    plot.caption          =  ggtext::element_textbox_simple(
+      margin = ggplot2::margin(10, 0, 0, 0)
+      ),
+    legend.position = "top",
+    )
+g1
+```
+
+```{r}
+#| echo: false
+ggplot2::ggsave(
+  filename = "imgs/datacao.png",
+  plot = g1,
+  width = 7.2,
+  height = 4
+  )
+```
+
+
+
+### Comparação com cronologia do CODACE/FGV
+
+Por fim, vamos comparar os resultados aqui encontrados com a Cronologia de Ciclos de Negócios Brasileiros elaborada pelo CODACE. A última reunião do comitê foi em 29 de junho de 2020, na qual reportou a seguinte situação do ciclo de negócios:
+
+![](imgs/codace.PNG)
+
+Percebe-se que a série utilizada pelo comitê inicia-se em 1980, mas se analisarmos a partir de 1996 (período de início da série utilizada em nosso exercício), verificamos que 5 de 6 recessões datadas pelo CODACE são identificadas pelo algoritmo de Harding & Pagan (2002). Apenas a recessão do 1º trimestre de 1998 ao 1º trimestre de 1999 não foi detectada. Apesar disso, o resultado é empolgante!
+
+Por fim, vamos comparar os resultados de ambas as datações mais a fundo na tabela a seguir, na qual contabilizamos o período de recessão partindo do trimestre imediatamente posterior ao pico até o subsequente vale:
+
+```{r}
+bc_dates_tbl |> 
+  dplyr::mutate(
+    dplyr::across(
+      .cols = c("Peaks", "Troughs"), .fns = ~.x + months(3) # pois data de início não é inclusa
+      ),
+    dplyr::across(
+      .cols = c("Peaks", "Troughs"), 
+      .fns = ~paste0("T", lubridate::quarter(.x), "/", lubridate::year(.x))
+      )
+    ) |> 
+  tidyr::unite(col = "Período", c("Peaks", "Troughs"), sep = " - ") |> 
+  dplyr::rename("Duração" = `Duration`) |> 
+  dplyr::mutate(
+    `Período ` = c(
+      "T2/2001 - T4/2001", 
+      "T1/2003 - T2/2003", 
+      "T4/2008 - T1/2009", 
+      "T2/2014 - T4/2016", 
+      "T1/2020 - ?"
+      ),
+    `Duração ` = c(3, 2, 2, 11, "?")
+    ) |> 
+  reactable::reactable(
+    theme = reactablefmtr::flatly(),
+    columnGroups = list(
+      reactable::colGroup(name = "Algoritmo H. & P.", columns = c("Período", "Duração")),
+      reactable::colGroup(name = "Cronologia CODACE", columns = c("Período ", "Duração "))
+      )
+    ) |> 
+  reactablefmtr::add_title(
+    title = "Datação de recessões - Ciclo de negócios do PIB brasileiro", 
+    font_size = 20
+    ) |> 
+  reactablefmtr::add_source("Fonte: Fernando da Silva e CODACE.")
+```
+<br>
+Perceba que ambas as datações são idênticas! A única diferença está na última datação, a qual o CODACE ainda não definiu o próximo vale. Dessa forma, fica demonstrado o poder e facilidade de uso do algoritmo de Harding & Pagan para datação de ciclos econômicos.
+
+## Referências
+
+Burns, Arthur F. & Mitchell, Wesley C., (1946). *Measuring Business Cycles*. National Bureau of Economic Research, Inc, https://EconPapers.repec.org/RePEc:nbr:nberbk:burn46-1.
+
+Harding, D., & Pagan, A. (2002). *Dissecting the cycle: a methodological investigation*. Journal of monetary economics, 49(2), 365-381.
+
+{{< include ../../R/_session_info_pt.qmd >}}
+{{< include ../../styles/html/_footer_pt.qmd >}}

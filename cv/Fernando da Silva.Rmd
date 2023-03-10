@@ -1,0 +1,180 @@
+---
+name: Fernando da Silva
+date: "`r format(Sys.time(), '%B, %Y')`"
+qualifications: B.S. in Economics
+position: Data Scientist
+address: Florianópolis SC, Brazil
+www: fortietwo.com
+email: fernando@fortietwo.com
+github: schoulten
+linkedin: schoulten
+headcolor: 414141
+freeze: true
+output: vitae::awesomecv
+---
+
+```{r setup, include=FALSE}
+withr::local_locale(c("LC_TIME" = "en"))
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(vitae)
+```
+
+# About me
+I am a data scientist specialized in economics and finance. I have 4+ years of experience working with data, time series models, econometrics, machine learning, ETL process, EDA and visualization, including reports and dashboards. I have 3+ years of real-world experience implementing projects and developing products using R, Python, Git, and GitHub.
+
+I am curious, adaptable, and focused. I am always open to new challenges and I really enjoy creating new things.
+
+# Work experience
+```{r works}
+library(tibble)
+library(lubridate)
+
+time <- function(start, end) {
+  td <- interval(ymd(start), ymd(end)) |> as.period(unit = "year")
+  
+  if (td@year == 0 & td@month %in% c(0, 1)) {paste0(" · 1 mo")}
+  else if (td@year == 0 & td@month > 1) {paste0(" · ", td@month, " mo")}
+  else if (td@year == 1 & td@month == 0) {paste0(" · ", td@year, " yr")}
+  else if (td@year == 1 & td@month == 1) {paste0(" · ", td@year, " yr ", td@month, " mo")}
+  else if (td@year == 1 & td@month > 1) {paste0(" · ", td@year, " yr ", td@month, " mos")}
+  else if (td@year > 1 & td@month == 0) {paste0(" · ", td@year, " yrs")}
+  else if (td@year > 1 & td@month == 1) {paste0(" · ", td@year, " yrs ", td@month, " mo")}
+  else if (td@year > 1 & td@month > 1) {paste0(" · ", td@year, " yrs ", td@month, " mos")}
+  else ""
+
+}
+
+am <- tibble(
+  role    = "Data Scientist",
+  company = "\\href{https://analisemacro.com.br/}{Análise Macro}",
+  dates   = paste0("May 2021 - Present", time("2021-05-01", Sys.Date())),
+  where   = "",
+  details = c(
+    "Development of predictive models using statistics, econometrics and machine learning for 13 Brazilian macroeconomic variables;",
+    "Development, deployment, and monitoring of 4 time series predictive models;",
+    "Development of reports and dashboards using Quarto, R Markdown, Shiny, and Plotly Dash;",
+    "Development of R packages and release of the {nucleos} package for core inflation analysis;",
+    "Development of ETL processes working with larger-than-memory datasets using R, Python, and SQL;",
+    "Development of web scraping for various static and dynamic pages using R, RSelenium, {httr2}, and others;",
+    "Macroeconomic analysis of Brazilian data using macroeconomic models such as the IS curve, Phillips curve, and Taylor rule;",
+    "Time series analysis using EDA, decomposition, filters, autocorrelation, seasonality, stationarity, cointegration, Box-Jenkins methodology, univariate and multivariate models, and forecasting;",
+    "Classes and courses on predictive models, econometrics, forecasting, macroeconomics, time series analysis, dashboards, reports, programming with R, Python, SQL, and others."
+    )
+  )
+
+banri <- tibble(
+  role    = "Intern",
+  company = "\\href{https://www.banrisul.com.br/}{Banrisul}",
+  dates   = paste0("Jan 2018 - Dec 2019", time("2018-01-01", "2019-12-01")),
+  where   = "",
+  details = c(
+    "Risk analysis and credit granting for SME portfolio (credit operations, personal/real guarantees, registration, provisions, etc.);",
+    "Investment and application advice (fixed income securities, investments/redemptions, simulations);",
+    "Customer service and sale of financial products (individual/corporate registration, account opening, aggregation of cross-sell products)."
+    )
+  )
+
+dplyr::bind_rows(am, banri) |> 
+  detailed_entries(role, dates, company, where, details, .protect = FALSE)
+```
+
+# Education
+```{r education}
+tribble(
+  ~ degree, ~ dates, ~ institution,
+  "Bachelor’s in Economics", "Mar 2014 - Dec 2019", "\\href{https://www.furg.br/en/}{Federal University of Rio Grande (FURG)}",
+  "Associate's in Information Technology", "Jul 2009 - Jan 2011", "\\href{https://ifmt.edu.br/}{Federal Institute of Mato Grosso (IFMT)}"
+  
+) %>% 
+  detailed_entries(degree, dates, institution, .protect = FALSE)
+```
+
+# Portfolio
+```{r portfolio}
+tribble(
+  
+  ~ year, ~ title, ~ details, ~ url,
+  
+  # "2021", "Macro forecasting", "Predictive models for Brazilian macroeconomic variables.", "https://linktr.ee/schoulten",
+  
+  "2021", "meedr", "R client for the Central Bank of Brazil macroeconomic expectations data API.", "https://fortietwo.com/meedr/",
+
+  "2020", "Macro View", "Brazilian macroeconomic data dashboard developed in R.", "https://fortietwo.com/macroview/",
+  
+  "2017", "Macro Report", "Quarterly report on the analysis of Brazil's economic situation.", "https://gecefurg.com.br/boletins/boletim-macro/"
+  
+  ) %>% 
+  brief_entries(
+    glue::glue(
+      "\\textbf{<title>}: <details> \\newline \\url{<url>}", 
+      .open = "<", 
+      .close = ">"
+      ),
+    year, 
+    .protect = FALSE
+    )
+```
+
+# Volunteering
+```{r}
+gece <- tibble(
+  role    = "Macroeconomic Analyst",
+  company = "\\href{https://gecefurg.com.br/}{Economic Situation Study Group (GECE/FURG)}",
+  dates   = paste0("Sep 2017 - Dec 2020", time("2017-09-01", "2020-12-01")),
+  where   = "",
+  details = c(
+    "Group co-founder, leading management activities, economic data analysis, and content creation;",
+    "Quarterly publication and presentation of economic situation reports, covering monetary policy;",
+    "Creation and automation of economic data reports and dashboards using the R language, Git, and GitHub."
+    )
+  )
+
+aiesec <- tibble(
+  role    = "Volunteer Staff",
+  company = "\\href{https://aiesec.org.br/}{AIESEC}",
+  dates   = paste0("Jan 2016 - Jan 2017", time("2016-01-01", "2017-01-01")),
+  where   = "",
+  details = c(
+    "Business Development Ambassador (Aug 2016 - Jan 2017): development of the B2B area, partnership prospecting and spreading of engagement campaigns.",
+    "Relationship Manager of Marketing (Jul 2016 - Jan 2017): partnership prospecting with student organizations, alumni relationship building, event organization.",
+    "Operations Manager of Talent Management (Jan 2016 - Jun 2016): productivity and HR retention analysis by operation, identifying improvement gaps in sales teams, report compilation and presentation."
+    )
+  )
+
+estudar <- tibble(
+  role    = "Volunteer Partner",
+  company = "\\href{https://www.estudar.org.br/}{Estudar Foundation}",
+  dates   = paste0("Nov 2015 - Oct 2017", time("2015-01-01", "2017-01-01")),
+  where   = "",
+  details = c(
+    'The mission of the "Leadership 16h" volunteer is to enable the realization of the course in a larger volume and quality, reinforcing the mission of the Estudar Foundation to develop a transformative leadership throughout the country. As a Partner, I worked on the promotion, sale, logistics and infrastructure of two editions in Rio Grande RS, in the years of 2015 and 2017, where we were successful in enrollments.'
+    )
+  )
+
+dplyr::bind_rows(gece, aiesec, estudar) |> 
+  detailed_entries(role, dates, company, where, details, .protect = FALSE)
+```
+
+
+# Skills
+```{r}
+time_year <- function(start, end = Sys.Date()) {
+  x <- as.period(interval(ymd(start), ymd(end)), unit = "year")@year
+  if (x %in% c(0, 1)) {paste0("1 year")}
+  else if (x >= 1) {paste0(x, " years")}
+  else ""
+}
+```
+
+- R (`r time_year("2019-01-01")`)
+- Python (`r time_year("2021-01-01")`)
+- Quarto (`r time_year("2022-01-01")`)
+- Git (`r time_year("2019-01-01")`)
+- GitHub (`r time_year("2019-01-01")`)
+- SQL (`r time_year("2022-01-01")`)
+
+
+# Languages
+
+- Portuguese (Native)
+- English (Intermediate)

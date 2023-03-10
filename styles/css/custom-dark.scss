@@ -1,0 +1,21 @@
+/*-- scss:defaults --*/
+// Base document colors
+$body-bg: #0d1117;
+$primary: #010409;
+
+// Links
+$link-color: #58a6ff;
+$link-shade-percentage: 10% !default;
+$link-decoration: none !default;
+$link-hover-decoration: underline !default;
+
+// Navbar
+$navbar-bg: $primary;
+$navbar-fg: #c1c3d4;
+$navbar-hl: #ffffff;
+
+// Footer
+$footer-bg: $primary;
+$footer-fg: $navbar-fg;
+
+// Buttons

@@ -1,0 +1,58 @@
+---
+title: "Fernando da Silva"
+pagetitle: "Fernando da Silva — Portfolio and blog of a half Data Scientist half Macroeconomist"
+author: ""
+subtitle: |
+  <div id="suben"><span class="txt-rotate" data-period="2000" data-speed="200" data-rotate='[ "I am a  Data Scientist!", "I work with applied macroeconomics.", "I do data analysis.", "I develop reports and dashboards!", "I program in R and Python." ]'></span></div>
+  <div id="subpt"><span class="txt-rotate" data-period="2000" data-speed="200" data-rotate='[ "Sou um Cientista de Dados!", "Trabalho com macroeconomia aplicada.", "Faço análises de dados.", "Desenvolvo relatórios e dashboards!", "Programo em R e Python." ]'></span></div>
+image: images/fernando.png
+about:
+  template: trestles
+  image-width: 12em
+  image-shape: round
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/schoulten/
+    - icon: github
+      text: Github
+      href: https://github.com/schoulten
+    - icon: envelope-fill
+      text: E-mail
+      href: "mailto:fernando@fortietwo.com"
+format: 
+  html:
+    code-tools: false
+---
+
+<center>
+<div class="btn-group btn-group-container-sw" data-toggle="buttons" role="group">
+<input type="radio" autocomplete="off" id="English" name="plot" class="btn-check" checked="checked">
+<label class="btn radiobtn btn-outline-primary btn-sm" for="English">English</label>
+<input type="radio" autocomplete="off" id="Portugues" name="plot" class="btn-check">
+<label class="btn radiobtn btn-outline-primary btn-sm" for="Portugues">Português</label>
+</div>
+</center>
+
+<div id="abouten">
+I'm a data scientist specialized in economics and finance. I try to solve real world problems with simple models.
+
+In college, where I studied economics, I founded [GECE/FURG](https://gecefurg.com.br/) to analyze data and discovered my vocation there. Today I work at [Análise Macro](https://analisemacro.com.br/) focused on time series analysis, econometrics, and machine learning applications, aiming to explain and predict the behavior of economic variables, allowing data-based decisions. My work has already helped over {{< var am-contagem >}} students.
+
+My main skills in my [portfolio](portfolio.qmd) are predictive models; time series; data analysis and visualization; data products such as reports and dashboards; and technologies such as R, Python, Git, GitHub, and SQL.
+
+I love constantly learning new things, sharing knowledge openly and interacting with people on these topics.
+</div>
+
+<div id="aboutpt">
+Sou um cientista de dados especializado em economia e finanças. Eu procuro solucionar problemas do mundo real com modelos simples.
+
+Na graduação, onde estudei economia, fundei o [GECE/FURG](https://gecefurg.com.br/) para analisar dados e descobri aí a minha vocação. Hoje trabalho na [Análise Macro](https://analisemacro.com.br/) focado em aplicações de análise de séries temporais, econometria e machine learning, visando explicar e prever o comportamento de variáveis econômicas, permitindo decisões baseadas em dados. Meu trabalho já ajudou mais de {{< var am-contagem >}} estudantes.
+
+Minhas principais habilidades em meu [portfólio](portfolio.qmd) são modelos de previsão; séries temporais; análise e visualização de dados; produtos de dados como relatórios e dashboards; e tecnologias como R, Python, Git, GitHub e SQL.
+
+Eu adoro constantemente aprender coisas novas, compartilhar conhecimento de forma aberta e interagir com pessoas sobre estes tópicos.
+</div>
+
+<script src="styles/js/txt-animate.js"></script>
+<script src="styles/js/txt-showhide.js"></script>

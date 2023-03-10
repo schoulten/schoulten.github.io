@@ -1,0 +1,196 @@
+---
+pagetitle: "Fernando da Silva — Portfolio"
+page-layout: full
+format: 
+  html:
+    toc: false
+    code-tools: false
+execute:
+  echo: false
+---
+
+
+```{r}
+# Generate "btn-group" buttons
+create_buttons <- function(code = NULL, details = NULL, app = NULL) {
+  
+  button <- function(txt, url) {
+    glue::glue(
+      '<a href="{url}"><button type="button" class="btn btn-primary btn-sm">{txt}</button></a>',
+      .null = NULL
+      )
+    }
+  
+  if (!is.null(code)) {code <- button("Code", code)}
+  if (!is.null(details)) {details <- button("Details", details)}
+  if (!is.null(app)) {app <- button("Application", app)}
+  
+  buttons <- glue::glue(
+    '<div class="btn-group" role="group">{code}&nbsp;{details}&nbsp;{app}</div>',
+    .null = NULL
+    )
+  
+  return(buttons)
+}
+
+# Generate bootstrap card with labels and buttons
+create_card <- function(title, subtitle, buttons) {
+  glue::glue(
+    '<div class="card card-body portfolio-card">
+    <h5 class="card-title"><strong>{title}</strong></h5>
+    <h6 class="card-subtitle mb-2 no-anchor">{subtitle}</h6>
+    {buttons}
+    </div>'
+    )
+}
+
+# List of URLs by theme
+dashboards <- list(
+  "macroview" = list(
+    "code"    = "https://github.com/schoulten/macroview",
+    "details" = "https://fortietwo.com/macroview/#about",
+    "app"     = "https://fortietwo.com/macroview/"
+    ),
+  "macrocopa" = list(
+    "code"    = "https://github.com/schoulten/macrocopa",
+    "details" = "https://analisemacro.com.br/data-science/copa-2022-dashboard-de-economia-internacional-no-r/",
+    "app"     = "https://schoulten.shinyapps.io/macrocopa/"
+    )
+  )
+
+econometrics_ml <- list(
+  "details" = "https://analisemacro.com.br/data-science/o-dilema-de-vies-e-variancia-em-modelos-de-previsao/"
+  )
+
+forecasting <- list(
+  "code"    = "https://analisemacro.com.br/curso/modelos-preditivos-de-machine-learning/",
+  "details" = "https://analisemacro.com.br/data-science/construindo-um-modelo-de-previsao-para-a-inflacao-brasileira/",
+  "app"     = "https://analisemacropro.github.io/ipca/"
+  )
+
+macroeconomics <- list(
+  "details" = "https://analisemacro.com.br/data-science/como-esta-a-potencia-da-politica-monetaria-no-brasil/"
+)
+
+software <- list(
+  "meedr" = list(
+    "code"    = "https://github.com/schoulten/meedr/",
+    "details" = "https://fortietwo.com/meedr/"
+    ),
+  "nucleos" = list(
+    "code" = "https://analisemacropro.github.io/nucleos/",
+    "details" = "https://analisemacro.com.br/data-science/o-pacote-nucleos-analisando-a-inflacao-no-r/"
+    )
+  )
+
+urls <- list(
+  "dashboards" = dashboards, 
+  "econometrics_ml" = econometrics_ml,
+  "forecasting" = forecasting, 
+  "macroeconomics" = macroeconomics,
+  "software" = software
+  )
+```
+
+## **Portfolio**
+
+::: {.grid}
+
+::: {.g-col-6}
+
+::: {.grid}
+::: {.g-col-12}
+## **Forecasting**
+
+```{r}
+#| results: asis
+create_card(
+  title    = "Inflation — CPI", 
+  subtitle = "Machine learning models for monthly forecasting of the main inflation index in Brazil.",
+  buttons  = create_buttons(urls$forecasting$code, urls$forecasting$details, urls$forecasting$app)
+  )
+```
+:::
+
+::: {.g-col-12}
+## **Macroeconomics**
+
+```{r}
+#| results: asis
+create_card(
+  title    = "Monetary policy transmission in Brazil", 
+  subtitle = "Evaluation of the relationship between interest rates and economic activity over time using an IS curve (portuguese).",
+  buttons  = create_buttons(details = urls$macroeconomics$details)
+  )
+```
+:::
+
+::: {.g-col-12}
+## **Econometrics/ML**
+
+```{r}
+#| results: asis
+create_card(
+  title    = "Bias-variance trade off", 
+  subtitle = "An article with a simple explanation about these concepts applied to predictive models of time series (portuguese).",
+  buttons  = create_buttons(details = urls$econometrics_ml$details)
+  )
+```
+:::
+:::
+
+:::
+
+
+::: {.g-col-6}
+
+::: {.grid}
+::: {.g-col-12}
+## **Dashboards**
+
+```{r}
+#| results: asis
+create_card(
+  title    = "Macro View", 
+  subtitle = "A dashboard on Brazilian macroeconomic data (economic activity, inflation, labor market, fiscal and monetary policy).", 
+  buttons  = create_buttons(urls$dashboards$macroview$code, urls$dashboards$macroview$details, urls$dashboards$macroview$app)
+  )
+```
+
+```{r}
+#| results: asis
+create_card(
+  title    = "Macro Copa", 
+  subtitle = "A dashboard to compare macroeconomic indicators of the 2022 World Cup countries.", 
+  buttons  = create_buttons(urls$dashboards$macrocopa$code, urls$dashboards$macrocopa$details, urls$dashboards$macrocopa$app)
+  )
+```
+
+:::
+
+::: {.g-col-12}
+## **Software**
+
+```{r}
+#| results: asis
+create_card(
+  title    = "{meedr}", 
+  subtitle = "An R client for the Central Bank of Brazil macroeconomic expectations data API.", 
+  buttons  = create_buttons(urls$software$meedr$code, urls$software$meedr$details)
+  )
+```
+
+```{r}
+#| results: asis
+create_card(
+  title    = "{nucleos}", 
+  subtitle = "An R package to collect disaggregated inflation data and calculate inflation core measures for Brazil.", 
+  buttons  = create_buttons(urls$software$nucleos$code, urls$software$nucleos$details)
+  )
+```
+
+:::
+:::
+
+:::
+:::

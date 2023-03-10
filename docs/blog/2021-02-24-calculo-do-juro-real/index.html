@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Fernando da Silva">
+<meta name="dcterms.date" content="2021-02-24">
+<meta name="description" content="O porquê e o como de analisar o preço do dinheiro ao longo do tempo, com uma aplicação em R">
+<title>Fernando da Silva - Cálculo da taxa de juros real: ex post e ex ante</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="../../styles/css/styles.css">
+<meta property="og:title" content="Fernando da Silva - Cálculo da taxa de juros real: ex post e ex ante">
+<meta property="og:description" content="O porquê e o como de analisar o preço do dinheiro ao longo do tempo, com uma aplicação em R">
+<meta property="og:image" content="https://fortietwo.com/blog\2021-02-24-calculo-do-juro-real\imgs\conducao.png">
+<meta property="og:site-name" content="Fernando da Silva">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:width" content="2160">
+</head>
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Fernando da Silva</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cv.html">
+ <span class="menu-text">CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../portfolio.html">
+ <span class="menu-text">Portfolio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog.html">
+ <span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+<ul class="navbar-nav navbar-nav-scroll ms-auto">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/schoulten/"><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/schoulten"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:fernando@fortietwo.com"><i class="bi bi-envelope-fill" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+<div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav></header><!-- content --><header id="title-block-header" class="quarto-title-block default page-columns page-full"><div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <div class="quarto-title-block"><div><h1 class="title">Cálculo da taxa de juros real: ex post e ex ante</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+                  <div>
+        <div class="description">
+          O porquê e o como de analisar o preço do dinheiro ao longo do tempo, com uma aplicação em R
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Macroeconomics</div>
+                <div class="quarto-category">Monetary Policy</div>
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">Português</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Fernando da Silva </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 24, 2021</p>
+      </div>
+    </div>
+    
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">March 9, 2023</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li><a href="#conceitos-ex-post-e-ex-ante" id="toc-conceitos-ex-post-e-ex-ante" class="nav-link active" data-scroll-target="#conceitos-ex-post-e-ex-ante">Conceitos ex-post e ex-ante</a></li>
+  <li><a href="#c%C3%A1lculo-do-juros-real" id="toc-cálculo-do-juros-real" class="nav-link" data-scroll-target="#c%C3%A1lculo-do-juros-real">Cálculo do juros real</a></li>
+  <li>
+<a href="#juros-real-no-brasil" id="toc-juros-real-no-brasil" class="nav-link" data-scroll-target="#juros-real-no-brasil">Juros real no Brasil</a>
+  <ul class="collapse">
+<li><a href="#pacotes" id="toc-pacotes" class="nav-link" data-scroll-target="#pacotes">Pacotes</a></li>
+  <li><a href="#coleta-de-dados" id="toc-coleta-de-dados" class="nav-link" data-scroll-target="#coleta-de-dados">Coleta de dados</a></li>
+  <li><a href="#tratamento-de-dados" id="toc-tratamento-de-dados" class="nav-link" data-scroll-target="#tratamento-de-dados">Tratamento de dados</a></li>
+  <li><a href="#calcular-o-juros-real" id="toc-calcular-o-juros-real" class="nav-link" data-scroll-target="#calcular-o-juros-real">Calcular o juros real</a></li>
+  <li><a href="#extra-visualiza%C3%A7%C3%A3o-de-dados" id="toc-extra-visualização-de-dados" class="nav-link" data-scroll-target="#extra-visualiza%C3%A7%C3%A3o-de-dados">Extra: visualização de dados</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content"><p>O dinheiro existe há bastante tempo e, geralmente, pagamos para poder usar o dinheiro e/ou poupança de outra pessoa (afinal, não existe almoço grátis). O preço dessa troca, entre o credor e o devedor, é o que usualmente se chama de juros. Também é comum que essa taxa, chamada de juros nominal, seja positiva e definida como um referencial pelo Banco Central de cada país, constituindo um dos principais instrumentos de controle da inflação.</p>
+<p>Sabendo que a taxa de juros nominal é um preço, logo, há motivos para deflacioná-lo por um índice de correção de preços como o IPCA, por exemplo, de forma semelhante ao que fazemos quando é necessário “corrigir” o valor de um imóvel que irá à venda. O resultado dessa operação é o que é chamado de taxa de juros real, ou seja, a taxa nominal deflacionada pela taxa de inflação.</p>
+<p>Também é com a taxa de juros real, em conjunto com uma outra taxa — a taxa neutra, que é uma taxa de juros teórica, consistente com a estabilidade da inflação ao longo do tempo —, que é possível analisar a condução da política monetária de uma economia. A política monetária é dita “contracionista” quando a taxa de juros real está acima da taxa de juros neutra, ou seja, a autoridade monetária está com a taxa de juros em território que desincentiva a tomada de crédito, os investimentos e o consumo de maneira geral. Do contrário, a política monetária é dita “expansionista”.</p>
+<section id="conceitos-ex-post-e-ex-ante" class="level2"><h2 class="anchored" data-anchor-id="conceitos-ex-post-e-ex-ante">Conceitos ex-post e ex-ante</h2>
+<p>Existem basicamente duas perspectivas sobre a taxa de juros real: pelo conceito ex-post e pelo conceito ex-ante. No primeiro caso olhamos o comportamento dos juros no período passado, geralmente usando valores acumulados em 12 meses, o que nos permite verificar a tendência de juros real da economia; enquanto que no segundo caso é o oposto, estamos interessados em verificar o comportamento do juros real à frente, tomando como base expectativas de agentes de mercado, assim é possível identificar como é esperado o comportamento dos juros no futuro.</p>
+<p>De forma mais visual, esses conceitos podem se traduzir em uma realidade da economia do país bastante impressionante se olharmos um período de tempo suficientemente grande, conforme a imagem abaixo:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="2400"></p>
+</div>
+</div>
+</section><section id="cálculo-do-juros-real" class="level2"><h2 class="anchored" data-anchor-id="cálculo-do-juros-real">Cálculo do juros real</h2>
+<p>Para chegar ao resultado que determina o juros real da economia usamos a <strong>equação de Fisher</strong>, através da fórmula bem simples a seguir:</p>
+<p><span class="math display">\[r = \left(\frac{1+i}{1+\pi}\right)-1\]</span> Onde os termos significam:</p>
+<p><span class="math inline">\(r\)</span> = taxa de juros real<br><span class="math inline">\(i\)</span> = taxa de juros nominal<br><span class="math inline">\(\pi\)</span> = taxa de inflação</p>
+<p>Note que se os dados estiverem expressos em percentual (% a.m., % a.a., etc.), você deve dividir o termo correspondente por 100 na fórmula acima.</p>
+</section><section id="juros-real-no-brasil" class="level2"><h2 class="anchored" data-anchor-id="juros-real-no-brasil">Juros real no Brasil</h2>
+<p>Explicados brevemente estes conceitos e dado uma prévia do resultado que queremos chegar, podemos partir para uma aplicação do cálculo das taxas para a economia brasileira.</p>
+<p>No caso da <strong>taxa de juros real ex-ante</strong>, opto aqui por utilizar a taxa do Swap DI-Pré 360 dias e as expectativas de IPCA esperado também de 1 ano à frente, provenientes da B3 e do boletim Focus/BCB respectivamente. Há outras maneiras de obter essa taxa, para uma discussão sobre o assunto recomendo <a href="https://blogdoibre.fgv.br/posts/juro-real-ex-ante-caindo-ou-subindo">esse texto</a> do Bráulio Borges e Gilberto Borça Jr.&nbsp;Já no caso da <strong>taxa de juros real ex-post</strong> usamos a taxa Selic acumulada no mês anualizada em base de 252 dias úteis e o IPCA acumulado em 12 meses, provenientes do BCB e do IBGE respectivamente.</p>
+<p>O que é necessário agora é obter esses dados e aplicar a equação de Fisher. A obtenção dos dados é bastante simples e rápida usando a linguagem R. Vamos usar as API’s de três fontes públicas de dados (IPEADATA, BCB e IBGE).</p>
+<section id="pacotes" class="level3"><h3 class="anchored" data-anchor-id="pacotes">Pacotes</h3>
+<p>Primeiro carregamos os pacotes de R necessários (instale com <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> caso você não tenha algum instalado).</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Carregar pacotes</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(rbcb)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(ipeadatar)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(sidrar)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>()</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="coleta-de-dados" class="level3"><h3 class="anchored" data-anchor-id="coleta-de-dados">Coleta de dados</h3>
+<p>Em seguida utilizamos os parâmetros de cada API para obter os dados das fontes indicadas.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Expectativas IPCA em 12 meses</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>dados_focus_12m <span class="ot">&lt;-</span> rbcb<span class="sc">::</span><span class="fu">get_market_expectations</span>(</span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="at">type =</span> <span class="st">"inflation-12-months"</span>, </span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="at">indic =</span> <span class="st">"IPCA"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="at">start_date =</span> <span class="st">"1999-01-01"</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>  )</span>
+<span id="cb2-7"><a href="#cb2-7"></a></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co"># Swaps DI pré 360</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>dados_ipea <span class="ot">&lt;-</span> ipeadatar<span class="sc">::</span><span class="fu">ipeadata</span>(<span class="st">"BMF12_SWAPDI36012"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10"></a></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co"># SELIC acumulada no mês anualizada base 252</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>dados_selic <span class="ot">&lt;-</span> rbcb<span class="sc">::</span><span class="fu">get_series</span>(<span class="at">code =</span> <span class="fu">c</span>(<span class="st">"selic"</span> <span class="ot">=</span> <span class="dv">4189</span>))</span>
+<span id="cb2-13"><a href="#cb2-13"></a></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co"># IPCA acumulado em 12 meses</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a>dados_ipca <span class="ot">&lt;-</span> sidrar<span class="sc">::</span><span class="fu">get_sidra</span>(<span class="at">api =</span> <span class="st">"/t/1737/n1/all/v/2265/p/all/d/v2265%202"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="tratamento-de-dados" class="level3"><h3 class="anchored" data-anchor-id="tratamento-de-dados">Tratamento de dados</h3>
+<p>Os dados coletados precisam de alguns tratamentos para ficarem no formato desejado, o que envolve cruzar as tabelas, calcular médias, filtrar observações, etc.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Swaps DI pré 360</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>swaps <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">select</span>(dados_ipea, <span class="st">"data"</span> <span class="ot">=</span> <span class="st">"date"</span>, <span class="st">"swaps"</span> <span class="ot">=</span> <span class="st">"value"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># Expectativa média do IPCA em 12 meses</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>focus_12m <span class="ot">&lt;-</span> dados_focus_12m <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(baseCalculo <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> Suavizada <span class="sc">==</span> <span class="st">"S"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="at">data =</span> lubridate<span class="sc">::</span><span class="fu">floor_date</span>(Data, <span class="at">unit =</span> <span class="st">"month"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">ipca_exp =</span> <span class="fu">mean</span>(<span class="at">x =</span> Mediana, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co"># SELIC acumulada no mês anualizada base 252</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a>selic <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(dados_selic, <span class="st">"data"</span> <span class="ot">=</span> <span class="st">"date"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co"># IPCA acumulado em 12 meses</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a>ipca <span class="ot">&lt;-</span> dados_ipca <span class="sc">|&gt;</span> </span>
+<span id="cb3-15"><a href="#cb3-15"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-16"><a href="#cb3-16"></a>    <span class="at">data     =</span> lubridate<span class="sc">::</span><span class="fu">ym</span>(<span class="st">`</span><span class="at">Mês (Código)</span><span class="st">`</span>),</span>
+<span id="cb3-17"><a href="#cb3-17"></a>    <span class="at">ipca_obs =</span> Valor,</span>
+<span id="cb3-18"><a href="#cb3-18"></a>    <span class="at">.keep    =</span> <span class="st">"none"</span></span>
+<span id="cb3-19"><a href="#cb3-19"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb3-20"><a href="#cb3-20"></a>  dplyr<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
+<span id="cb3-21"><a href="#cb3-21"></a></span>
+<span id="cb3-22"><a href="#cb3-22"></a><span class="co"># Cruzar tabelas</span></span>
+<span id="cb3-23"><a href="#cb3-23"></a>tabelas <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">reduce</span>(</span>
+<span id="cb3-24"><a href="#cb3-24"></a>  <span class="at">.x =</span> <span class="fu">list</span>(swaps, focus_12m, selic, ipca),</span>
+<span id="cb3-25"><a href="#cb3-25"></a>  <span class="at">.f =</span> dplyr<span class="sc">::</span>full_join,</span>
+<span id="cb3-26"><a href="#cb3-26"></a>  <span class="at">by =</span> <span class="st">"data"</span></span>
+<span id="cb3-27"><a href="#cb3-27"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb3-28"><a href="#cb3-28"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(data) <span class="sc">|&gt;</span> </span>
+<span id="cb3-29"><a href="#cb3-29"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(data <span class="sc">&gt;=</span> lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="st">"2001-12-01"</span>))</span>
+<span id="cb3-30"><a href="#cb3-30"></a></span>
+<span id="cb3-31"><a href="#cb3-31"></a><span class="co"># Exibe dados</span></span>
+<span id="cb3-32"><a href="#cb3-32"></a><span class="fu">tail</span>(tabelas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  data       swaps ipca_exp selic ipca_obs
+  &lt;date&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+1 2022-10-01  13.2     5.17  13.6     6.47
+2 2022-11-01  13.9     5.19  13.6     5.9 
+3 2022-12-01  13.8     5.26  13.6     5.79
+4 2023-01-01  13.5     5.41  13.6     5.77
+5 2023-02-01  13.4     5.66  13.6     5.6 
+6 2023-03-01  NA       5.59  13.6    NA   </code></pre>
+</div>
+</div>
+</section><section id="calcular-o-juros-real" class="level3"><h3 class="anchored" data-anchor-id="calcular-o-juros-real">Calcular o juros real</h3>
+<p>Com os dados em mãos, podemos finalmente aplicar a equação de Fisher. O resultado final será uma tabela com uma coluna com o período da observação, uma com o valor da taxa de juros real pelo conceito ex ante e outra pelo conceito ex-post.</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Função útil para computar o cálculo</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>fisher <span class="ot">&lt;-</span> <span class="cf">function</span>(juros, inflacao) {</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  r <span class="ot">=</span> ((<span class="dv">1</span> <span class="sc">+</span> juros) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> inflacao)) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="fu">return</span>(r)</span>
+<span id="cb5-5"><a href="#cb5-5"></a>}</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co"># Cálculo da taxa de juros real</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>juros_real <span class="ot">&lt;-</span> tabelas <span class="sc">|&gt;</span> </span>
+<span id="cb5-9"><a href="#cb5-9"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb5-10"><a href="#cb5-10"></a>    <span class="at">ex_ante =</span> <span class="fu">fisher</span>(<span class="at">juros =</span> swaps<span class="sc">/</span><span class="dv">100</span>, <span class="at">inflacao =</span> ipca_exp<span class="sc">/</span><span class="dv">100</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb5-11"><a href="#cb5-11"></a>    <span class="at">ex_post =</span> <span class="fu">fisher</span>(<span class="at">juros =</span> selic<span class="sc">/</span><span class="dv">100</span>, <span class="at">inflacao =</span> ipca_obs<span class="sc">/</span><span class="dv">100</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb5-12"><a href="#cb5-12"></a>    <span class="at">data    =</span> data,</span>
+<span id="cb5-13"><a href="#cb5-13"></a>    <span class="at">.keep   =</span> <span class="st">"none"</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>    )</span>
+<span id="cb5-15"><a href="#cb5-15"></a></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="co"># Exibe dados</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="fu">tail</span>(juros_real)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  data       ex_ante ex_post
+  &lt;date&gt;       &lt;dbl&gt;   &lt;dbl&gt;
+1 2022-10-01    7.60    6.74
+2 2022-11-01    8.26    7.32
+3 2022-12-01    8.15    7.43
+4 2023-01-01    7.70    7.45
+5 2023-02-01    7.34    7.62
+6 2023-03-01   NA      NA   </code></pre>
+</div>
+</div>
+</section><section id="extra-visualização-de-dados" class="level3"><h3 class="anchored" data-anchor-id="extra-visualização-de-dados">Extra: visualização de dados</h3>
+<p>Por fim vamos gerar um gráfico que mostra a evolução das duas séries. Eu gosto muito do pacote <a href="https://ggplot2.tidyverse.org">ggplot2</a>, dá pra criar gráficos muito bonitos e com muita flexibilidade:</p>
+<div class="cell">
+<details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Gerar gráfico de linhas</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>juros_real <span class="ot">&lt;-</span> juros_real <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  tidyr<span class="sc">::</span><span class="fu">drop_na</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a href="#cb7-4"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="st">"data"</span>, <span class="at">names_to =</span> <span class="st">"conceito"</span>, <span class="at">values_to =</span> <span class="st">"juros"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-5"><a href="#cb7-5"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">conceito =</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(conceito <span class="sc">==</span> <span class="st">"ex_ante"</span>, <span class="st">"Ex ante"</span>, <span class="st">"Ex post"</span>))</span>
+<span id="cb7-6"><a href="#cb7-6"></a></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="fu">set.seed</span>(<span class="dv">1984</span>)</span>
+<span id="cb7-8"><a href="#cb7-8"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(<span class="at">data =</span> juros_real) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>  ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> data, <span class="at">y =</span> juros, <span class="at">color =</span> conceito) <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a>  ggplot2<span class="sc">::</span><span class="fu">coord_cartesian</span>(</span>
+<span id="cb7-13"><a href="#cb7-13"></a>    <span class="at">clip =</span> <span class="st">"off"</span>,</span>
+<span id="cb7-14"><a href="#cb7-14"></a>    <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fu">min</span>(juros_real<span class="sc">$</span>data), <span class="fu">max</span>(juros_real<span class="sc">$</span>data) <span class="sc">+</span> <span class="fu">months</span>(<span class="dv">12</span>))</span>
+<span id="cb7-15"><a href="#cb7-15"></a>    ) <span class="sc">+</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a>  ggrepel<span class="sc">::</span><span class="fu">geom_label_repel</span>(</span>
+<span id="cb7-17"><a href="#cb7-17"></a>    <span class="at">data        =</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(juros_real, data <span class="sc">==</span> <span class="fu">max</span>(data)),</span>
+<span id="cb7-18"><a href="#cb7-18"></a>    <span class="at">mapping     =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(</span>
+<span id="cb7-19"><a href="#cb7-19"></a>      <span class="at">label =</span> <span class="fu">format</span>(<span class="at">x =</span> juros, <span class="at">big.mark =</span> <span class="st">"."</span>, <span class="at">decimal.mark =</span> <span class="st">","</span>, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">nsmall =</span> <span class="dv">2</span>)</span>
+<span id="cb7-20"><a href="#cb7-20"></a>      ),</span>
+<span id="cb7-21"><a href="#cb7-21"></a>    <span class="at">show.legend    =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb7-22"><a href="#cb7-22"></a>    <span class="at">nudge_x        =</span> <span class="dv">70</span>,</span>
+<span id="cb7-23"><a href="#cb7-23"></a>    <span class="at">segment.colour =</span> <span class="cn">NA</span>,</span>
+<span id="cb7-24"><a href="#cb7-24"></a>    <span class="at">fontface       =</span> <span class="st">"bold"</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a>    ) <span class="sc">+</span></span>
+<span id="cb7-26"><a href="#cb7-26"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#282f6b"</span>, <span class="st">"#b22200"</span>)) <span class="sc">+</span></span>
+<span id="cb7-27"><a href="#cb7-27"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_x_date</span>(<span class="at">breaks =</span> <span class="st">"3 years"</span>, <span class="at">date_labels =</span> <span class="st">"%Y"</span>) <span class="sc">+</span></span>
+<span id="cb7-28"><a href="#cb7-28"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_percent</span>(<span class="at">scale =</span> <span class="dv">1</span>, <span class="at">accuracy =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb7-29"><a href="#cb7-29"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb7-30"><a href="#cb7-30"></a>    <span class="at">title    =</span> <span class="st">"Brasil: taxa de juros real (% a.a.)"</span>,</span>
+<span id="cb7-31"><a href="#cb7-31"></a>    <span class="at">x        =</span> <span class="cn">NULL</span>,</span>
+<span id="cb7-32"><a href="#cb7-32"></a>    <span class="at">y        =</span> <span class="cn">NULL</span>,</span>
+<span id="cb7-33"><a href="#cb7-33"></a>    <span class="at">color    =</span> <span class="cn">NULL</span>,</span>
+<span id="cb7-34"><a href="#cb7-34"></a>    <span class="at">caption  =</span> <span class="st">"**Dados**: B3, BCB e IBGE | **Elaboração**: Fernando da Silva"</span></span>
+<span id="cb7-35"><a href="#cb7-35"></a>    ) <span class="sc">+</span></span>
+<span id="cb7-36"><a href="#cb7-36"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_light</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb7-37"><a href="#cb7-37"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb7-38"><a href="#cb7-38"></a>    <span class="at">plot.title      =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb7-39"><a href="#cb7-39"></a>    <span class="at">plot.caption    =</span> ggtext<span class="sc">::</span><span class="fu">element_textbox_simple</span>(</span>
+<span id="cb7-40"><a href="#cb7-40"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb7-41"><a href="#cb7-41"></a>      ),</span>
+<span id="cb7-42"><a href="#cb7-42"></a>    <span class="at">plot.title.position   =</span> <span class="st">"plot"</span>,</span>
+<span id="cb7-43"><a href="#cb7-43"></a>    <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb7-44"><a href="#cb7-44"></a>    <span class="at">axis.text             =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb7-45"><a href="#cb7-45"></a>    <span class="at">legend.text           =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb7-46"><a href="#cb7-46"></a>    <span class="at">legend.position       =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="fl">0.9</span>),</span>
+<span id="cb7-47"><a href="#cb7-47"></a>    <span class="at">legend.key            =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
+<span id="cb7-48"><a href="#cb7-48"></a>    <span class="at">legend.background     =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
+<span id="cb7-49"><a href="#cb7-49"></a>    <span class="at">legend.direction      =</span> <span class="st">"horizontal"</span></span>
+<span id="cb7-50"><a href="#cb7-50"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="2400"></p>
+</div>
+</div>
+<p>Voilà! Eis o gráfico com os resultados do cálculo de juros real pelos conceitos ex-ante e ex-post. Espero que esse conteúdo tenha sido útil ou interessante para você. Até mais!</p>
+<details><summary>
+Informações da sessão
+</summary><div style="font-size:14px;">
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.2.1 (2022-06-23 ucrt)
+ os       Windows 10 x64 (build 19045)
+ system   x86_64, mingw32
+ ui       RTerm
+ language (EN)
+ collate  Portuguese_Brazil.utf8
+ ctype    Portuguese_Brazil.utf8
+ tz       America/Sao_Paulo
+ date     2023-03-10
+ pandoc   2.19.2 @ C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools/ (via rmarkdown)
+ quarto   1.2.335 @ C:\\PROGRA~1\\Quarto\\bin\\quarto.exe
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package     * version    date (UTC) lib source
+ assertthat    0.2.1      2019-03-21 [1] CRAN (R 4.2.1)
+ cli           3.4.1      2022-09-23 [1] CRAN (R 4.2.1)
+ colorspace    2.0-3      2022-02-21 [1] CRAN (R 4.2.1)
+ curl          4.3.3      2022-10-06 [1] CRAN (R 4.2.1)
+ DBI           1.1.3      2022-06-18 [1] CRAN (R 4.2.1)
+ digest        0.6.29     2021-12-01 [1] CRAN (R 4.2.1)
+ dplyr         1.0.10     2022-09-01 [1] CRAN (R 4.2.1)
+ ellipsis      0.3.2      2021-04-29 [1] CRAN (R 4.2.1)
+ evaluate      0.17       2022-10-07 [1] CRAN (R 4.2.1)
+ fansi         1.0.3      2022-03-24 [1] CRAN (R 4.2.1)
+ farver        2.1.1      2022-07-06 [1] CRAN (R 4.2.1)
+ fastmap       1.1.0      2021-01-25 [1] CRAN (R 4.2.1)
+ generics      0.1.3      2022-07-05 [1] CRAN (R 4.2.1)
+ ggplot2       3.3.6      2022-05-03 [1] CRAN (R 4.2.1)
+ ggrepel       0.9.1      2021-01-15 [1] CRAN (R 4.2.0)
+ ggtext        0.1.2      2022-09-16 [1] CRAN (R 4.2.1)
+ glue          1.6.2      2022-02-24 [1] CRAN (R 4.2.1)
+ gridtext      0.1.4.9000 2022-06-07 [1] Github (wilkelab/gridtext@6192174)
+ gtable        0.3.1      2022-09-01 [1] CRAN (R 4.2.1)
+ htmltools     0.5.3      2022-07-18 [1] CRAN (R 4.2.1)
+ htmlwidgets   1.5.4      2021-09-08 [1] CRAN (R 4.2.1)
+ httr          1.4.5      2023-02-24 [1] CRAN (R 4.2.2)
+ insight       0.19.0     2023-01-30 [1] CRAN (R 4.2.2)
+ ipeadatar   * 0.1.6      2022-10-11 [1] Github (gomesleduardo/ipeadatar@9754e14)
+ jsonlite      1.8.4      2022-12-06 [1] CRAN (R 4.2.2)
+ knitr         1.40       2022-08-24 [1] CRAN (R 4.2.1)
+ labeling      0.4.2      2020-10-20 [1] CRAN (R 4.2.0)
+ lattice       0.20-45    2021-09-22 [2] CRAN (R 4.2.1)
+ lifecycle     1.0.3      2022-10-07 [1] CRAN (R 4.2.1)
+ lubridate     1.9.2      2023-02-10 [1] CRAN (R 4.2.2)
+ magrittr      2.0.3      2022-03-30 [1] CRAN (R 4.2.1)
+ markdown      1.1        2019-08-07 [1] CRAN (R 4.2.1)
+ munsell       0.5.0      2018-06-12 [1] CRAN (R 4.2.1)
+ pillar        1.8.1      2022-08-19 [1] CRAN (R 4.2.1)
+ pkgconfig     2.0.3      2019-09-22 [1] CRAN (R 4.2.1)
+ purrr         0.3.5      2022-10-06 [1] CRAN (R 4.2.1)
+ R6            2.5.1      2021-08-19 [1] CRAN (R 4.2.1)
+ rbcb        * 0.1.10     2022-03-30 [1] CRAN (R 4.2.1)
+ Rcpp          1.0.9      2022-07-08 [1] CRAN (R 4.2.1)
+ rjson         0.2.21     2022-01-09 [1] CRAN (R 4.2.0)
+ rlang         1.0.6      2022-09-24 [1] CRAN (R 4.2.1)
+ rmarkdown     2.17       2022-10-07 [1] CRAN (R 4.2.1)
+ rstudioapi    0.14       2022-08-22 [1] CRAN (R 4.2.1)
+ scales        1.2.1      2022-08-20 [1] CRAN (R 4.2.1)
+ sessioninfo   1.2.2      2021-12-06 [1] CRAN (R 4.2.1)
+ sidrar      * 0.2.9      2022-07-12 [1] CRAN (R 4.2.0)
+ sjlabelled    1.2.0      2022-04-10 [1] CRAN (R 4.2.1)
+ stringi       1.7.8      2022-07-11 [1] CRAN (R 4.2.1)
+ stringr       1.5.0      2022-12-02 [1] CRAN (R 4.2.2)
+ tibble        3.1.8      2022-07-22 [1] CRAN (R 4.2.1)
+ tidyr         1.2.1      2022-09-08 [1] CRAN (R 4.2.1)
+ tidyselect    1.2.0      2022-10-10 [1] CRAN (R 4.2.1)
+ timechange    0.2.0      2023-01-11 [1] CRAN (R 4.2.2)
+ utf8          1.2.2      2021-07-24 [1] CRAN (R 4.2.1)
+ vctrs         0.5.1      2022-11-16 [1] CRAN (R 4.2.1)
+ withr         2.5.0      2022-03-03 [1] CRAN (R 4.2.1)
+ xfun          0.33       2022-09-12 [1] CRAN (R 4.2.1)
+ xml2          1.3.3      2021-11-30 [1] CRAN (R 4.2.1)
+ xts           0.13.0     2023-02-20 [1] CRAN (R 4.2.2)
+ yaml          2.3.5      2022-02-21 [1] CRAN (R 4.2.1)
+ zoo           1.8-11     2022-09-17 [1] CRAN (R 4.2.1)
+
+ [1] C:/Users/ferna/AppData/Local/R/win-library/4.2
+ [2] C:/Program Files/R/R-4.2.1/library
+
+──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+</div>
+</details><div style="border-top: 1px solid #dee2e6; padding-top: 1rem;">
+<!-- AddToAny BEGIN -->
+<strong>Compartilhar:</strong>
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+<p><a class="a2a_button_email"></a> <a class="a2a_button_facebook"></a> <a class="a2a_button_mastodon"></a> <a class="a2a_button_linkedin"></a> <a class="a2a_button_twitter"></a> <a class="a2a_button_whatsapp"></a></p>
+</div>
+<script async="" src="https://static.addtoany.com/menu/page.js"></script><!-- AddToAny END -->
+</div>
+
+
+<!-- -->
+
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp(/^(?:http:|https:)\/\/(www\.)?fortietwo\.com/);
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+    var links = window.document.querySelectorAll('a:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+      }
+    }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">---</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="an">title:</span><span class="co"> "Cálculo da taxa de juros real: ex post e ex ante"</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="an">date:</span><span class="co"> "2021-02-24"</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="an">date-modified:</span><span class="co"> "2023-03-09"</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="an">author:</span><span class="co"> "Fernando da Silva"</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="an">description:</span><span class="co"> "O porquê e o como de analisar o preço do dinheiro ao longo do tempo, com uma aplicação em R"</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="an">categories:</span><span class="co"> [Macroeconomics, Monetary Policy, R, Português]</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="an">image:</span><span class="co"> "imgs/conducao.png"</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="an">aliases:</span><span class="co"> </span></span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="co">  - /posts/macroeconomia/juro-real/index.html</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="co">---</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a></span>
+<span id="cb9-13"><a href="#cb9-13"></a>O dinheiro existe há bastante tempo e, geralmente, pagamos para poder usar o dinheiro e/ou poupança de outra pessoa (afinal, não existe almoço grátis). O preço dessa troca, entre o credor e o devedor, é o que usualmente se chama de juros. Também é comum que essa taxa, chamada de juros nominal, seja positiva e definida como um referencial pelo Banco Central de cada país, constituindo um dos principais instrumentos de controle da inflação.</span>
+<span id="cb9-14"><a href="#cb9-14"></a></span>
+<span id="cb9-15"><a href="#cb9-15"></a>Sabendo que a taxa de juros nominal é um preço, logo, há motivos para deflacioná-lo por um índice de correção de preços como o IPCA, por exemplo, de forma semelhante ao que fazemos quando é necessário "corrigir" o valor de um imóvel que irá à venda. O resultado dessa operação é o que é chamado de taxa de juros real, ou seja, a taxa nominal deflacionada pela taxa de inflação.</span>
+<span id="cb9-16"><a href="#cb9-16"></a></span>
+<span id="cb9-17"><a href="#cb9-17"></a>Também é com a taxa de juros real, em conjunto com uma outra taxa — a taxa neutra, que é uma taxa de juros teórica, consistente com a estabilidade da inflação ao longo do tempo —, que é possível analisar a condução da política monetária de uma economia. A política monetária é dita "contracionista" quando a taxa de juros real está acima da taxa de juros neutra, ou seja, a autoridade monetária está com a taxa de juros em território que desincentiva a tomada de crédito, os investimentos e o consumo de maneira geral. Do contrário, a política monetária é dita "expansionista".</span>
+<span id="cb9-18"><a href="#cb9-18"></a></span>
+<span id="cb9-19"><a href="#cb9-19"></a><span class="fu">## Conceitos ex-post e ex-ante</span></span>
+<span id="cb9-20"><a href="#cb9-20"></a></span>
+<span id="cb9-21"><a href="#cb9-21"></a>Existem basicamente duas perspectivas sobre a taxa de juros real: pelo conceito ex-post e pelo conceito ex-ante. No primeiro caso olhamos o comportamento dos juros no período passado, geralmente usando valores acumulados em 12 meses, o que nos permite verificar a tendência de juros real da economia; enquanto que no segundo caso é o oposto, estamos interessados em verificar o comportamento do juros real à frente, tomando como base expectativas de agentes de mercado, assim é possível identificar como é esperado o comportamento dos juros no futuro.</span>
+<span id="cb9-22"><a href="#cb9-22"></a></span>
+<span id="cb9-23"><a href="#cb9-23"></a>De forma mais visual, esses conceitos podem se traduzir em uma realidade da economia do país bastante impressionante se olharmos um período de tempo suficientemente grande, conforme a imagem abaixo:</span>
+<span id="cb9-24"><a href="#cb9-24"></a></span>
+<span id="cb9-27"><a href="#cb9-27"></a><span class="in">```{r}</span></span>
+<span id="cb9-28"><a href="#cb9-28"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-29"><a href="#cb9-29"></a><span class="fu">source</span>(<span class="st">"R/juro_real.R"</span>)</span>
+<span id="cb9-30"><a href="#cb9-30"></a>g1</span>
+<span id="cb9-31"><a href="#cb9-31"></a><span class="in">```</span></span>
+<span id="cb9-32"><a href="#cb9-32"></a></span>
+<span id="cb9-33"><a href="#cb9-33"></a><span class="fu">## Cálculo do juros real</span></span>
+<span id="cb9-34"><a href="#cb9-34"></a></span>
+<span id="cb9-35"><a href="#cb9-35"></a>Para chegar ao resultado que determina o juros real da economia usamos a **equação de Fisher**, através da fórmula bem simples a seguir:</span>
+<span id="cb9-36"><a href="#cb9-36"></a></span>
+<span id="cb9-37"><a href="#cb9-37"></a>$$r = \left(\frac{1+i}{1+\pi}\right)-1$$</span>
+<span id="cb9-38"><a href="#cb9-38"></a>Onde os termos significam:</span>
+<span id="cb9-39"><a href="#cb9-39"></a></span>
+<span id="cb9-40"><a href="#cb9-40"></a>$r$ = taxa de juros real<span class="kw">&lt;br&gt;</span></span>
+<span id="cb9-41"><a href="#cb9-41"></a>$i$ = taxa de juros nominal<span class="kw">&lt;br&gt;</span></span>
+<span id="cb9-42"><a href="#cb9-42"></a>$\pi$ = taxa de inflação</span>
+<span id="cb9-43"><a href="#cb9-43"></a></span>
+<span id="cb9-44"><a href="#cb9-44"></a>Note que se os dados estiverem expressos em percentual (% a.m., % a.a., etc.), você deve dividir o termo correspondente por 100 na fórmula acima.</span>
+<span id="cb9-45"><a href="#cb9-45"></a></span>
+<span id="cb9-46"><a href="#cb9-46"></a><span class="fu">## Juros real no Brasil</span></span>
+<span id="cb9-47"><a href="#cb9-47"></a></span>
+<span id="cb9-48"><a href="#cb9-48"></a>Explicados brevemente estes conceitos e dado uma prévia do resultado que queremos chegar, podemos partir para uma aplicação do cálculo das taxas para a economia brasileira.</span>
+<span id="cb9-49"><a href="#cb9-49"></a></span>
+<span id="cb9-50"><a href="#cb9-50"></a>No caso da **taxa de juros real ex-ante**, opto aqui por utilizar a taxa do Swap DI-Pré 360 dias e as expectativas de IPCA esperado também de 1 ano à frente, provenientes da B3 e do boletim Focus/BCB respectivamente. Há outras maneiras de obter essa taxa, para uma discussão sobre o assunto recomendo [esse texto](https://blogdoibre.fgv.br/posts/juro-real-ex-ante-caindo-ou-subindo) do Bráulio Borges e Gilberto Borça Jr. Já no caso da **taxa de juros real ex-post** usamos a taxa Selic acumulada no mês anualizada em base de 252 dias úteis e o IPCA acumulado em 12 meses, provenientes do BCB e do IBGE respectivamente.</span>
+<span id="cb9-51"><a href="#cb9-51"></a></span>
+<span id="cb9-52"><a href="#cb9-52"></a>O que é necessário agora é obter esses dados e aplicar a equação de Fisher. A obtenção dos dados é bastante simples e rápida usando a linguagem R. Vamos usar as API's de três fontes públicas de dados (IPEADATA, BCB e IBGE).</span>
+<span id="cb9-53"><a href="#cb9-53"></a></span>
+<span id="cb9-54"><a href="#cb9-54"></a><span class="fu">### Pacotes</span></span>
+<span id="cb9-55"><a href="#cb9-55"></a></span>
+<span id="cb9-56"><a href="#cb9-56"></a>Primeiro carregamos os pacotes de R necessários (instale com <span class="in">`install.packages()`</span> caso você não tenha algum instalado).</span>
+<span id="cb9-57"><a href="#cb9-57"></a></span>
+<span id="cb9-60"><a href="#cb9-60"></a><span class="in">```{r}</span></span>
+<span id="cb9-61"><a href="#cb9-61"></a><span class="co"># Carregar pacotes</span></span>
+<span id="cb9-62"><a href="#cb9-62"></a><span class="fu">library</span>(rbcb)</span>
+<span id="cb9-63"><a href="#cb9-63"></a><span class="fu">library</span>(ipeadatar)</span>
+<span id="cb9-64"><a href="#cb9-64"></a><span class="fu">library</span>(sidrar)</span>
+<span id="cb9-65"><a href="#cb9-65"></a><span class="fu">library</span>()</span>
+<span id="cb9-66"><a href="#cb9-66"></a><span class="fu">library</span>()</span>
+<span id="cb9-67"><a href="#cb9-67"></a><span class="in">```</span></span>
+<span id="cb9-68"><a href="#cb9-68"></a></span>
+<span id="cb9-69"><a href="#cb9-69"></a><span class="fu">### Coleta de dados </span></span>
+<span id="cb9-70"><a href="#cb9-70"></a></span>
+<span id="cb9-71"><a href="#cb9-71"></a>Em seguida utilizamos os parâmetros de cada API para obter os dados das fontes indicadas.</span>
+<span id="cb9-72"><a href="#cb9-72"></a></span>
+<span id="cb9-75"><a href="#cb9-75"></a><span class="in">```{r}</span></span>
+<span id="cb9-76"><a href="#cb9-76"></a><span class="co"># Expectativas IPCA em 12 meses</span></span>
+<span id="cb9-77"><a href="#cb9-77"></a>dados_focus_12m <span class="ot">&lt;-</span> rbcb<span class="sc">::</span><span class="fu">get_market_expectations</span>(</span>
+<span id="cb9-78"><a href="#cb9-78"></a>  <span class="at">type =</span> <span class="st">"inflation-12-months"</span>, </span>
+<span id="cb9-79"><a href="#cb9-79"></a>  <span class="at">indic =</span> <span class="st">"IPCA"</span>,</span>
+<span id="cb9-80"><a href="#cb9-80"></a>  <span class="at">start_date =</span> <span class="st">"1999-01-01"</span></span>
+<span id="cb9-81"><a href="#cb9-81"></a>  )</span>
+<span id="cb9-82"><a href="#cb9-82"></a></span>
+<span id="cb9-83"><a href="#cb9-83"></a><span class="co"># Swaps DI pré 360</span></span>
+<span id="cb9-84"><a href="#cb9-84"></a>dados_ipea <span class="ot">&lt;-</span> ipeadatar<span class="sc">::</span><span class="fu">ipeadata</span>(<span class="st">"BMF12_SWAPDI36012"</span>)</span>
+<span id="cb9-85"><a href="#cb9-85"></a></span>
+<span id="cb9-86"><a href="#cb9-86"></a><span class="co"># SELIC acumulada no mês anualizada base 252</span></span>
+<span id="cb9-87"><a href="#cb9-87"></a>dados_selic <span class="ot">&lt;-</span> rbcb<span class="sc">::</span><span class="fu">get_series</span>(<span class="at">code =</span> <span class="fu">c</span>(<span class="st">"selic"</span> <span class="ot">=</span> <span class="dv">4189</span>))</span>
+<span id="cb9-88"><a href="#cb9-88"></a></span>
+<span id="cb9-89"><a href="#cb9-89"></a><span class="co"># IPCA acumulado em 12 meses</span></span>
+<span id="cb9-90"><a href="#cb9-90"></a>dados_ipca <span class="ot">&lt;-</span> sidrar<span class="sc">::</span><span class="fu">get_sidra</span>(<span class="at">api =</span> <span class="st">"/t/1737/n1/all/v/2265/p/all/d/v2265%202"</span>)</span>
+<span id="cb9-91"><a href="#cb9-91"></a><span class="in">```</span></span>
+<span id="cb9-92"><a href="#cb9-92"></a></span>
+<span id="cb9-93"><a href="#cb9-93"></a><span class="fu">### Tratamento de dados</span></span>
+<span id="cb9-94"><a href="#cb9-94"></a></span>
+<span id="cb9-95"><a href="#cb9-95"></a>Os dados coletados precisam de alguns tratamentos para ficarem no formato desejado, o que envolve cruzar as tabelas, calcular médias, filtrar observações, etc.</span>
+<span id="cb9-96"><a href="#cb9-96"></a></span>
+<span id="cb9-99"><a href="#cb9-99"></a><span class="in">```{r}</span></span>
+<span id="cb9-100"><a href="#cb9-100"></a><span class="co"># Swaps DI pré 360</span></span>
+<span id="cb9-101"><a href="#cb9-101"></a>swaps <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">select</span>(dados_ipea, <span class="st">"data"</span> <span class="ot">=</span> <span class="st">"date"</span>, <span class="st">"swaps"</span> <span class="ot">=</span> <span class="st">"value"</span>)</span>
+<span id="cb9-102"><a href="#cb9-102"></a></span>
+<span id="cb9-103"><a href="#cb9-103"></a><span class="co"># Expectativa média do IPCA em 12 meses</span></span>
+<span id="cb9-104"><a href="#cb9-104"></a>focus_12m <span class="ot">&lt;-</span> dados_focus_12m <span class="sc">|&gt;</span></span>
+<span id="cb9-105"><a href="#cb9-105"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(baseCalculo <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> Suavizada <span class="sc">==</span> <span class="st">"S"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-106"><a href="#cb9-106"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="at">data =</span> lubridate<span class="sc">::</span><span class="fu">floor_date</span>(Data, <span class="at">unit =</span> <span class="st">"month"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-107"><a href="#cb9-107"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">ipca_exp =</span> <span class="fu">mean</span>(<span class="at">x =</span> Mediana, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb9-108"><a href="#cb9-108"></a></span>
+<span id="cb9-109"><a href="#cb9-109"></a><span class="co"># SELIC acumulada no mês anualizada base 252</span></span>
+<span id="cb9-110"><a href="#cb9-110"></a>selic <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">rename</span>(dados_selic, <span class="st">"data"</span> <span class="ot">=</span> <span class="st">"date"</span>)</span>
+<span id="cb9-111"><a href="#cb9-111"></a></span>
+<span id="cb9-112"><a href="#cb9-112"></a><span class="co"># IPCA acumulado em 12 meses</span></span>
+<span id="cb9-113"><a href="#cb9-113"></a>ipca <span class="ot">&lt;-</span> dados_ipca <span class="sc">|&gt;</span> </span>
+<span id="cb9-114"><a href="#cb9-114"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb9-115"><a href="#cb9-115"></a>    <span class="at">data     =</span> lubridate<span class="sc">::</span><span class="fu">ym</span>(<span class="st">`</span><span class="at">Mês (Código)</span><span class="st">`</span>),</span>
+<span id="cb9-116"><a href="#cb9-116"></a>    <span class="at">ipca_obs =</span> Valor,</span>
+<span id="cb9-117"><a href="#cb9-117"></a>    <span class="at">.keep    =</span> <span class="st">"none"</span></span>
+<span id="cb9-118"><a href="#cb9-118"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb9-119"><a href="#cb9-119"></a>  dplyr<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
+<span id="cb9-120"><a href="#cb9-120"></a></span>
+<span id="cb9-121"><a href="#cb9-121"></a><span class="co"># Cruzar tabelas</span></span>
+<span id="cb9-122"><a href="#cb9-122"></a>tabelas <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">reduce</span>(</span>
+<span id="cb9-123"><a href="#cb9-123"></a>  <span class="at">.x =</span> <span class="fu">list</span>(swaps, focus_12m, selic, ipca),</span>
+<span id="cb9-124"><a href="#cb9-124"></a>  <span class="at">.f =</span> dplyr<span class="sc">::</span>full_join,</span>
+<span id="cb9-125"><a href="#cb9-125"></a>  <span class="at">by =</span> <span class="st">"data"</span></span>
+<span id="cb9-126"><a href="#cb9-126"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb9-127"><a href="#cb9-127"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(data) <span class="sc">|&gt;</span> </span>
+<span id="cb9-128"><a href="#cb9-128"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(data <span class="sc">&gt;=</span> lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="st">"2001-12-01"</span>))</span>
+<span id="cb9-129"><a href="#cb9-129"></a></span>
+<span id="cb9-130"><a href="#cb9-130"></a><span class="co"># Exibe dados</span></span>
+<span id="cb9-131"><a href="#cb9-131"></a><span class="fu">tail</span>(tabelas)</span>
+<span id="cb9-132"><a href="#cb9-132"></a><span class="in">```</span></span>
+<span id="cb9-133"><a href="#cb9-133"></a></span>
+<span id="cb9-134"><a href="#cb9-134"></a><span class="fu">### Calcular o juros real</span></span>
+<span id="cb9-135"><a href="#cb9-135"></a></span>
+<span id="cb9-136"><a href="#cb9-136"></a>Com os dados em mãos, podemos finalmente aplicar a equação de Fisher. O resultado final será uma tabela com uma coluna com o período da observação, uma com o valor da taxa de juros real pelo conceito ex ante e outra pelo conceito ex-post.</span>
+<span id="cb9-137"><a href="#cb9-137"></a></span>
+<span id="cb9-140"><a href="#cb9-140"></a><span class="in">```{r}</span></span>
+<span id="cb9-141"><a href="#cb9-141"></a><span class="co"># Função útil para computar o cálculo</span></span>
+<span id="cb9-142"><a href="#cb9-142"></a>fisher <span class="ot">&lt;-</span> <span class="cf">function</span>(juros, inflacao) {</span>
+<span id="cb9-143"><a href="#cb9-143"></a>  r <span class="ot">=</span> ((<span class="dv">1</span> <span class="sc">+</span> juros) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> inflacao)) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb9-144"><a href="#cb9-144"></a>  <span class="fu">return</span>(r)</span>
+<span id="cb9-145"><a href="#cb9-145"></a>}</span>
+<span id="cb9-146"><a href="#cb9-146"></a></span>
+<span id="cb9-147"><a href="#cb9-147"></a><span class="co"># Cálculo da taxa de juros real</span></span>
+<span id="cb9-148"><a href="#cb9-148"></a>juros_real <span class="ot">&lt;-</span> tabelas <span class="sc">|&gt;</span> </span>
+<span id="cb9-149"><a href="#cb9-149"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb9-150"><a href="#cb9-150"></a>    <span class="at">ex_ante =</span> <span class="fu">fisher</span>(<span class="at">juros =</span> swaps<span class="sc">/</span><span class="dv">100</span>, <span class="at">inflacao =</span> ipca_exp<span class="sc">/</span><span class="dv">100</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb9-151"><a href="#cb9-151"></a>    <span class="at">ex_post =</span> <span class="fu">fisher</span>(<span class="at">juros =</span> selic<span class="sc">/</span><span class="dv">100</span>, <span class="at">inflacao =</span> ipca_obs<span class="sc">/</span><span class="dv">100</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb9-152"><a href="#cb9-152"></a>    <span class="at">data    =</span> data,</span>
+<span id="cb9-153"><a href="#cb9-153"></a>    <span class="at">.keep   =</span> <span class="st">"none"</span></span>
+<span id="cb9-154"><a href="#cb9-154"></a>    )</span>
+<span id="cb9-155"><a href="#cb9-155"></a></span>
+<span id="cb9-156"><a href="#cb9-156"></a><span class="co"># Exibe dados</span></span>
+<span id="cb9-157"><a href="#cb9-157"></a><span class="fu">tail</span>(juros_real)</span>
+<span id="cb9-158"><a href="#cb9-158"></a><span class="in">```</span></span>
+<span id="cb9-159"><a href="#cb9-159"></a></span>
+<span id="cb9-160"><a href="#cb9-160"></a><span class="fu">### Extra: visualização de dados</span></span>
+<span id="cb9-161"><a href="#cb9-161"></a></span>
+<span id="cb9-162"><a href="#cb9-162"></a>Por fim vamos gerar um gráfico que mostra a evolução das duas séries. Eu gosto muito do pacote <span class="in">`{ggplot2}`</span>, dá pra criar gráficos muito bonitos e com muita flexibilidade:</span>
+<span id="cb9-163"><a href="#cb9-163"></a></span>
+<span id="cb9-166"><a href="#cb9-166"></a><span class="in">```{r}</span></span>
+<span id="cb9-167"><a href="#cb9-167"></a><span class="co"># Gerar gráfico de linhas</span></span>
+<span id="cb9-168"><a href="#cb9-168"></a>juros_real <span class="ot">&lt;-</span> juros_real <span class="sc">|&gt;</span></span>
+<span id="cb9-169"><a href="#cb9-169"></a>  tidyr<span class="sc">::</span><span class="fu">drop_na</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-170"><a href="#cb9-170"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span><span class="st">"data"</span>, <span class="at">names_to =</span> <span class="st">"conceito"</span>, <span class="at">values_to =</span> <span class="st">"juros"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-171"><a href="#cb9-171"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">conceito =</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(conceito <span class="sc">==</span> <span class="st">"ex_ante"</span>, <span class="st">"Ex ante"</span>, <span class="st">"Ex post"</span>))</span>
+<span id="cb9-172"><a href="#cb9-172"></a></span>
+<span id="cb9-173"><a href="#cb9-173"></a><span class="fu">set.seed</span>(<span class="dv">1984</span>)</span>
+<span id="cb9-174"><a href="#cb9-174"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(<span class="at">data =</span> juros_real) <span class="sc">+</span></span>
+<span id="cb9-175"><a href="#cb9-175"></a>  ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> data, <span class="at">y =</span> juros, <span class="at">color =</span> conceito) <span class="sc">+</span></span>
+<span id="cb9-176"><a href="#cb9-176"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb9-177"><a href="#cb9-177"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-178"><a href="#cb9-178"></a>  ggplot2<span class="sc">::</span><span class="fu">coord_cartesian</span>(</span>
+<span id="cb9-179"><a href="#cb9-179"></a>    <span class="at">clip =</span> <span class="st">"off"</span>,</span>
+<span id="cb9-180"><a href="#cb9-180"></a>    <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fu">min</span>(juros_real<span class="sc">$</span>data), <span class="fu">max</span>(juros_real<span class="sc">$</span>data) <span class="sc">+</span> <span class="fu">months</span>(<span class="dv">12</span>))</span>
+<span id="cb9-181"><a href="#cb9-181"></a>    ) <span class="sc">+</span></span>
+<span id="cb9-182"><a href="#cb9-182"></a>  ggrepel<span class="sc">::</span><span class="fu">geom_label_repel</span>(</span>
+<span id="cb9-183"><a href="#cb9-183"></a>    <span class="at">data        =</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(juros_real, data <span class="sc">==</span> <span class="fu">max</span>(data)),</span>
+<span id="cb9-184"><a href="#cb9-184"></a>    <span class="at">mapping     =</span> ggplot2<span class="sc">::</span><span class="fu">aes</span>(</span>
+<span id="cb9-185"><a href="#cb9-185"></a>      <span class="at">label =</span> <span class="fu">format</span>(<span class="at">x =</span> juros, <span class="at">big.mark =</span> <span class="st">"."</span>, <span class="at">decimal.mark =</span> <span class="st">","</span>, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">nsmall =</span> <span class="dv">2</span>)</span>
+<span id="cb9-186"><a href="#cb9-186"></a>      ),</span>
+<span id="cb9-187"><a href="#cb9-187"></a>    <span class="at">show.legend    =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-188"><a href="#cb9-188"></a>    <span class="at">nudge_x        =</span> <span class="dv">70</span>,</span>
+<span id="cb9-189"><a href="#cb9-189"></a>    <span class="at">segment.colour =</span> <span class="cn">NA</span>,</span>
+<span id="cb9-190"><a href="#cb9-190"></a>    <span class="at">fontface       =</span> <span class="st">"bold"</span></span>
+<span id="cb9-191"><a href="#cb9-191"></a>    ) <span class="sc">+</span></span>
+<span id="cb9-192"><a href="#cb9-192"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#282f6b"</span>, <span class="st">"#b22200"</span>)) <span class="sc">+</span></span>
+<span id="cb9-193"><a href="#cb9-193"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_x_date</span>(<span class="at">breaks =</span> <span class="st">"3 years"</span>, <span class="at">date_labels =</span> <span class="st">"%Y"</span>) <span class="sc">+</span></span>
+<span id="cb9-194"><a href="#cb9-194"></a>  ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_percent</span>(<span class="at">scale =</span> <span class="dv">1</span>, <span class="at">accuracy =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb9-195"><a href="#cb9-195"></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(</span>
+<span id="cb9-196"><a href="#cb9-196"></a>    <span class="at">title    =</span> <span class="st">"Brasil: taxa de juros real (% a.a.)"</span>,</span>
+<span id="cb9-197"><a href="#cb9-197"></a>    <span class="at">x        =</span> <span class="cn">NULL</span>,</span>
+<span id="cb9-198"><a href="#cb9-198"></a>    <span class="at">y        =</span> <span class="cn">NULL</span>,</span>
+<span id="cb9-199"><a href="#cb9-199"></a>    <span class="at">color    =</span> <span class="cn">NULL</span>,</span>
+<span id="cb9-200"><a href="#cb9-200"></a>    <span class="at">caption  =</span> <span class="st">"**Dados**: B3, BCB e IBGE | **Elaboração**: Fernando da Silva"</span></span>
+<span id="cb9-201"><a href="#cb9-201"></a>    ) <span class="sc">+</span></span>
+<span id="cb9-202"><a href="#cb9-202"></a>  ggplot2<span class="sc">::</span><span class="fu">theme_light</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb9-203"><a href="#cb9-203"></a>  ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb9-204"><a href="#cb9-204"></a>    <span class="at">plot.title      =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb9-205"><a href="#cb9-205"></a>    <span class="at">plot.caption    =</span> ggtext<span class="sc">::</span><span class="fu">element_textbox_simple</span>(</span>
+<span id="cb9-206"><a href="#cb9-206"></a>      <span class="at">margin =</span> ggplot2<span class="sc">::</span><span class="fu">margin</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb9-207"><a href="#cb9-207"></a>      ),</span>
+<span id="cb9-208"><a href="#cb9-208"></a>    <span class="at">plot.title.position   =</span> <span class="st">"plot"</span>,</span>
+<span id="cb9-209"><a href="#cb9-209"></a>    <span class="at">plot.caption.position =</span> <span class="st">"plot"</span>,</span>
+<span id="cb9-210"><a href="#cb9-210"></a>    <span class="at">axis.text             =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb9-211"><a href="#cb9-211"></a>    <span class="at">legend.text           =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb9-212"><a href="#cb9-212"></a>    <span class="at">legend.position       =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="fl">0.9</span>),</span>
+<span id="cb9-213"><a href="#cb9-213"></a>    <span class="at">legend.key            =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
+<span id="cb9-214"><a href="#cb9-214"></a>    <span class="at">legend.background     =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
+<span id="cb9-215"><a href="#cb9-215"></a>    <span class="at">legend.direction      =</span> <span class="st">"horizontal"</span></span>
+<span id="cb9-216"><a href="#cb9-216"></a>    )</span>
+<span id="cb9-217"><a href="#cb9-217"></a><span class="in">```</span></span>
+<span id="cb9-218"><a href="#cb9-218"></a></span>
+<span id="cb9-219"><a href="#cb9-219"></a>Voilà! Eis o gráfico com os resultados do cálculo de juros real pelos conceitos ex-ante e ex-post. Espero que esse conteúdo tenha sido útil ou interessante para você. Até mais!</span>
+<span id="cb9-220"><a href="#cb9-220"></a></span>
+<span id="cb9-221"><a href="#cb9-221"></a>{{&lt; include ../../R/_session_info_pt.qmd &gt;}}</span>
+<span id="cb9-222"><a href="#cb9-222"></a>{{&lt; include ../../styles/html/_footer_pt.qmd &gt;}}</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Licensed under <i class="fa-brands fa-creative-commons" aria-label="creative-commons"></i> <i class="fa-brands fa-creative-commons-by" aria-label="creative-commons-by"></i> <i class="fa-brands fa-creative-commons-sa" aria-label="creative-commons-sa"></i> <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></div>   
+      <div class="nav-footer-center">Made with&nbsp;<a href="https://quarto.org/">Quarto</a></div>
+    <div class="nav-footer-right">View the source at <a href="https://github.com/schoulten/schoulten.github.io"><i class="fa-brands fa-github" aria-label="github"></i> GitHub</a></div>
+  </div>
+</footer>
+
+
+</body></html>
