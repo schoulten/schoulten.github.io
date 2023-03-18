@@ -96,7 +96,7 @@ urls <- list(
 
 ::: {.grid}
 
-::: {.g-col-6}
+::: {.g-col-12 .g-col-md-6}
 
 ::: {.grid}
 ::: {.g-col-12}
@@ -142,7 +142,7 @@ create_card(
 :::
 
 
-::: {.g-col-6}
+::: {.g-col-12 .g-col-md-6}
 
 ::: {.grid}
 ::: {.g-col-12}
