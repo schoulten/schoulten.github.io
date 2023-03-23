@@ -27,7 +27,7 @@ website:
         icon: envelope-fill
     background: primary
     search: true
-  page-footer: 
+  page-footer:
     left: |
       Licensed under {{< fa brands creative-commons >}} {{< fa brands creative-commons-by >}} {{< fa brands creative-commons-sa >}} [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
     center: |
@@ -38,6 +38,7 @@ website:
     background: dark
   site-url: "https://fortietwo.com"
   repo-url: "https://github.com/schoulten/schoulten.github.io"
+  favicon: "images/favicon.png"
   open-graph: true
 
 lang: en
@@ -46,7 +47,7 @@ freeze: true
 format:
   html:
     author: "Fernando da Silva"
-    theme: 
+    theme:
       - flatly
       - styles/css/custom-light.scss
       # light: [flatly, styles/css/custom-light.scss]
