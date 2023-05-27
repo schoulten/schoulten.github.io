@@ -20,9 +20,9 @@ library(vitae)
 ```
 
 # About me
-I am a data scientist specialized in economics and finance. I have 4+ years of experience working with data, time series models, econometrics, machine learning, ETL process, EDA and visualization, including reports and dashboards. I have 3+ years of real-world experience implementing projects and developing products using R, Python, Git, and GitHub.
-
-I am curious, adaptable, and focused. I am always open to new challenges and I really enjoy creating new things.
+- Experienced data scientist proficient in data pipeline development and predictive modeling, with a strong background of 4+ years in economics and finance, using R and Python.
+- Passionate about delivering value and solving problems with data using analytics and data science solutions, having developed dozens of data models and products for over 2 thousand users.
+- Curious, adaptable, and focused individual who enjoys taking on new challenges and creating new solutions.
 
 # Work experience
 ```{r works}
@@ -50,22 +50,33 @@ am <- tibble(
   dates   = paste0("May 2021 - Present", time("2021-05-01", Sys.Date())),
   where   = "",
   details = c(
-    "Development of predictive models using statistics, econometrics and machine learning for 13 Brazilian macroeconomic variables;",
-    "Development, deployment, and monitoring of 4 time series predictive models;",
-    "Development of reports and dashboards using Quarto, R Markdown, Shiny, and Plotly Dash;",
-    "Development of R packages and release of the {nucleos} package for core inflation analysis;",
-    "Development of ETL processes working with larger-than-memory datasets using R, Python, and SQL;",
-    "Development of web scraping for various static and dynamic pages using R, RSelenium, {httr2}, and others;",
-    "Macroeconomic analysis of Brazilian data using macroeconomic models such as the IS curve, Phillips curve, and Taylor rule;",
+    "Development of predictive models using statistics, econometrics and machine learning (13+ models);",
+    "Development, deployment, and monitoring (4 forecasting models);",
+    "Development of reports and dashboards (100+ users) using Quarto, R Markdown, Shiny, and Plotly Dash;",
+    "Development of R packages with documentation (50+ users);",
+    "Development of ETL and data pipelines (40+ data sources);",
+    "Development of web scraping (30+ automations);",
+    "Macroeconomic analysis of Brazilian data (IS curve, Phillips curve, and Taylor rule);",
     "Time series analysis using EDA, decomposition, filters, autocorrelation, seasonality, stationarity, cointegration, Box-Jenkins methodology, univariate and multivariate models, and forecasting;",
-    "Classes and courses on predictive models, econometrics, forecasting, macroeconomics, time series analysis, dashboards, reports, programming with R, Python, SQL, and others."
+    "Classes and courses on predictive models, econometrics, forecasting, macroeconomics, time series analysis, dashboards, reports, programming with R, Python, and SQL."
+    )
+  )
+
+nomura <- tibble(
+  role    = "Business Intelligence Analyst",
+  company = "\\href{https://www.gruponomura.com/}{Nomura}",
+  dates   = paste0("Feb 2020 - Apr 2020", time("2020-02-01", "2020-05-01")),
+  where   = "",
+  details = c(
+    "Executed Proofs of Concept (PoC), implementation and deployment of Business Intelligence projects (Power BI, Excel, R);",
+    "Interface with stakeholders, internal and external data sources mapping, ETLs, dashboards development and documentation."
     )
   )
 
 banri <- tibble(
   role    = "Intern",
   company = "\\href{https://www.banrisul.com.br/}{Banrisul}",
-  dates   = paste0("Jan 2018 - Dec 2019", time("2018-01-01", "2019-12-01")),
+  dates   = paste0("Jan 2018 - Dec 2019", time("2018-01-01", "2020-01-01")),
   where   = "",
   details = c(
     "Risk analysis and credit granting for SME portfolio (credit operations, personal/real guarantees, registration, provisions, etc.);",
@@ -74,7 +85,7 @@ banri <- tibble(
     )
   )
 
-dplyr::bind_rows(am, banri) |> 
+dplyr::bind_rows(am, nomura, banri) |> 
   detailed_entries(role, dates, company, where, details, .protect = FALSE)
 ```
 
@@ -115,6 +126,7 @@ tribble(
     )
 ```
 
+\newpage
 # Volunteering
 ```{r}
 gece <- tibble(
@@ -177,4 +189,4 @@ time_year <- function(start, end = Sys.Date()) {
 # Languages
 
 - Portuguese (Native)
-- English (Intermediate)
+- English (Advanced)
