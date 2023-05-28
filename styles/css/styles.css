@@ -9,6 +9,24 @@
   font-family: "Fira Mono";
 }
 
+/* Footer */
+.nav-footer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    background-color: #282f6b;
+}
+.nav-footer-center {
+    flex: 1 1 0px;
+    min-height: auto;
+    text-align: center;
+}
+
 /* CV page iframe style */
 .embed-container {
     position: relative;
