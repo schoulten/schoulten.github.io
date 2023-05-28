@@ -9,12 +9,6 @@
   font-family: "Fira Mono";
 }
 
-/* Footer */
-.nav-footer-center {
-  display: flex;
-  align-items: center;
-}
-
 /* CV page iframe style */
 .embed-container {
     position: relative;
