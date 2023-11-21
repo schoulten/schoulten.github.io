@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Fernando da Silva">
 <meta name="dcterms.date" content="2021-03-13">
@@ -90,7 +90,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script><link rel="stylesheet" href="../../styles/css/styles.css">
 <meta property="og:title" content="Fernando da Silva - meedr: MacroEconomic Expectations Data in R">
@@ -223,17 +224,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content"><p>Very happy to announce that <a href="https://fortietwo.com/meedr/">meedr</a>, my first package on R, is on its way to CRAN!</p>
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content"><p>Very happy to announce that <code>{meedr}</code>, my first package on R, is on its way to CRAN!</p>
 <p><strong>Note</strong>: This package was definitively archived by CRAN on July 22, 2021 and is only available on GitHub. Despite this, maintenance and bug fixes will continue to be done.</p>
 <div class="grid">
 <div class="g-col-10">
-<p>The goal of <a href="https://fortietwo.com/meedr/">meedr</a> is to provide quick and easy access to market expectations data for the main macroeconomic indicators in the Focus report, made available by the <strong>Central Bank of Brazil</strong> through the <a href="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/aplicacao#!/recursos">Expectations System data API</a>. This data comes from several financial institutions such as banks, brokers, funds, consultancies, etc.</p>
+<p>The goal of <code>{meedr}</code> is to provide quick and easy access to market expectations data for the main macroeconomic indicators in the Focus report, made available by the <strong>Central Bank of Brazil</strong> through the <a href="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/aplicacao#!/recursos">Expectations System data API</a>. This data comes from several financial institutions such as banks, brokers, funds, consultancies, etc.</p>
 </div>
 <div class="g-col-2">
 <p><img src="imgs/logo.png" align="right" height="139"></p>
 </div>
 </div>
-<p>The <a href="https://fortietwo.com/meedr/">meedr</a> package offers an R interface to the API and other advantages:</p>
+<p>The <code>{meedr}</code> package offers an R interface to the API and other advantages:</p>
 <ul>
 <li>Use of a caching system with package <a href="https://memoise.r-lib.org">memoise</a> to speed up repeated requests for data;</li>
 <li>Users can utilize all cores of the machine (parallel computing) when fetching a large batch of time series.</li>
@@ -439,7 +440,7 @@ Found 1985 observations!</code></pre>
 </div>
 </div>
 </section></section><section id="data-visualization" class="level2"><h2 class="anchored" data-anchor-id="data-visualization">Data visualization</h2>
-<p>Now we will create a cool chart about inflation expectations in Brazil. First, we will import the data from the Central Bank API using <a href="https://fortietwo.com/meedr/">meedr</a>:</p>
+<p>Now we will create a cool chart about inflation expectations in Brazil. First, we will import the data from the Central Bank API using <code>{meedr}</code>:</p>
 <div class="cell">
 <details open=""><summary>Code</summary><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># Get market expectations for inflation over the next 12 months</span></span>
 <span id="cb16-2"><a href="#cb16-2"></a>inflation <span class="ot">&lt;-</span> meedr<span class="sc">::</span><span class="fu">get_inflation_12m</span>(</span>
